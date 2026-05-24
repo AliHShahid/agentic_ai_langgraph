@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Customer Support</title>
+    <style>
+        :root {
+            --bg: #0F0F0F;
+            --card: #0b0b0d;
+            --muted: #bfcbd6;
+            --accent: #FFD84A;
+            /* yellow */
+            --user: #FFD84A;
+            /* warm yellow/gold */
+            --bot: #64748b;
+            --surface: #0b0b0d;
+            --radius: 12px;
+            --maxwidth: 900px;
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0
+        }
+
+        body {
+            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            background: linear-gradient(180deg, var(--bg) 0%, var(--bg) 100%);
+            color: #e6eef8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .wrap {
+            width: 100%;
+            max-width: var(--maxwidth);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(2, 6, 23, 0.6);
+            overflow: hidden;
+        }
+
+        header {
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .brand {
+            font-weight: 700;
+            font-size: 1.1rem
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 0.9rem
+        }
+
+        main {
+            height: 60vh;
+            min-height: 420px;
+            display: flex;
+            flex-direction: column;
+            padding: 18px;
+            gap: 12px;
+        }
+
+        #chat {
+            flex: 1;
+            overflow-y: auto;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            /* subtle grey touch like the input */
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 10px;
+        }
+
+        .message {
+            max-width: 78%;
+            padding: 12px 14px;
+            border-radius: 12px;
+            line-height: 1.4;
+            word-break: break-word;
+            box-shadow: 0 4px 14px rgba(2, 6, 23, 0.5);
+            font-size: 0.96rem;
+        }
+
+        .user {
+            align-self: flex-end;
+            background: linear-gradient(90deg, rgba(255, 216, 74, 0.14), rgba(255, 216, 74, 0.06));
+            border: 1px solid rgba(255, 216, 74, 0.12);
+            color: #fff9e6;
+        }
+
+        .bot {
+            align-self: flex-start;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #e6eef8;
+        }
+
+        .meta {
+            font-size: 0.78rem;
+            color: var(--muted);
+            margin-top: 6px
+        }
+
+        .composer {
+            display: flex;
+            gap: 8px;
+            padding: 12px 18px;
+            border-top: 1px solid rgba(255, 255, 255, 0.02);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.00));
+        }
+
+        textarea#message {
+            flex: 1;
+            min-height: 44px;
+            max-height: 160px;
+            resize: none;
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            color: inherit;
+            outline: none;
+            font-size: 0.98rem;
+        }
+
+        button#send {
+            background: var(--accent);
+            color: black;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            min-width: 84px;
+            font-weight: 600;
+            transition: transform .12s ease, opacity .12s ease;
+        }
+
+        button#send:active {
+            transform: translateY(1px)
+        }
+
+        button[disabled] {
+            opacity: 0.5;
+            cursor: not-allowed
+        }
+
+        .loader {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.12);
+            border-top-color: var(--accent);
+            animation: spin 1s linear infinite;
+            display: inline-block
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        @media(max-width:640px) {
+            body {
+                padding: 12px
+            }
+
+            main {
+                height: 62vh
+            }
+
+            .brand {
+                font-size: 1rem
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="wrap" role="application">
+        <header>
+            <div
+                style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#FFD84A);display:flex;align-items:center;justify-content:center;font-weight:700">
+                LG</div>
+            <div>
+                <div class="brand">Customer Support</div>
+                <div class="subtitle">Get help with your questions</div>
+            </div>
+        </header>
+
+        <main>
+            <div id="chat" aria-live="polite"></div>
+
+            <div class="composer">
+                <textarea id="message" placeholder="Type a message and press Enter to send (Shift+Enter = newline)"
+                    aria-label="Message"></textarea>
+                <button id="send" onclick="sendMessage()">Send</button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const messageEl = document.getElementById('message');
+        const chatEl = document.getElementById('chat');
+        const sendBtn = document.getElementById('send');
+
+        function appendMessage(text, cls) {
+            const wrap = document.createElement('div');
+            wrap.className = `message ${cls}`;
+            wrap.innerHTML = `<div>${escapeHtml(text)}</div>`;
+            chatEl.appendChild(wrap);
+            chatEl.scrollTop = chatEl.scrollHeight;
+        }
+
+        function escapeHtml(str) { if (!str) return ''; return str.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;'); }
+
+        function setLoading(on) {
+            if (on) { sendBtn.disabled = true; sendBtn.innerHTML = '<span class="loader" aria-hidden="true"></span>'; }
+            else { sendBtn.disabled = false; sendBtn.textContent = 'Send'; }
+        }
+
+        messageEl.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
+
+        async function sendMessage() {
+            const text = messageEl.value.trim(); if (!text) return;
+            appendMessage(text, 'user'); messageEl.value = ''; messageEl.focus(); setLoading(true);
+            try {
+                const res = await fetch('/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: text }) });
+                const data = await res.json(); const reply = data && data.response ? String(data.response) : 'No response.'; appendMessage(reply, 'bot');
+            } catch (err) { appendMessage('Error contacting server.', 'bot'); console.error(err); }
+            finally { setLoading(false); }
+        }
+    </script>
+
+</body>
+
+</html>

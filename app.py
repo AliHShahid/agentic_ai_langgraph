@@ -1,72 +1,80 @@
-from __future__ import annotations
-
-import copy
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
+from fastapi.templating import Jinja2Templates
+from pydantic import BaseModel
+from groq import Groq
+import pandas as pd
 import os
+import copy
 from dataclasses import dataclass
 from typing import Any, Callable
 
-import pandas as pd
-import streamlit as st
-from groq import Groq
 
+# =============================
+# FastAPI
+# =============================
 
-# ======================================================
-# LLM
-# ======================================================
+app = FastAPI()
+
+templates = Jinja2Templates(
+    directory="templates"
+)
+
+# =============================
+# Groq
+# =============================
 
 client = Groq(
     api_key=os.environ["GROQ_API_KEY"]
 )
 
-
-# ======================================================
+# =============================
 # Dataset
-# ======================================================
+# =============================
 
-df = pd.read_csv("faq_dataset.csv")
+df = pd.read_csv(
+    "faq_dataset.csv"
+)
 
-
-# ======================================================
+# =============================
 # Types
-# ======================================================
+# =============================
 
 State = dict[str, Any]
 Update = dict[str, Any]
 NodeFn = Callable[[State], Update]
-Router = Callable[[State], str]
 
 END = "__end__"
 
+# =============================
+# Graph
+# =============================
 
-# ======================================================
-# Graph Core
-# ======================================================
 
 @dataclass
 class Edge:
 
-    src: str
-    dst: str
-    router: Router | None = None
+    src:str
+    dst:str
 
 
 class StateGraph:
 
     def __init__(self):
 
-        self.nodes = {}
-        self.edges = {}
-        self.entry = None
+        self.nodes={}
+        self.edges={}
+        self.entry=None
 
-    def add_node(self, name, fn):
+    def add_node(self,name,fn):
 
-        self.nodes[name] = fn
+        self.nodes[name]=fn
 
-    def set_entry(self, name):
+    def set_entry(self,name):
 
-        self.entry = name
+        self.entry=name
 
-    def add_edge(self, src, dst):
+    def add_edge(self,src,dst):
 
         self.edges.setdefault(
             src,
@@ -78,110 +86,75 @@ class StateGraph:
             )
         )
 
-    def _next(self, current, state):
+    def next_node(
+        self,
+        current
+    ):
 
-        for edge in self.edges.get(current, []):
+        edges=self.edges.get(
+            current,
+            []
+        )
 
-            if edge.router is None:
-                return edge.dst
+        if edges:
 
-            if edge.router(state):
-                return edge.dst
+            return edges[0].dst
 
         return None
 
-
-# ======================================================
-# Checkpointer
-# ======================================================
-
-class InMemoryCheckpointer:
-
-    def __init__(self):
-
-        self.store = {}
-
-    def save(
-        self,
-        session,
-        node,
-        state
-    ):
-
-        self.store.setdefault(
-            session,
-            []
-        ).append(
-            (
-                node,
-                copy.deepcopy(state)
-            )
-        )
-
-
-# ======================================================
-# Runner
-# ======================================================
 
 class Runner:
 
     def __init__(
         self,
-        graph,
-        checkpointer
+        graph
     ):
 
-        self.graph = graph
-        self.checkpointer = checkpointer
+        self.graph=graph
+
 
     def run(
         self,
-        session_id,
         initial_state
     ):
 
-        state = copy.deepcopy(
+        state=copy.deepcopy(
             initial_state
         )
 
-        current = self.graph.entry
+        current=self.graph.entry
 
-        while current != END:
+        while current!=END:
 
-            fn = self.graph.nodes[current]
+            fn=self.graph.nodes[current]
 
-            update = fn(state)
+            update=fn(
+                state
+            )
 
-            state = {
+            state={
                 **state,
                 **update
             }
 
-            self.checkpointer.save(
-                session_id,
-                current,
-                state
-            )
-
-            current = self.graph._next(
-                current,
-                state
+            current=self.graph.next_node(
+                current
             )
 
         return state
 
 
-# ======================================================
+# =============================
 # Nodes
-# ======================================================
+# =============================
 
 def classify(state):
 
-    text = state["input"].lower()
+    text=state["input"].lower()
 
     if "refund" in text:
 
-        route = "refund"
+        route="refund"
 
     elif (
         "crash" in text
@@ -191,93 +164,90 @@ def classify(state):
         "error" in text
     ):
 
-        route = "bug"
+        route="bug"
 
     else:
 
-        route = "general"
+        route="general"
 
     return {
-        "route": route
+
+        "route":route
+
     }
 
 
 def retrieve(state):
 
-    query = state["input"].lower()
+    query=state[
+        "input"
+    ].lower()
 
-    query_words = set(
+    query_words=set(
         query.split()
     )
 
-    best_answer = None
-    max_score = 0
+    best_answer=None
+    max_score=0
 
-    for _, row in df.iterrows():
+    for _,row in df.iterrows():
 
-        question = str(
+        question=str(
             row["question"]
         ).lower()
 
-        answer = str(
+        answer=str(
             row["answer"]
         ).lower()
 
-        combined = (
+        combined=(
             question
-            +
-            " "
-            +
+            +" "+
             answer
         )
 
-        words = set(
+        words=set(
             combined.split()
         )
 
-        score = len(
+        score=len(
             query_words.intersection(
                 words
             )
         )
 
-        if score > max_score:
+        if score>max_score:
 
-            max_score = score
-            best_answer = row["answer"]
+            max_score=score
+            best_answer=row[
+                "answer"
+            ]
 
     if best_answer is None:
 
-        best_answer = (
-            "No matching information found."
-        )
+        best_answer="No information found"
 
     return {
 
         "retrieved_answer":
         best_answer
+
     }
 
 
 def generate_response(state):
 
-    question = state["input"]
-
-    context = state[
-        "retrieved_answer"
-    ]
-
-    prompt = f"""
+    prompt=f"""
     User Question:
-    {question}
+    {state["input"]}
 
-    Knowledge Base:
-    {context}
+    Knowledge:
+    {state["retrieved_answer"]}
 
-    Generate a helpful and professional response.
+    Generate a friendly response.
     """
 
-    response = client.chat.completions.create(
+    response=client.chat.completions.create(
 
         model="llama-3.3-70b-versatile",
 
@@ -286,20 +256,17 @@ def generate_response(state):
                 "role":"user",
                 "content":prompt
             }
-        ],
-
-        temperature=0.5
+        ]
     )
 
-    text = (
-        response
-        .choices[0]
-        .message
-        .content
-    )
+    text=response.choices[
+        0
+    ].message.content
 
     return {
-        "final_response": text
+
+        "final_response":
+        text
     }
 
 
@@ -308,147 +275,110 @@ def send(state):
     return {
 
         "output":
-        state["final_response"]
-
+        state[
+            "final_response"
+        ]
     }
 
 
-# ======================================================
-# Build Graph
-# ======================================================
+# =============================
+# Build graph
+# =============================
 
-def build_graph():
+graph=StateGraph()
 
-    graph = StateGraph()
-
-    graph.add_node(
-        "classify",
-        classify
-    )
-
-    graph.add_node(
-        "retrieve",
-        retrieve
-    )
-
-    graph.add_node(
-        "generate_response",
-        generate_response
-    )
-
-    graph.add_node(
-        "send",
-        send
-    )
-
-    graph.set_entry(
-        "classify"
-    )
-
-    graph.add_edge(
-        "classify",
-        "retrieve"
-    )
-
-    graph.add_edge(
-        "retrieve",
-        "generate_response"
-    )
-
-    graph.add_edge(
-        "generate_response",
-        "send"
-    )
-
-    graph.add_edge(
-        "send",
-        END
-    )
-
-    return graph
-
-
-# ======================================================
-# Initialize
-# ======================================================
-
-graph = build_graph()
-
-checkpoint = InMemoryCheckpointer()
-
-runner = Runner(
-    graph,
-    checkpoint
+graph.add_node(
+    "classify",
+    classify
 )
 
-
-# ======================================================
-# Streamlit UI
-# ======================================================
-
-st.title(
-    "LangGraph + Groq Chatbot"
+graph.add_node(
+    "retrieve",
+    retrieve
 )
 
-if (
-    "messages"
-    not in st.session_state
+graph.add_node(
+    "generate",
+    generate_response
+)
+
+graph.add_node(
+    "send",
+    send
+)
+
+graph.set_entry(
+    "classify"
+)
+
+graph.add_edge(
+    "classify",
+    "retrieve"
+)
+
+graph.add_edge(
+    "retrieve",
+    "generate"
+)
+
+graph.add_edge(
+    "generate",
+    "send"
+)
+
+graph.add_edge(
+    "send",
+    END
+)
+
+runner=Runner(
+    graph
+)
+
+# =============================
+# API
+# =============================
+
+class ChatRequest(
+    BaseModel
 ):
 
-    st.session_state.messages = []
+    message:str
 
 
-for msg in st.session_state.messages:
+@app.get("/")
+async def home(
+    request:Request
+):
 
-    with st.chat_message(
-        msg["role"]
-    ):
-
-        st.write(
-            msg["content"]
-        )
-
-
-query = st.chat_input(
-    "Ask a question..."
-)
-
-
-if query:
-
-    st.session_state.messages.append(
+    return templates.TemplateResponse(
+        "index.html",
         {
-            "role":"user",
-            "content":query
+            "request":request
         }
     )
 
-    with st.chat_message(
-        "user"
-    ):
 
-        st.write(query)
+@app.post("/chat")
+async def chat(
+    data:ChatRequest
+):
 
-    result = runner.run(
-
-        "session001",
+    result=runner.run(
 
         {
-            "input":query
+            "input":
+            data.message
         }
     )
 
-    answer = result["output"]
+    return JSONResponse(
 
-    with st.chat_message(
-        "assistant"
-    ):
-
-        st.write(answer)
-
-    st.session_state.messages.append(
         {
-            "role":"assistant",
-            "content":answer
+
+            "response":
+            result["output"]
+
         }
+
     )
