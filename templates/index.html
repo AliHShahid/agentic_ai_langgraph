@@ -4,191 +4,685 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Customer Support</title>
+    <title>Modern Dark Chat</title>
     <style>
         :root {
-            --bg: #0F0F0F;
-            --card: #0b0b0d;
-            --muted: #bfcbd6;
-            --accent: #FFD84A;
-            /* yellow */
-            --user: #FFD84A;
-            /* warm yellow/gold */
-            --bot: #64748b;
-            --surface: #0b0b0d;
-            --radius: 12px;
-            --maxwidth: 900px;
+            --bg: #121212;
+            --surface: rgba(255, 255, 255, 0.04);
+            --surface-2: rgba(255, 255, 255, 0.06);
+            --text: #e8e8e8;
+            --muted: #a3a3a3;
+            --border: rgba(255, 255, 255, 0.06);
+            --accent: #2f6df6;
+            /* electric blue */
+            --accent-2: #ff6a00;
+            /* neon orange */
+            --code-bg: rgba(255, 255, 255, 0.05);
+            --shadow: 0 20px 50px rgba(0, 0, 0, 0.38);
+            --maxwidth: 1360px;
+            --header-h: 64px;
+            /* Space reserved so messages never sit under the fixed composer/footer */
+            --composer-safe: 150px;
+            /* Extra scroll depth so the scrollbar thumb isn't huge */
+            --scroll-depth: 180px;
         }
 
         * {
-            box-sizing: border-box
+            box-sizing: border-box;
         }
 
         html,
         body {
-            height: 100%;
-            margin: 0
+            min-height: 100%;
+            margin: 0;
         }
 
         body {
-            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-            background: linear-gradient(180deg, var(--bg) 0%, var(--bg) 100%);
-            color: #e6eef8;
+            font-family: "Segoe UI Variable Text", "Segoe UI", Inter, system-ui, sans-serif;
+            color: var(--text);
+            background: radial-gradient(1200px 600px at 50% -120px, rgba(47, 109, 246, 0.18), transparent 60%),
+                linear-gradient(180deg, #141414 0%, #0f0f0f 55%, #0b0b0b 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 24px;
-        }
-
-        .wrap {
-            width: 100%;
-            max-width: var(--maxwidth);
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
-            border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(2, 6, 23, 0.6);
+            padding: 0;
+            position: relative;
             overflow: hidden;
         }
 
-        header {
-            padding: 20px 24px;
+        body,
+        textarea#message {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        body::-webkit-scrollbar,
+        textarea#message::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+            display: none;
+        }
+
+        /* Chat container scrollbar styling */
+        #chat {
+            /* Firefox scrollbar */
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.34) rgba(255, 255, 255, 0.08);
+        }
+
+        /* WebKit browsers (Chrome, Safari, Edge) scrollbar */
+        #chat::-webkit-scrollbar {
+            width: 14px;
+            height: 14px;
+        }
+
+        #chat::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 999px;
+            margin: 8px 0;
+        }
+
+        #chat::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.36);
+            border-radius: 999px;
+            border: 3px solid transparent;
+            background-clip: content-box;
+            min-height: 48px;
+            transition: background 200ms ease;
+        }
+
+        #chat::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.46);
+            background-clip: content-box;
+        }
+
+        #chat::-webkit-scrollbar-thumb:active {
+            background: rgba(255, 255, 255, 0.56);
+            background-clip: content-box;
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.03), transparent 36%),
+                linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 24%);
+            pointer-events: none;
+        }
+
+        body::after {
+            content: "";
+            position: absolute;
+            inset: -20%;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(47, 109, 246, 0.18), transparent 22%),
+                radial-gradient(circle at 80% 30%, rgba(96, 165, 250, 0.12), transparent 18%),
+                radial-gradient(circle at 60% 80%, rgba(255, 255, 255, 0.05), transparent 20%);
+            filter: blur(24px);
+            opacity: 0.9;
+            animation: driftGlow 18s ease-in-out infinite alternate;
+            pointer-events: none;
+        }
+
+        .app {
+            width: 100%;
+            max-width: var(--maxwidth);
+            background: radial-gradient(1200px 600px at 50% -120px, rgba(47, 109, 246, 0.18), transparent 60%),
+                linear-gradient(180deg, #141414 0%, #0f0f0f 55%, #0b0b0b 100%);
+            background: transparent;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(100vw, var(--maxwidth));
+            height: var(--header-h);
             display: flex;
             align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            z-index: 20;
+            padding: 10px 18px;
+            pointer-events: none;
+        }
+
+        .header-inner {
+            pointer-events: auto;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: rgba(10, 10, 10, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
         }
 
         .brand {
-            font-weight: 700;
-            font-size: 1.1rem
-        }
-
-        .subtitle {
-            color: var(--muted);
-            font-size: 0.9rem
-        }
-
-        main {
-            height: 60vh;
-            min-height: 420px;
             display: flex;
             flex-direction: column;
-            padding: 18px;
-            gap: 12px;
+            gap: 2px;
+            min-width: 0;
         }
 
-        #chat {
+        .brand .title {
+            font-weight: 650;
+            letter-spacing: -0.02em;
+            font-size: 0.98rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .brand .subtitle {
+            font-size: 0.82rem;
+            color: rgba(255, 255, 255, 0.62);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .header-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.72);
+            font-size: 0.82rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(47, 109, 246, 0.9);
+            box-shadow: 0 0 0 3px rgba(47, 109, 246, 0.18);
+        }
+
+        .stage {
             flex: 1;
-            overflow-y: auto;
-            padding: 18px;
+            position: relative;
+            height: 100vh;
+            padding: calc(var(--header-h) + 18px) 28px calc(var(--composer-safe) + 18px);
             display: flex;
             flex-direction: column;
+        }
+
+        .greeting {
+            display: none;
+        }
+
+        .chat-area {
+            min-height: calc(100vh - 188px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Chat message container - scrollable area for chat history */
+        #chat {
+            flex: 1 1 auto;
+            /* Takes up all available space in the flex container */
+            min-height: 0;
+            /* Allow flex to shrink below content size */
+            position: relative;
+            padding-top: 0;
+            padding-right: 22px;
+            padding-bottom: var(--scroll-depth);
+            padding-left: 12px;
+            /* Bottom padding adds scroll depth; stage padding reserves composer space */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
             gap: 12px;
-            background: rgba(255, 255, 255, 0.02);
-            /* subtle grey touch like the input */
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            border-radius: 10px;
+            /* Space between messages */
+            overflow-y: auto;
+            /* Enable vertical scrolling */
+            overflow-x: hidden;
+            /* Prevent horizontal scrolling */
+            scroll-behavior: smooth;
+            /* Smooth scroll animation */
+            scroll-padding-bottom: 40px;
+            /* Ensure messages don't hide behind composer */
         }
 
         .message {
-            max-width: 78%;
-            padding: 12px 14px;
-            border-radius: 12px;
-            line-height: 1.4;
+            max-width: 280px;
+            padding: 16px 18px;
+            border-radius: 999px;
+            line-height: 1.45;
             word-break: break-word;
-            box-shadow: 0 4px 14px rgba(2, 6, 23, 0.5);
-            font-size: 0.96rem;
+            font-size: 1rem;
+            letter-spacing: -0.01em;
+            box-shadow: var(--shadow);
+            animation: messageIn 240ms ease-out both;
         }
 
         .user {
             align-self: flex-end;
-            background: linear-gradient(90deg, rgba(255, 216, 74, 0.14), rgba(255, 216, 74, 0.06));
-            border: 1px solid rgba(255, 216, 74, 0.12);
-            color: #fff9e6;
+            background: #222;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: #f5f5f5;
+            margin-right: 56px;
         }
 
         .bot {
             align-self: flex-start;
-            background: linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            background: rgba(255, 255, 255, 0.03);
+            color: rgba(255, 255, 255, 0.9);
             border: 1px solid rgba(255, 255, 255, 0.06);
-            color: #e6eef8;
+            border-radius: 18px;
+            box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
+            max-width: 700px;
         }
 
-        .meta {
+        .bot .md {
+            line-height: 1.6;
+            font-size: 0.98rem;
+        }
+
+        .bot .md p {
+            margin: 0.4rem 0;
+        }
+
+        .bot .md h1,
+        .bot .md h2,
+        .bot .md h3 {
+            margin: 0.55rem 0 0.35rem;
+            letter-spacing: -0.02em;
+        }
+
+        .bot .md h1 {
+            font-size: 1.08rem;
+        }
+
+        .bot .md h2 {
+            font-size: 1.02rem;
+            opacity: 0.98;
+        }
+
+        .bot .md h3 {
+            font-size: 0.98rem;
+            opacity: 0.92;
+        }
+
+        .bot .md ul {
+            margin: 0.4rem 0 0.55rem;
+            padding-left: 1.1rem;
+        }
+
+        .bot .md li {
+            margin: 0.22rem 0;
+        }
+
+        .bot .md hr {
+            border: none;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.10);
+            margin: 0.75rem 0;
+        }
+
+        .bot .md code.inline {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.92em;
+            padding: 0.15em 0.45em;
+            border-radius: 10px;
+            background: var(--code-bg);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .codeblock {
+            position: relative;
+            margin: 0.55rem 0 0.7rem;
+            border-radius: 14px;
+            background: rgba(10, 10, 10, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+        }
+
+        .codeblock .codebar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .codeblock .lang {
             font-size: 0.78rem;
-            color: var(--muted);
-            margin-top: 6px
+            color: rgba(255, 255, 255, 0.66);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .copy-btn {
+            appearance: none;
+            border: 1px solid rgba(255, 255, 255, 0.10);
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.86);
+            border-radius: 999px;
+            padding: 6px 10px;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, filter 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255, 255, 255, 0.10);
+            border-color: rgba(47, 109, 246, 0.35);
+            filter: brightness(1.05);
+            transform: translateY(-1px);
+        }
+
+        .copy-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .codeblock pre {
+            margin: 0;
+            padding: 12px;
+            overflow: auto;
+        }
+
+        .codeblock code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.92rem;
+            line-height: 1.55;
+            color: rgba(255, 255, 255, 0.9);
+            white-space: pre;
+        }
+
+        .typing {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 2px;
+        }
+
+        .typing span {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.62);
+            animation: typingDot 900ms ease-in-out infinite;
+        }
+
+        .typing span:nth-child(2) {
+            animation-delay: 120ms;
+        }
+
+        .typing span:nth-child(3) {
+            animation-delay: 240ms;
+        }
+
+        @keyframes typingDot {
+
+            0%,
+            100% {
+                transform: translateY(0);
+                opacity: 0.55;
+            }
+
+            50% {
+                transform: translateY(-3px);
+                opacity: 1;
+            }
+        }
+
+        .composer-wrap {
+            position: fixed;
+            left: 50%;
+            bottom: 54px;
+            transform: translateX(-50%);
+            width: min(70vw, 900px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            padding: 0 18px;
+            z-index: 10;
         }
 
         .composer {
+            width: 100%;
+            min-height: 32px;
             display: flex;
-            gap: 8px;
-            padding: 12px 18px;
-            border-top: 1px solid rgba(255, 255, 255, 0.02);
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), rgba(255, 255, 255, 0.00));
+            align-items: center;
+            gap: 10px;
+            padding: 6px 12px 6px 14px;
+            border-radius: 999px;
+            background: var(--surface-2);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+            transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+        }
+
+        .composer:focus-within {
+            transform: translateY(-1px);
+            border-color: rgba(47, 109, 246, 0.35);
+            box-shadow: 0 18px 42px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(47, 109, 246, 0.16) inset;
         }
 
         textarea#message {
             flex: 1;
-            min-height: 44px;
-            max-height: 160px;
+            min-height: 20px;
+            max-height: 220px;
             resize: none;
-            padding: 10px 12px;
-            border-radius: 10px;
+            overflow: hidden;
+            padding: 0 8px 0 0;
+            border: none;
             background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            color: inherit;
+            color: var(--text);
             outline: none;
-            font-size: 0.98rem;
+            font-size: 1rem;
+            line-height: 1.4;
+            display: block;
+        }
+
+        textarea#message::placeholder {
+            color: #7f7f7f;
+            opacity: 1;
+        }
+
+        textarea#message:focus::placeholder {
+            color: #8f8f8f;
         }
 
         button#send {
-            background: var(--accent);
-            color: black;
+            width: 44px;
+            height: 44px;
+            margin: auto 0 auto auto;
             border: none;
-            padding: 10px 14px;
-            border-radius: 10px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: white;
             cursor: pointer;
-            min-width: 84px;
-            font-weight: 600;
-            transition: transform .12s ease, opacity .12s ease;
+            display: grid;
+            place-items: center;
+            transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+            box-shadow: 0 10px 22px rgba(47, 109, 246, 0.32);
+            flex: 0 0 auto;
+            animation: softPulse 2.8s ease-in-out infinite;
+        }
+
+        button#send::before {
+            content: "↑";
+            font-size: 24px;
+            line-height: 1;
+            transform: translateY(-1px);
+        }
+
+        button#send:hover {
+            transform: translateY(-1px) scale(1.02);
+            filter: brightness(1.08);
         }
 
         button#send:active {
-            transform: translateY(1px)
+            transform: translateY(0) scale(0.98);
+        }
+
+        button#send.is-loading {
+            animation: none;
+            box-shadow: 0 10px 22px rgba(255, 106, 0, 0.16);
+        }
+
+        button#send.is-loading::before {
+            content: "";
         }
 
         button[disabled] {
-            opacity: 0.5;
-            cursor: not-allowed
+            opacity: 0.65;
+            cursor: not-allowed;
         }
 
         .loader {
             width: 18px;
             height: 18px;
             border-radius: 50%;
-            border: 3px solid rgba(255, 255, 255, 0.12);
-            border-top-color: var(--accent);
+            border: 3px solid rgba(255, 255, 255, 0.16);
+            border-top-color: white;
             animation: spin 1s linear infinite;
-            display: inline-block
+            display: inline-block;
         }
 
         @keyframes spin {
             to {
-                transform: rotate(360deg)
+                transform: rotate(360deg);
             }
         }
 
-        @media(max-width:640px) {
-            body {
-                padding: 12px
+        @keyframes driftGlow {
+            from {
+                transform: translate3d(-1.5%, -1%, 0) scale(1);
             }
 
-            main {
-                height: 62vh
+            to {
+                transform: translate3d(1.5%, 1%, 0) scale(1.04);
+            }
+        }
+
+        @keyframes fadeRise {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
             }
 
-            .brand {
-                font-size: 1rem
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes messageIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px) scale(0.985);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes softPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 10px 22px rgba(47, 109, 246, 0.32);
+            }
+
+            50% {
+                box-shadow: 0 12px 26px rgba(47, 109, 246, 0.4);
+            }
+        }
+
+        .footer-note {
+            color: #b4b4b4;
+            font-size: 0.82rem;
+            text-align: center;
+            margin-top: -2px;
+        }
+
+        @media (max-width: 920px) {
+            .stage {
+                height: 100vh;
+                padding: calc(var(--header-h) + 12px) 18px calc(var(--composer-safe) + 16px);
+            }
+
+            .greeting {
+                display: none;
+            }
+
+            #chat {
+                padding-right: 18px;
+                padding-left: 10px;
+            }
+
+            .composer-wrap {
+                width: calc(100vw - 40px);
+                bottom: 22px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .stage {
+                height: 100vh;
+                padding: calc(var(--header-h) + 8px) 10px calc(var(--composer-safe) + 12px);
+            }
+
+            .greeting {
+                display: none;
+            }
+
+            #chat {
+                padding-right: 14px;
+                padding-left: 8px;
+            }
+
+            .message {
+                max-width: 82%;
+            }
+
+            .composer-wrap {
+                width: calc(100vw - 20px);
+                bottom: 10px;
+                padding: 0 4px;
+            }
+
+            .composer {
+                min-height: 30px;
+                border-radius: 999px;
+                padding: 5px 10px 5px 12px;
+            }
+
+            textarea#message {
+                font-size: 1rem;
+            }
+
+            button#send {
+                width: 40px;
+                height: 40px;
             }
         }
     </style>
@@ -196,58 +690,332 @@
 
 <body>
 
-    <div class="wrap" role="application">
-        <header>
-            <div
-                style="width:44px;height:44px;border-radius:10px;background:linear-gradient(135deg,var(--accent),#FFD84A);display:flex;align-items:center;justify-content:center;font-weight:700">
-                LG</div>
-            <div>
-                <div class="brand">Customer Support</div>
-                <div class="subtitle">Get help with your questions</div>
+    <header class="header" role="banner">
+        <div class="header-inner">
+            <div class="brand">
+                <div class="title">Assistant</div>
+                <div class="subtitle">Modern dark chat UI</div>
             </div>
-        </header>
+            <div class="header-pill" aria-label="Status">
+                <span class="status-dot" aria-hidden="true"></span>
+                <span>Online</span>
+            </div>
+        </div>
+    </header>
 
-        <main>
+    <div class="app" role="application">
+        <div class="stage">
+            <div class="greeting">Hi there! How can I help you today?</div>
             <div id="chat" aria-live="polite"></div>
+        </div>
 
+        <div class="composer-wrap">
             <div class="composer">
-                <textarea id="message" placeholder="Type a message and press Enter to send (Shift+Enter = newline)"
-                    aria-label="Message"></textarea>
-                <button id="send" onclick="sendMessage()">Send</button>
+                <textarea id="message" placeholder="Type a message" aria-label="Message"></textarea>
+                <button id="send" onclick="sendMessage()" aria-label="Send message"></button>
             </div>
-        </main>
+            <div class="footer-note">Gemini is AI and can make mistakes.</div>
+        </div>
     </div>
 
     <script>
         const messageEl = document.getElementById('message');
         const chatEl = document.getElementById('chat');
         const sendBtn = document.getElementById('send');
+        const composerWrapEl = document.querySelector('.composer-wrap');
 
+        let typingEl = null;
+
+        function updateComposerSafe() {
+            if (!composerWrapEl) return;
+
+            const cs = getComputedStyle(composerWrapEl);
+            const bottom = Number.parseFloat(cs.bottom || '0') || 0;
+            const safe = Math.ceil(composerWrapEl.offsetHeight + bottom + 16);
+            document.documentElement.style.setProperty('--composer-safe', `${safe}px`);
+        }
+
+        /**
+         * Append a message to the chat and auto-scroll to bottom
+         * The chat container scrollbar only scrolls this area while keeping
+         * the composer fixed at the bottom
+         */
         function appendMessage(text, cls) {
+            if (!chatEl) return;
+
             const wrap = document.createElement('div');
             wrap.className = `message ${cls}`;
-            wrap.innerHTML = `<div>${escapeHtml(text)}</div>`;
+            const messageCount = chatEl.querySelectorAll('.message').length;
+            wrap.style.animationDelay = `${Math.min(messageCount * 60, 240)}ms`;
+            if (cls === 'bot') {
+                wrap.innerHTML = `<div class="md">${renderMarkdown(text)}</div>`;
+                bindCopyButtons(wrap);
+            } else {
+                wrap.innerHTML = `<div>${escapeHtml(text).replaceAll('\n', '<br>')}</div>`;
+            }
             chatEl.appendChild(wrap);
-            chatEl.scrollTop = chatEl.scrollHeight;
+
+            /* Auto-scroll to show the latest message */
+            requestAnimationFrame(() => {
+                chatEl.scrollTop = chatEl.scrollHeight;
+            });
         }
 
-        function escapeHtml(str) { if (!str) return ''; return str.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;'); }
+        function showTypingIndicator() {
+            if (!chatEl) return;
+            if (typingEl) typingEl.remove();
+
+            typingEl = document.createElement('div');
+            typingEl.className = 'message bot';
+            typingEl.innerHTML = `
+                <div class="md">
+                    <div class="typing" aria-label="Assistant is typing">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+            `.trim();
+            chatEl.appendChild(typingEl);
+
+            requestAnimationFrame(() => {
+                chatEl.scrollTop = chatEl.scrollHeight;
+            });
+        }
+
+        function hideTypingIndicator() {
+            if (typingEl) typingEl.remove();
+            typingEl = null;
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;');
+        }
 
         function setLoading(on) {
-            if (on) { sendBtn.disabled = true; sendBtn.innerHTML = '<span class="loader" aria-hidden="true"></span>'; }
-            else { sendBtn.disabled = false; sendBtn.textContent = 'Send'; }
+            if (on) {
+                sendBtn.disabled = true;
+                sendBtn.classList.add('is-loading');
+                sendBtn.innerHTML = '<span class="loader" aria-hidden="true"></span>';
+            } else {
+                sendBtn.disabled = false;
+                sendBtn.classList.remove('is-loading');
+                sendBtn.innerHTML = '';
+            }
         }
 
-        messageEl.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
+        function bindCopyButtons(container) {
+            const buttons = container.querySelectorAll('.copy-btn');
+            buttons.forEach((btn) => {
+                btn.addEventListener('click', async () => {
+                    const code = btn.closest('.codeblock')?.querySelector('code');
+                    const text = code ? code.innerText : '';
+                    if (!text) return;
 
+                    const original = btn.textContent;
+                    try {
+                        if (navigator.clipboard && navigator.clipboard.writeText) {
+                            await navigator.clipboard.writeText(text);
+                        } else {
+                            fallbackCopy(text);
+                        }
+                        btn.textContent = 'Copied';
+                        btn.style.borderColor = 'rgba(47, 109, 246, 0.45)';
+                    } catch {
+                        btn.textContent = 'Copy failed';
+                    } finally {
+                        setTimeout(() => {
+                            btn.textContent = original;
+                            btn.style.borderColor = '';
+                        }, 1200);
+                    }
+                });
+            });
+        }
+
+        function fallbackCopy(text) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.left = '-9999px';
+            ta.style.top = '0';
+            document.body.appendChild(ta);
+            ta.focus();
+            ta.select();
+            document.execCommand('copy');
+            ta.remove();
+        }
+
+        function renderMarkdown(input) {
+            const raw = String(input ?? '');
+
+            // Split out fenced code blocks first so we don't markdown-transform inside them.
+            const codeRegex = /```([a-zA-Z0-9_-]+)?\n([\s\S]*?)```/g;
+            let out = '';
+            let lastIndex = 0;
+            let match;
+
+            while ((match = codeRegex.exec(raw)) !== null) {
+                const before = raw.slice(lastIndex, match.index);
+                out += renderMarkdownBlocks(escapeHtml(before));
+
+                const lang = (match[1] || '').trim();
+                const code = match[2] || '';
+                out += renderCodeBlock(code, lang);
+
+                lastIndex = match.index + match[0].length;
+            }
+
+            out += renderMarkdownBlocks(escapeHtml(raw.slice(lastIndex)));
+            return out;
+        }
+
+        function renderCodeBlock(codeRaw, lang) {
+            const safeCode = escapeHtml(String(codeRaw ?? '')).replace(/\n$/, '');
+            const safeLang = escapeHtml(String(lang ?? '')).slice(0, 24);
+            return `
+                <div class="codeblock">
+                    <div class="codebar">
+                        <div class="lang">${safeLang || 'code'}</div>
+                        <button type="button" class="copy-btn" aria-label="Copy code">Copy</button>
+                    </div>
+                    <pre><code>${safeCode}</code></pre>
+                </div>
+            `.trim();
+        }
+
+        function renderMarkdownBlocks(escapedText) {
+            const lines = String(escapedText ?? '').split(/\r?\n/);
+            let html = '';
+            let inList = false;
+            let paragraph = '';
+
+            function flushParagraph() {
+                const text = paragraph.trim();
+                if (!text) return;
+                html += `<p>${renderInline(text)}</p>`;
+                paragraph = '';
+            }
+
+            function closeList() {
+                if (inList) {
+                    html += '</ul>';
+                    inList = false;
+                }
+            }
+
+            for (const line of lines) {
+                const trimmed = line.trim();
+
+                if (!trimmed) {
+                    flushParagraph();
+                    closeList();
+                    continue;
+                }
+
+                if (/^---+$/.test(trimmed)) {
+                    flushParagraph();
+                    closeList();
+                    html += '<hr />';
+                    continue;
+                }
+
+                const header = /^(#{1,3})\s+(.+)$/.exec(trimmed);
+                if (header) {
+                    flushParagraph();
+                    closeList();
+                    const level = header[1].length;
+                    const tag = level === 1 ? 'h1' : level === 2 ? 'h2' : 'h3';
+                    html += `<${tag}>${renderInline(header[2])}</${tag}>`;
+                    continue;
+                }
+
+                const listItem = /^[-*]\s+(.+)$/.exec(trimmed);
+                if (listItem) {
+                    flushParagraph();
+                    if (!inList) {
+                        html += '<ul>';
+                        inList = true;
+                    }
+                    html += `<li>${renderInline(listItem[1])}</li>`;
+                    continue;
+                }
+
+                closeList();
+                paragraph += (paragraph ? ' ' : '') + trimmed;
+            }
+
+            flushParagraph();
+            closeList();
+
+            return html;
+        }
+
+        function renderInline(escapedLine) {
+            return String(escapedLine)
+                .replace(/`([^`]+)`/g, '<code class="inline">$1</code>')
+                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+        }
+
+        function autoResizeMessage() {
+            messageEl.style.height = 'auto';
+            messageEl.style.height = `${Math.min(messageEl.scrollHeight, 220)}px`;
+            updateComposerSafe();
+        }
+
+        messageEl.addEventListener('input', autoResizeMessage);
+        autoResizeMessage();
+
+        window.addEventListener('resize', updateComposerSafe);
+        updateComposerSafe();
+
+        /**
+         * Handle Enter key to send message (Shift+Enter for newline)
+         */
+        messageEl.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        /**
+         * Send a message to the backend and display the response
+         * Auto-scrolls chat to show new messages
+         */
         async function sendMessage() {
-            const text = messageEl.value.trim(); if (!text) return;
-            appendMessage(text, 'user'); messageEl.value = ''; messageEl.focus(); setLoading(true);
+            const text = messageEl.value.trim();
+            if (!text) return;
+
+            /* Add user message to chat */
+            appendMessage(text, 'user');
+            messageEl.value = '';
+            autoResizeMessage();
+            messageEl.focus();
+            setLoading(true);
+            showTypingIndicator();
+
             try {
-                const res = await fetch('/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: text }) });
-                const data = await res.json(); const reply = data && data.response ? String(data.response) : 'No response.'; appendMessage(reply, 'bot');
-            } catch (err) { appendMessage('Error contacting server.', 'bot'); console.error(err); }
-            finally { setLoading(false); }
+                const res = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text })
+                });
+                const data = await res.json();
+                const reply = data && data.response ? String(data.response) : 'No response.';
+
+                /* Add bot response to chat (auto-scrolls via appendMessage) */
+                hideTypingIndicator();
+                appendMessage(reply, 'bot');
+            } catch (err) {
+                hideTypingIndicator();
+                appendMessage('Error contacting server.', 'bot');
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
         }
     </script>
 
