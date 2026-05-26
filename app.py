@@ -1,343 +1,242 @@
-from fastapi import FastAPI, Request
+from typing import TypedDict
+from fastapi import FastAPI,Request
 from fastapi.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
-from groq import Groq
-import pandas as pd
+from dotenv import load_dotenv
+
+from pinecone import Pinecone
+from sentence_transformers import SentenceTransformer
+from langgraph.graph import StateGraph,END
+from langchain_groq import ChatGroq
+
 import os
-import copy
-from dataclasses import dataclass
-from typing import Any, Callable
+
+load_dotenv()
 
 
-# =============================
+# ===================
 # FastAPI
-# =============================
+# ===================
 
-app = FastAPI()
+app=FastAPI()
 
-templates = Jinja2Templates(
+templates=Jinja2Templates(
     directory="templates"
 )
 
-# =============================
-# Groq
-# =============================
 
-client = Groq(
-    api_key=os.environ["GROQ_API_KEY"]
+# ===================
+# LLM
+# ===================
+
+llm=ChatGroq(
+
+    model="llama-3.3-70b-versatile",
+    temperature=0.4
 )
 
-# =============================
-# Dataset
-# =============================
 
-df = pd.read_csv(
-    "faq_dataset.csv"
+# ===================
+# Embedding Model
+# ===================
+
+embedding_model=SentenceTransformer(
+    "all-MiniLM-L6-v2"
 )
 
-# =============================
-# Types
-# =============================
 
-State = dict[str, Any]
-Update = dict[str, Any]
-NodeFn = Callable[[State], Update]
+# ===================
+# Pinecone
+# ===================
 
-END = "__end__"
+pc=Pinecone(
 
-# =============================
-# Graph
-# =============================
+    api_key=
+    os.getenv(
+        "PINECONE_API_KEY"
+    )
+)
 
+index=pc.Index(
 
-@dataclass
-class Edge:
-
-    src:str
-    dst:str
-
-
-class StateGraph:
-
-    def __init__(self):
-
-        self.nodes={}
-        self.edges={}
-        self.entry=None
-
-    def add_node(self,name,fn):
-
-        self.nodes[name]=fn
-
-    def set_entry(self,name):
-
-        self.entry=name
-
-    def add_edge(self,src,dst):
-
-        self.edges.setdefault(
-            src,
-            []
-        ).append(
-            Edge(
-                src=src,
-                dst=dst
-            )
-        )
-
-    def next_node(
-        self,
-        current
-    ):
-
-        edges=self.edges.get(
-            current,
-            []
-        )
-
-        if edges:
-
-            return edges[0].dst
-
-        return None
+    os.getenv(
+        "PINECONE_INDEX"
+    )
+)
 
 
-class Runner:
+# ===================
+# State
+# ===================
 
-    def __init__(
-        self,
-        graph
-    ):
+class ChatState(TypedDict):
 
-        self.graph=graph
-
-
-    def run(
-        self,
-        initial_state
-    ):
-
-        state=copy.deepcopy(
-            initial_state
-        )
-
-        current=self.graph.entry
-
-        while current!=END:
-
-            fn=self.graph.nodes[current]
-
-            update=fn(
-                state
-            )
-
-            state={
-                **state,
-                **update
-            }
-
-            current=self.graph.next_node(
-                current
-            )
-
-        return state
+    input:str
+    retrieved_answer:str
+    output:str
 
 
-# =============================
-# Nodes
-# =============================
-
-def classify(state):
-
-    text=state["input"].lower()
-
-    if "refund" in text:
-
-        route="refund"
-
-    elif (
-        "crash" in text
-        or
-        "bug" in text
-        or
-        "error" in text
-    ):
-
-        route="bug"
-
-    else:
-
-        route="general"
-
-    return {
-
-        "route":route
-
-    }
-
+# ===================
+# Retrieve node
+# ===================
 
 def retrieve(state):
 
-    query=state[
-        "input"
-    ].lower()
+    query=state["input"]
 
-    query_words=set(
-        query.split()
+    embedding=embedding_model.encode(
+        query
+    ).tolist()
+
+
+    result=index.query(
+
+        vector=embedding,
+
+        top_k=1,
+
+        include_metadata=True
     )
 
-    best_answer=None
-    max_score=0
 
-    for _,row in df.iterrows():
+    matches=result["matches"]
 
-        question=str(
-            row["question"]
-        ).lower()
 
-        answer=str(
-            row["answer"]
-        ).lower()
+    if matches:
 
-        combined=(
-            question
-            +" "+
-            answer
-        )
+        match=matches[0]
 
-        words=set(
-            combined.split()
-        )
+        question=match[
+            "metadata"
+        ][
+            "question"
+        ]
 
-        score=len(
-            query_words.intersection(
-                words
-            )
-        )
+        answer=match[
+            "metadata"
+        ][
+            "answer"
+        ]
 
-        if score>max_score:
 
-            max_score=score
-            best_answer=row[
-                "answer"
-            ]
+        context=f"""
 
-    if best_answer is None:
+        Topic:
+        {question}
 
-        best_answer="No information found"
+        Information:
+        {answer}
+
+        """
+
+    else:
+
+        context=""
+
 
     return {
 
         "retrieved_answer":
-        best_answer
-
+        context
     }
 
 
-def generate_response(state):
+# ===================
+# Generate node
+# ===================
 
-    prompt=f"""
-    User Question:
-    {state["input"]}
+def generate(state):
 
-    Knowledge:
-    {state["retrieved_answer"]}
+    response=llm.invoke(
 
-    Generate a friendly response.
-    """
+        [
 
-    response=client.chat.completions.create(
+            (
 
-        model="llama-3.3-70b-versatile",
+                "system",
 
-        messages=[
-            {
-                "role":"user",
-                "content":prompt
-            }
+                """
+                You are DEVRYZE Assistant.
+
+                Rules:
+
+                - Answer as DEVRYZE assistant
+                - Use company context
+                - Do not invent facts
+                - Keep answers concise
+                """
+
+            ),
+
+            (
+
+                "human",
+
+                f"""
+
+                User Question:
+
+                {state["input"]}
+
+                Context:
+
+                {state["retrieved_answer"]}
+
+                """
+
+            )
+
         ]
+
     )
 
-    text=response.choices[
-        0
-    ].message.content
-
-    return {
-
-        "final_response":
-        text
-    }
-
-
-def send(state):
 
     return {
 
         "output":
-        state[
-            "final_response"
-        ]
+        response.content
     }
 
 
-# =============================
-# Build graph
-# =============================
+# ===================
+# Build Graph
+# ===================
 
-graph=StateGraph()
-
-graph.add_node(
-    "classify",
-    classify
+builder=StateGraph(
+    ChatState
 )
 
-graph.add_node(
+builder.add_node(
     "retrieve",
     retrieve
 )
 
-graph.add_node(
+builder.add_node(
     "generate",
-    generate_response
+    generate
 )
 
-graph.add_node(
-    "send",
-    send
-)
-
-graph.set_entry(
-    "classify"
-)
-
-graph.add_edge(
-    "classify",
+builder.set_entry_point(
     "retrieve"
 )
 
-graph.add_edge(
+builder.add_edge(
     "retrieve",
     "generate"
 )
 
-graph.add_edge(
+builder.add_edge(
     "generate",
-    "send"
-)
-
-graph.add_edge(
-    "send",
     END
 )
 
-runner=Runner(
-    graph
-)
+graph=builder.compile()
 
-# =============================
+
+# ===================
 # API
-# =============================
+# ===================
 
 class ChatRequest(
     BaseModel
@@ -347,29 +246,38 @@ class ChatRequest(
 
 
 @app.get("/")
+
 async def home(
     request:Request
 ):
 
     return templates.TemplateResponse(
+
         "index.html",
+
         {
-            "request":request
+            "request":
+            request
         }
+
     )
 
 
 @app.post("/chat")
+
 async def chat(
     data:ChatRequest
 ):
 
-    result=runner.run(
+    result=graph.invoke(
 
         {
+
             "input":
             data.message
+
         }
+
     )
 
     return JSONResponse(
