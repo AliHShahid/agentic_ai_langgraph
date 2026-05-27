@@ -7,20 +7,20 @@
     <title>Modern Dark Chat</title>
     <style>
         :root {
-            --bg: #121212;
-            --surface: rgba(255, 255, 255, 0.04);
-            --surface-2: rgba(255, 255, 255, 0.06);
-            --text: #e8e8e8;
-            --muted: #a3a3a3;
-            --border: rgba(255, 255, 255, 0.06);
-            --accent: #2f6df6;
-            /* electric blue */
-            --accent-2: #ff6a00;
-            /* neon orange */
-            --code-bg: rgba(255, 255, 255, 0.05);
-            --shadow: 0 20px 50px rgba(0, 0, 0, 0.38);
+            /* Material/Google-ish flat (dark) */
+            --bg: #1F1F1F;
+            --surface: #303134;
+            --surface-2: #303134;
+            --text: #e8eaed;
+            --muted: #9aa0a6;
+            --border: #3c4043;
+            --accent: #1a73e8;
+            --accent-2: #ea4335;
+            --code-bg: #282829;
+            /* Subtle dark elevation */
+            --shadow: 0 1px 2px rgba(0, 0, 0, 0.42), 0 1px 3px 1px rgba(0, 0, 0, 0.34);
             --maxwidth: 1360px;
-            --header-h: 64px;
+            --header-h: 0px;
             /* Space reserved so messages never sit under the fixed composer/footer */
             --composer-safe: 150px;
             /* Extra scroll depth so the scrollbar thumb isn't huge */
@@ -40,8 +40,7 @@
         body {
             font-family: "Segoe UI Variable Text", "Segoe UI", Inter, system-ui, sans-serif;
             color: var(--text);
-            background: radial-gradient(1200px 600px at 50% -120px, rgba(47, 109, 246, 0.18), transparent 60%),
-                linear-gradient(180deg, #141414 0%, #0f0f0f 55%, #0b0b0b 100%);
+            background: var(--bg);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -101,28 +100,10 @@
             background-clip: content-box;
         }
 
-        body::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            background:
-                radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.03), transparent 36%),
-                linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 24%);
-            pointer-events: none;
-        }
-
+        body::before,
         body::after {
-            content: "";
-            position: absolute;
-            inset: -20%;
-            background:
-                radial-gradient(circle at 20% 20%, rgba(47, 109, 246, 0.18), transparent 22%),
-                radial-gradient(circle at 80% 30%, rgba(96, 165, 250, 0.12), transparent 18%),
-                radial-gradient(circle at 60% 80%, rgba(255, 255, 255, 0.05), transparent 20%);
-            filter: blur(24px);
-            opacity: 0.9;
-            animation: driftGlow 18s ease-in-out infinite alternate;
-            pointer-events: none;
+            /* Flatten the background (no glow overlays) */
+            content: none;
         }
 
         .app {
@@ -134,17 +115,7 @@
         }
 
         .header {
-            position: fixed;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: min(100vw, var(--maxwidth));
-            height: var(--header-h);
-            display: flex;
-            align-items: center;
-            z-index: 20;
-            padding: 10px 18px;
-            pointer-events: none;
+            display: none;
         }
 
         .header-inner {
@@ -155,11 +126,10 @@
             justify-content: space-between;
             gap: 14px;
             padding: 12px 14px;
-            border-radius: 16px;
-            background: rgba(10, 10, 10, 0.55);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            backdrop-filter: blur(12px);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
         }
 
         .brand {
@@ -180,7 +150,7 @@
 
         .brand .subtitle {
             font-size: 0.82rem;
-            color: rgba(255, 255, 255, 0.62);
+            color: var(--muted);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
@@ -191,10 +161,10 @@
             align-items: center;
             gap: 8px;
             padding: 8px 10px;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            color: rgba(255, 255, 255, 0.72);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            color: var(--muted);
             font-size: 0.82rem;
         }
 
@@ -202,15 +172,15 @@
             width: 8px;
             height: 8px;
             border-radius: 50%;
-            background: rgba(47, 109, 246, 0.9);
-            box-shadow: 0 0 0 3px rgba(47, 109, 246, 0.18);
+            background: var(--accent);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.18);
         }
 
         .stage {
             flex: 1;
             position: relative;
             height: 100vh;
-            padding: calc(var(--header-h) + 18px) 28px calc(var(--composer-safe) + 18px);
+            padding: 18px 28px calc(var(--composer-safe) + 18px);
             display: flex;
             flex-direction: column;
         }
@@ -253,9 +223,9 @@
         }
 
         .message {
-            max-width: 280px;
+            max-width: 200px;
             padding: 16px 18px;
-            border-radius: 999px;
+            border-radius: 16px;
             line-height: 1.45;
             word-break: break-word;
             font-size: 1rem;
@@ -266,19 +236,19 @@
 
         .user {
             align-self: flex-end;
-            background: #222;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            color: #f5f5f5;
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            color: var(--text);
             margin-right: 56px;
         }
 
         .bot {
             align-self: flex-start;
-            background: rgba(255, 255, 255, 0.03);
-            color: rgba(255, 255, 255, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 18px;
-            box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28);
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
             max-width: 700px;
         }
 
@@ -324,7 +294,7 @@
         .bot .md hr {
             border: none;
             height: 1px;
-            background: rgba(255, 255, 255, 0.10);
+            background: var(--border);
             margin: 0.75rem 0;
         }
 
@@ -332,17 +302,17 @@
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
             font-size: 0.92em;
             padding: 0.15em 0.45em;
-            border-radius: 10px;
+            border-radius: 8px;
             background: var(--code-bg);
-            border: 1px solid rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border);
         }
 
         .codeblock {
             position: relative;
             margin: 0.55rem 0 0.7rem;
-            border-radius: 14px;
-            background: rgba(10, 10, 10, 0.55);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            background: var(--surface);
+            border: 1px solid var(--border);
             overflow: hidden;
         }
 
@@ -352,23 +322,23 @@
             justify-content: space-between;
             gap: 10px;
             padding: 10px 12px;
-            background: rgba(255, 255, 255, 0.04);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+            background: var(--code-bg);
+            border-bottom: 1px solid var(--border);
         }
 
         .codeblock .lang {
             font-size: 0.78rem;
-            color: rgba(255, 255, 255, 0.66);
+            color: var(--muted);
             text-transform: uppercase;
             letter-spacing: 0.08em;
         }
 
         .copy-btn {
             appearance: none;
-            border: 1px solid rgba(255, 255, 255, 0.10);
-            background: rgba(255, 255, 255, 0.06);
-            color: rgba(255, 255, 255, 0.86);
-            border-radius: 999px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            border-radius: 8px;
             padding: 6px 10px;
             font-size: 0.82rem;
             cursor: pointer;
@@ -376,8 +346,8 @@
         }
 
         .copy-btn:hover {
-            background: rgba(255, 255, 255, 0.10);
-            border-color: rgba(47, 109, 246, 0.35);
+            background: var(--code-bg);
+            border-color: rgba(26, 115, 232, 0.45);
             filter: brightness(1.05);
             transform: translateY(-1px);
         }
@@ -396,7 +366,7 @@
             font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
             font-size: 0.92rem;
             line-height: 1.55;
-            color: rgba(255, 255, 255, 0.9);
+            color: var(--text);
             white-space: pre;
         }
 
@@ -407,11 +377,20 @@
             padding: 4px 2px;
         }
 
+        /* Typing indicator should be dots only (no bubble) */
+        .message.typing-only {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            padding: 6px 2px;
+            max-width: none;
+        }
+
         .typing span {
             width: 7px;
             height: 7px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.62);
+            background: rgba(154, 160, 166, 0.68);
             animation: typingDot 900ms ease-in-out infinite;
         }
 
@@ -439,90 +418,97 @@
 
         .composer-wrap {
             position: fixed;
+            /* min-height: 10px; */
             left: 50%;
-            bottom: 54px;
+            bottom: 22px;
             transform: translateX(-50%);
-            width: min(70vw, 900px);
+            width: min(60vw, 800px);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 14px;
-            padding: 0 18px;
+            gap: 0;
+            padding: 0 10px;
             z-index: 10;
         }
 
         .composer {
             width: 100%;
-            min-height: 32px;
+            min-height: 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 6px 12px 6px 14px;
+            gap: 12px;
+            padding: 0px 8px 0px 20px;
             border-radius: 999px;
-            background: var(--surface-2);
-            border: 1px solid rgba(255, 255, 255, 0.04);
-            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
+            background: var(--surface);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
             transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
         }
 
         .composer:focus-within {
             transform: translateY(-1px);
-            border-color: rgba(47, 109, 246, 0.35);
-            box-shadow: 0 18px 42px rgba(0, 0, 0, 0.42), 0 0 0 1px rgba(47, 109, 246, 0.16) inset;
+            border-color: rgba(26, 115, 232, 0.45);
+            box-shadow: var(--shadow), 0 0 0 3px rgba(26, 115, 232, 0.20);
         }
 
         textarea#message {
             flex: 1;
-            min-height: 20px;
+            min-height: 24px;
             max-height: 220px;
             resize: none;
             overflow: hidden;
-            padding: 0 8px 0 0;
+            /* Vertical padding makes the first line sit centered */
+            padding: 20px 10px 8px 0;
             border: none;
             background: transparent;
             color: var(--text);
             outline: none;
-            font-size: 1rem;
-            line-height: 1.4;
+            font-size: 1.08rem;
+            line-height: 1.2;
             display: block;
         }
 
+        /* Single-line visual centering inside the pill */
+        .composer textarea#message {
+            align-self: center;
+        }
+
         textarea#message::placeholder {
-            color: #7f7f7f;
+            color: rgba(154, 160, 166, 0.85);
             opacity: 1;
         }
 
         textarea#message:focus::placeholder {
-            color: #8f8f8f;
+            color: rgba(154, 160, 166, 0.70);
         }
 
         button#send {
-            width: 44px;
-            height: 44px;
+            width: 48px;
+            height: 48px;
             margin: auto 0 auto auto;
             border: none;
             border-radius: 50%;
             background: var(--accent);
-            color: white;
+            color: #ffffff;
             cursor: pointer;
             display: grid;
             place-items: center;
             transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
-            box-shadow: 0 10px 22px rgba(47, 109, 246, 0.32);
+            box-shadow: none;
             flex: 0 0 auto;
-            animation: softPulse 2.8s ease-in-out infinite;
+            animation: none;
         }
 
         button#send::before {
             content: "↑";
-            font-size: 24px;
+            font-size: 28px;
             line-height: 1;
             transform: translateY(-1px);
         }
 
         button#send:hover {
             transform: translateY(-1px) scale(1.02);
-            filter: brightness(1.08);
+            filter: brightness(1.06);
         }
 
         button#send:active {
@@ -530,8 +516,7 @@
         }
 
         button#send.is-loading {
-            animation: none;
-            box-shadow: 0 10px 22px rgba(255, 106, 0, 0.16);
+            box-shadow: 0 1px 2px rgba(234, 67, 53, 0.25), 0 1px 3px 1px rgba(234, 67, 53, 0.18);
         }
 
         button#send.is-loading::before {
@@ -606,16 +591,13 @@
         }
 
         .footer-note {
-            color: #b4b4b4;
-            font-size: 0.82rem;
-            text-align: center;
-            margin-top: -2px;
+            display: none;
         }
 
         @media (max-width: 920px) {
             .stage {
                 height: 100vh;
-                padding: calc(var(--header-h) + 12px) 18px calc(var(--composer-safe) + 16px);
+                padding: 12px 18px calc(var(--composer-safe) + 16px);
             }
 
             .greeting {
@@ -629,7 +611,7 @@
 
             .composer-wrap {
                 width: calc(100vw - 40px);
-                bottom: 22px;
+                bottom: 12px;
             }
         }
 
@@ -648,7 +630,7 @@
         @media (max-width: 640px) {
             .stage {
                 height: 100vh;
-                padding: calc(var(--header-h) + 8px) 10px calc(var(--composer-safe) + 12px);
+                padding: 10px 10px calc(var(--composer-safe) + 12px);
             }
 
             .greeting {
@@ -666,43 +648,32 @@
 
             .composer-wrap {
                 width: calc(100vw - 20px);
-                bottom: 10px;
+                bottom: 6px;
                 padding: 0 4px;
+                gap: 0;
             }
 
             .composer {
-                min-height: 30px;
+                min-height: 52px;
                 border-radius: 999px;
-                padding: 5px 10px 5px 12px;
+                padding: 7px 10px 7px 16px;
             }
 
             textarea#message {
-                font-size: 1rem;
+                font-size: 1.12rem;
+                padding-top: 7px;
+                padding-bottom: 7px;
             }
 
             button#send {
-                width: 40px;
-                height: 40px;
+                width: 44px;
+                height: 44px;
             }
         }
     </style>
 </head>
 
 <body>
-
-    <header class="header" role="banner">
-        <div class="header-inner">
-            <div class="brand">
-                <div class="title">Assistant</div>
-                <div class="subtitle">DeVryze.tech</div>
-            </div>
-            <div class="header-pill" aria-label="Status">
-                <span class="status-dot" aria-hidden="true"></span>
-                <span>Available</span>
-            </div>
-        </div>
-    </header>
-
     <div class="app" role="application">
         <div class="stage">
             <div class="greeting">Hi there! How can I help you today?</div>
@@ -714,7 +685,6 @@
                 <textarea id="message" placeholder="Type a message" aria-label="Message"></textarea>
                 <button id="send" onclick="sendMessage()" aria-label="Send message"></button>
             </div>
-            <div class="footer-note">Gemini is AI and can make mistakes.</div>
         </div>
     </div>
 
@@ -755,9 +725,19 @@
             }
             chatEl.appendChild(wrap);
 
-            /* Auto-scroll to show the latest message */
+            /* Auto-scroll behavior:
+               - user messages + typing indicator: keep view pinned to bottom
+               - bot replies: show the start (first line) of the new reply */
             requestAnimationFrame(() => {
-                chatEl.scrollTop = chatEl.scrollHeight;
+                if (cls === 'bot') {
+                    // Scroll the chat container so the new bot message starts in view.
+                    // scrollIntoView targets the nearest scroll container (the #chat div).
+                    wrap.scrollIntoView({ block: 'start' });
+                    // Small nudge for nicer spacing under the top padding.
+                    chatEl.scrollTop = Math.max(0, chatEl.scrollTop - 8);
+                } else {
+                    chatEl.scrollTop = chatEl.scrollHeight;
+                }
             });
         }
 
@@ -766,7 +746,7 @@
             if (typingEl) typingEl.remove();
 
             typingEl = document.createElement('div');
-            typingEl.className = 'message bot';
+            typingEl.className = 'message bot typing-only';
             typingEl.innerHTML = `
                 <div class="md">
                     <div class="typing" aria-label="Assistant is typing">
