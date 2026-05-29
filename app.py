@@ -1,126 +1,155 @@
-from typing import TypedDict
-from fastapi import FastAPI,Request
+from typing import TypedDict, List
+from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from dotenv import load_dotenv
-
+from langsmith import Client
+from langsmith import traceable
 from pinecone import Pinecone
 from sentence_transformers import SentenceTransformer
-from langgraph.graph import StateGraph,END
+
+from langgraph.graph import StateGraph, END
+from langgraph.checkpoint.memory import MemorySaver
+
 from langchain_groq import ChatGroq
+
+import asyncio
+from fastapi.responses import StreamingResponse
 
 import os
 
+# =====================================================
+# Load ENV
+# =====================================================
+
 load_dotenv()
 
+import os
 
-# ===================
+# LangSmith Tracing Configuration
+
+os.environ["LANGSMITH_TRACING"] = "true"
+os.environ["LANGSMITH_PROJECT"] = "devryze_agent"
+
+# =====================================================
 # FastAPI
-# ===================
+# =====================================================
 
-app=FastAPI()
+app = FastAPI()
 
-templates=Jinja2Templates(
+templates = Jinja2Templates(
     directory="templates"
 )
 
 
-# ===================
+# =====================================================
 # LLM
-# ===================
+# =====================================================
 
-llm=ChatGroq(
+llm = ChatGroq(
 
     model="llama-3.3-70b-versatile",
-    temperature=0.4
+
+    temperature=0.4,
+    streaming=True
 )
 
 
-# ===================
+# =====================================================
 # Embedding Model
-# ===================
+# =====================================================
 
-embedding_model=SentenceTransformer(
+embedding_model = SentenceTransformer(
+
     "all-MiniLM-L6-v2"
+
 )
 
 
-# ===================
+# =====================================================
 # Pinecone
-# ===================
+# =====================================================
 
-pc=Pinecone(
+pc = Pinecone(
 
-    api_key=
-    os.getenv(
+    api_key=os.getenv(
         "PINECONE_API_KEY"
     )
+
 )
 
-index=pc.Index(
+index = pc.Index(
 
     os.getenv(
         "PINECONE_INDEX"
     )
+
 )
 
 
-# ===================
-# State
-# ===================
+# =====================================================
+# LangGraph State
+# =====================================================
 
 class ChatState(TypedDict):
 
-    input:str
-    retrieved_answer:str
-    output:str
+    input: str
+
+    retrieved_answer: str
+
+    output: str
+
+    messages: List
 
 
-# ===================
-# Retrieve node
-# ===================
-
+# =====================================================
+# Retrieve Node
+# =====================================================
+@traceable(name="pinecone_retrieval")
 def retrieve(state):
 
-    query=state["input"]
+    query = state["input"]
 
-    embedding=embedding_model.encode(
+    embedding = embedding_model.encode(
+
         query
+
     ).tolist()
 
 
-    result=index.query(
+    result = index.query(
 
         vector=embedding,
 
         top_k=1,
 
         include_metadata=True
+
     )
 
 
-    matches=result["matches"]
+    matches = result["matches"]
 
 
     if matches:
 
-        match=matches[0]
+        match = matches[0]
 
-        question=match[
+        question = match[
             "metadata"
         ][
             "question"
         ]
 
-        answer=match[
+        answer = match[
             "metadata"
         ][
             "answer"
         ]
 
 
-        context=f"""
+        context = f"""
 
         Topic:
         {question}
@@ -132,80 +161,184 @@ def retrieve(state):
 
     else:
 
-        context=""
+        context = """
+
+        No relevant DEVRYZE information found.
+
+        """
 
 
     return {
 
         "retrieved_answer":
         context
+
     }
 
 
-# ===================
-# Generate node
-# ===================
+# =====================================================
+# Generate Node
+# =====================================================
+# @traceable(name="llm_generation")
+# def generate(state):
 
+#     history = state.get(
+
+#         "messages",
+
+#         []
+
+#     )
+
+
+#     history.append(
+
+#         (
+
+#             "human",
+
+#             f"""
+
+#             User Question:
+
+#             {state["input"]}
+
+#             DEVRYZE Knowledge:
+
+#             {state["retrieved_answer"]}
+
+#             """
+
+#         )
+
+#     )
+
+
+#     response = llm.invoke(
+
+#         [
+
+#             (
+
+#                 "system",
+
+#                 """
+#                 You are DEVRYZE Assistant.
+
+#                 About DEVRYZE:
+
+#                 DEVRYZE bridges the gap between
+#                 complex AI research and
+#                 production-ready software.
+
+#                 Rules:
+
+#                 - Answer professionally
+#                 - Use retrieved context
+#                 - Never invent facts
+#                 - Keep responses concise
+#                 - Remember previous conversation
+#                 - If context is unavailable,
+#                   say you could not find it
+#                 """
+
+#             )
+
+#         ]
+
+#         +
+
+#         history
+
+#     )
+
+
+#     history.append(
+
+#         (
+
+#             "assistant",
+
+#             response.content
+
+#         )
+
+#     )
+
+
+#     return {
+
+#         "output":
+#         response.content,
+
+#         "messages":
+#         history
+
+#     }
+
+from langsmith import traceable
+
+@traceable(name="llm_generation")
+def build_generation_messages(state):
+
+    history = state.get("messages", [])
+
+    history.append((
+        "human",
+        f"""
+        User Question:
+        {state["input"]}
+
+        DEVRYZE Knowledge:
+        {state["retrieved_answer"]}
+        """
+    ))
+
+    messages = [
+        (
+            "system",
+            """
+            You are DEVRYZE Assistant.
+
+            About DEVRYZE:
+            DEVRYZE bridges the gap between complex AI research and production-ready software.
+
+            Rules:
+            - Answer professionally
+            - Use retrieved context
+            - Never invent facts
+            - Keep responses concise
+            - Remember previous conversation
+            - If context is unavailable, say you could not find it
+            """
+        )
+    ] + history
+
+    return messages, history
+
+
+@traceable(name="llm_generation")
 def generate(state):
 
-    response=llm.invoke(
+    messages, history = build_generation_messages(state)
 
-        [
+    response = llm.invoke(messages)
+    full_response = response.content
 
-            (
-
-                "system",
-
-                """
-                You are DEVRYZE Assistant.
-
-                Rules:
-
-                - Answer as DEVRYZE assistant
-                - Use company context
-                - Do not invent facts
-                - Keep answers concise
-                """
-
-            ),
-
-            (
-
-                "human",
-
-                f"""
-
-                User Question:
-
-                {state["input"]}
-
-                Context:
-
-                {state["retrieved_answer"]}
-
-                """
-
-            )
-
-        ]
-
-    )
-
+    history.append(("assistant", full_response))
 
     return {
-
-        "output":
-        response.content
+        "messages": history,
+        "output": full_response
     }
+# =====================================================
+# Build LangGraph
+# =====================================================
 
-
-# ===================
-# Build Graph
-# ===================
-
-builder=StateGraph(
+builder = StateGraph(
     ChatState
 )
+
 
 builder.add_node(
     "retrieve",
@@ -217,9 +350,11 @@ builder.add_node(
     generate
 )
 
+
 builder.set_entry_point(
     "retrieve"
 )
+
 
 builder.add_edge(
     "retrieve",
@@ -231,24 +366,42 @@ builder.add_edge(
     END
 )
 
-graph=builder.compile()
+
+# =====================================================
+# Memory
+# =====================================================
+
+memory = MemorySaver()
 
 
-# ===================
-# API
-# ===================
+graph = builder.compile(
+
+    checkpointer=memory
+
+)
+
+
+# =====================================================
+# Request Model
+# =====================================================
 
 class ChatRequest(
     BaseModel
 ):
 
-    message:str
+    message: str
 
+    session_id: str = "default_user"
+
+
+# =====================================================
+# Routes
+# =====================================================
 
 @app.get("/")
 
 async def home(
-    request:Request
+    request: Request
 ):
 
     return templates.TemplateResponse(
@@ -256,8 +409,10 @@ async def home(
         "index.html",
 
         {
+
             "request":
             request
+
         }
 
     )
@@ -266,19 +421,34 @@ async def home(
 @app.post("/chat")
 
 async def chat(
-    data:ChatRequest
+    data: ChatRequest
 ):
 
-    result=graph.invoke(
+    result = graph.invoke(
 
         {
 
             "input":
             data.message
 
+        },
+
+        config={
+
+            "configurable": {
+
+                "thread_id":
+                data.session_id
+            },
+            "metadata": {
+                "user_id": data.session_id,
+                "app": "devryze-chatbot"
+            }
+
         }
 
     )
+
 
     return JSONResponse(
 
@@ -289,4 +459,27 @@ async def chat(
 
         }
 
+    )
+
+@app.post("/chat-stream")
+async def chat_stream(data: ChatRequest):
+
+    async def event_generator():
+
+        retrieved = retrieve({"input": data.message})
+        messages, _ = build_generation_messages({
+            "input": data.message,
+            "retrieved_answer": retrieved["retrieved_answer"],
+            "messages": []
+        })
+
+        async for chunk in llm.astream(messages):
+            token = getattr(chunk, "content", "")
+
+            if token:
+                yield token
+
+    return StreamingResponse(
+        event_generator(),
+        media_type="text/plain; charset=utf-8"
     )

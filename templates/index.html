@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Modern Dark Chat</title>
+    <title>Devryze Assistant</title>
     <style>
         :root {
             /* Material/Google-ish flat (dark) */
@@ -696,304 +696,642 @@
 
         let typingEl = null;
 
+        // =====================================
+        // Browser Session ID
+        // =====================================
+
+        let session_id = localStorage.getItem(
+            "session_id"
+        )
+
+        if (!session_id) {
+
+            session_id = crypto.randomUUID()
+
+            localStorage.setItem(
+
+                "session_id",
+
+                session_id
+
+            )
+
+        }
+
         function updateComposerSafe() {
             if (!composerWrapEl) return;
 
             const cs = getComputedStyle(composerWrapEl);
             const bottom = Number.parseFloat(cs.bottom || '0') || 0;
             const safe = Math.ceil(composerWrapEl.offsetHeight + bottom + 16);
-            document.documentElement.style.setProperty('--composer-safe', `${safe}px`);
+
+            document.documentElement.style.setProperty(
+                '--composer-safe',
+                `${safe}px`
+            );
         }
 
-        /**
-         * Append a message to the chat and auto-scroll to bottom
-         * The chat container scrollbar only scrolls this area while keeping
-         * the composer fixed at the bottom
-         */
         function appendMessage(text, cls) {
+
             if (!chatEl) return;
 
             const wrap = document.createElement('div');
+
             wrap.className = `message ${cls}`;
+
             const messageCount = chatEl.querySelectorAll('.message').length;
+
             wrap.style.animationDelay = `${Math.min(messageCount * 60, 240)}ms`;
+
             if (cls === 'bot') {
-                wrap.innerHTML = `<div class="md">${renderMarkdown(text)}</div>`;
+
+                wrap.innerHTML = `
+
+                <div class="md">
+
+                    ${renderMarkdown(text)}
+
+                </div>
+
+            `;
+
                 bindCopyButtons(wrap);
+
             } else {
-                wrap.innerHTML = `<div>${escapeHtml(text).replaceAll('\n', '<br>')}</div>`;
+
+                wrap.innerHTML = `
+
+                <div>
+
+                    ${escapeHtml(text).replaceAll('\n', '<br>')}
+
+                </div>
+
+            `;
+
             }
+
             chatEl.appendChild(wrap);
 
-            /* Auto-scroll behavior:
-               - user messages + typing indicator: keep view pinned to bottom
-               - bot replies: show the start (first line) of the new reply */
             requestAnimationFrame(() => {
+
                 if (cls === 'bot') {
-                    // Scroll the chat container so the new bot message starts in view.
-                    // scrollIntoView targets the nearest scroll container (the #chat div).
-                    wrap.scrollIntoView({ block: 'start' });
-                    // Small nudge for nicer spacing under the top padding.
-                    chatEl.scrollTop = Math.max(0, chatEl.scrollTop - 8);
+
+                    wrap.scrollIntoView({
+                        block: 'start'
+                    });
+
+                    chatEl.scrollTop = Math.max(
+                        0,
+                        chatEl.scrollTop - 8
+                    );
+
                 } else {
+
                     chatEl.scrollTop = chatEl.scrollHeight;
+
                 }
+
             });
+
         }
 
         function showTypingIndicator() {
+
             if (!chatEl) return;
+
             if (typingEl) typingEl.remove();
 
             typingEl = document.createElement('div');
+
             typingEl.className = 'message bot typing-only';
+
             typingEl.innerHTML = `
-                <div class="md">
-                    <div class="typing" aria-label="Assistant is typing">
-                        <span></span><span></span><span></span>
-                    </div>
+
+            <div class="md">
+
+                <div class="typing">
+
+                    <span></span>
+                    <span></span>
+                    <span></span>
+
                 </div>
-            `.trim();
+
+            </div>
+
+        `;
+
             chatEl.appendChild(typingEl);
 
             requestAnimationFrame(() => {
+
                 chatEl.scrollTop = chatEl.scrollHeight;
+
             });
+
         }
 
         function hideTypingIndicator() {
+
             if (typingEl) typingEl.remove();
+
             typingEl = null;
+
         }
 
         function escapeHtml(str) {
+
             if (!str) return '';
+
             return str
                 .replaceAll('&', '&amp;')
                 .replaceAll('<', '&lt;')
                 .replaceAll('>', '&gt;');
+
         }
 
         function setLoading(on) {
+
             if (on) {
+
                 sendBtn.disabled = true;
+
                 sendBtn.classList.add('is-loading');
-                sendBtn.innerHTML = '<span class="loader" aria-hidden="true"></span>';
+
+                sendBtn.innerHTML = `
+
+                <span class="loader"></span>
+
+            `;
+
             } else {
+
                 sendBtn.disabled = false;
+
                 sendBtn.classList.remove('is-loading');
+
                 sendBtn.innerHTML = '';
+
             }
+
         }
 
         function bindCopyButtons(container) {
+
             const buttons = container.querySelectorAll('.copy-btn');
+
             buttons.forEach((btn) => {
+
                 btn.addEventListener('click', async () => {
-                    const code = btn.closest('.codeblock')?.querySelector('code');
-                    const text = code ? code.innerText : '';
+
+                    const code = btn.closest('.codeblock')
+                        ?.querySelector('code');
+
+                    const text = code
+                        ? code.innerText
+                        : '';
+
                     if (!text) return;
 
                     const original = btn.textContent;
-                    try {
-                        if (navigator.clipboard && navigator.clipboard.writeText) {
-                            await navigator.clipboard.writeText(text);
-                        } else {
-                            fallbackCopy(text);
-                        }
-                        btn.textContent = 'Copied';
-                        btn.style.borderColor = 'rgba(47, 109, 246, 0.45)';
-                    } catch {
-                        btn.textContent = 'Copy failed';
-                    } finally {
-                        setTimeout(() => {
-                            btn.textContent = original;
-                            btn.style.borderColor = '';
-                        }, 1200);
-                    }
-                });
-            });
-        }
 
-        function fallbackCopy(text) {
-            const ta = document.createElement('textarea');
-            ta.value = text;
-            ta.style.position = 'fixed';
-            ta.style.left = '-9999px';
-            ta.style.top = '0';
-            document.body.appendChild(ta);
-            ta.focus();
-            ta.select();
-            document.execCommand('copy');
-            ta.remove();
+                    try {
+
+                        await navigator.clipboard.writeText(text);
+
+                        btn.textContent = 'Copied';
+
+                        setTimeout(() => {
+
+                            btn.textContent = original;
+
+                        }, 1200);
+
+                    } catch {
+
+                        btn.textContent = 'Copy failed';
+
+                    }
+
+                });
+
+            });
+
         }
 
         function renderMarkdown(input) {
+
             const raw = String(input ?? '');
 
-            // Split out fenced code blocks first so we don't markdown-transform inside them.
             const codeRegex = /```([a-zA-Z0-9_-]+)?\n([\s\S]*?)```/g;
+
             let out = '';
+
             let lastIndex = 0;
+
             let match;
 
             while ((match = codeRegex.exec(raw)) !== null) {
-                const before = raw.slice(lastIndex, match.index);
-                out += renderMarkdownBlocks(escapeHtml(before));
 
-                const lang = (match[1] || '').trim();
+                const before = raw.slice(
+                    lastIndex,
+                    match.index
+                );
+
+                out += renderMarkdownBlocks(
+                    escapeHtml(before)
+                );
+
+                const lang = (
+                    match[1] || ''
+                ).trim();
+
                 const code = match[2] || '';
-                out += renderCodeBlock(code, lang);
+
+                out += renderCodeBlock(
+                    code,
+                    lang
+                );
 
                 lastIndex = match.index + match[0].length;
+
             }
 
-            out += renderMarkdownBlocks(escapeHtml(raw.slice(lastIndex)));
+            out += renderMarkdownBlocks(
+                escapeHtml(raw.slice(lastIndex))
+            );
+
             return out;
+
         }
 
         function renderCodeBlock(codeRaw, lang) {
-            const safeCode = escapeHtml(String(codeRaw ?? '')).replace(/\n$/, '');
-            const safeLang = escapeHtml(String(lang ?? '')).slice(0, 24);
+
+            const safeCode = escapeHtml(
+                String(codeRaw ?? '')
+            ).replace(/\n$/, '');
+
+            const safeLang = escapeHtml(
+                String(lang ?? '')
+            ).slice(0, 24);
+
             return `
-                <div class="codeblock">
-                    <div class="codebar">
-                        <div class="lang">${safeLang || 'code'}</div>
-                        <button type="button" class="copy-btn" aria-label="Copy code">Copy</button>
+
+            <div class="codeblock">
+
+                <div class="codebar">
+
+                    <div class="lang">
+
+                        ${safeLang || 'code'}
+
                     </div>
-                    <pre><code>${safeCode}</code></pre>
+
+                    <button
+                        type="button"
+                        class="copy-btn"
+                    >
+
+                        Copy
+
+                    </button>
+
                 </div>
-            `.trim();
+
+                <pre>
+
+                    <code>${safeCode}</code>
+
+                </pre>
+
+            </div>
+
+        `;
+
         }
 
         function renderMarkdownBlocks(escapedText) {
-            const lines = String(escapedText ?? '').split(/\r?\n/);
+
+            const lines = String(
+                escapedText ?? ''
+            ).split(/\r?\n/);
+
             let html = '';
+
             let inList = false;
+
             let paragraph = '';
 
             function flushParagraph() {
+
                 const text = paragraph.trim();
+
                 if (!text) return;
-                html += `<p>${renderInline(text)}</p>`;
+
+                html += `
+
+                <p>
+
+                    ${renderInline(text)}
+
+                </p>
+
+            `;
+
                 paragraph = '';
+
             }
 
             function closeList() {
+
                 if (inList) {
+
                     html += '</ul>';
+
                     inList = false;
+
                 }
+
             }
 
             for (const line of lines) {
+
                 const trimmed = line.trim();
 
                 if (!trimmed) {
-                    flushParagraph();
-                    closeList();
-                    continue;
-                }
 
-                if (/^---+$/.test(trimmed)) {
                     flushParagraph();
-                    closeList();
-                    html += '<hr />';
-                    continue;
-                }
 
-                const header = /^(#{1,3})\s+(.+)$/.exec(trimmed);
-                if (header) {
-                    flushParagraph();
                     closeList();
-                    const level = header[1].length;
-                    const tag = level === 1 ? 'h1' : level === 2 ? 'h2' : 'h3';
-                    html += `<${tag}>${renderInline(header[2])}</${tag}>`;
+
                     continue;
+
                 }
 
                 const listItem = /^[-*]\s+(.+)$/.exec(trimmed);
+
                 if (listItem) {
+
                     flushParagraph();
+
                     if (!inList) {
+
                         html += '<ul>';
+
                         inList = true;
+
                     }
-                    html += `<li>${renderInline(listItem[1])}</li>`;
+
+                    html += `
+
+                    <li>
+
+                        ${renderInline(listItem[1])}
+
+                    </li>
+
+                `;
+
                     continue;
+
                 }
 
                 closeList();
-                paragraph += (paragraph ? ' ' : '') + trimmed;
+
+                paragraph += (
+                    paragraph ? ' ' : ''
+                ) + trimmed;
+
             }
 
             flushParagraph();
+
             closeList();
 
             return html;
+
         }
 
-        function renderInline(escapedLine) {
-            return String(escapedLine)
-                .replace(/`([^`]+)`/g, '<code class="inline">$1</code>')
-                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+        function renderInline(text) {
+
+            return String(text)
+
+                .replace(
+                    /`([^`]+)`/g,
+                    '<code class="inline">$1</code>'
+                )
+
+                .replace(
+                    /\*\*([^*]+)\*\*/g,
+                    '<strong>$1</strong>'
+                );
+
         }
 
         function autoResizeMessage() {
+
             messageEl.style.height = 'auto';
-            messageEl.style.height = `${Math.min(messageEl.scrollHeight, 220)}px`;
+
+            messageEl.style.height = `
+
+            ${Math.min(messageEl.scrollHeight, 220)}px
+
+        `;
+
             updateComposerSafe();
+
         }
 
-        messageEl.addEventListener('input', autoResizeMessage);
+        messageEl.addEventListener(
+            'input',
+            autoResizeMessage
+        );
+
         autoResizeMessage();
 
-        window.addEventListener('resize', updateComposerSafe);
+        window.addEventListener(
+            'resize',
+            updateComposerSafe
+        );
+
         updateComposerSafe();
 
-        /**
-         * Handle Enter key to send message (Shift+Enter for newline)
-         */
         messageEl.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && !e.shiftKey) {
+
+            if (
+                e.key === 'Enter'
+                &&
+                !e.shiftKey
+            ) {
+
                 e.preventDefault();
+
                 sendMessage();
+
             }
+
         });
 
-        /**
-         * Send a message to the backend and display the response
-         * Auto-scrolls chat to show new messages
-         */
+        // =====================================
+        // Send Message
+        // =====================================
+
+        // async function sendMessage() {
+
+        //     const text = messageEl.value.trim();
+
+        //     if (!text) return;
+
+        //     appendMessage(text, 'user');
+
+        //     messageEl.value = '';
+
+        //     autoResizeMessage();
+
+        //     messageEl.focus();
+
+        //     setLoading(true);
+
+        //     showTypingIndicator();
+
+        //     try {
+
+        //         const res = await fetch('/chat', {
+
+        //             method: 'POST',
+
+        //             headers: {
+
+        //                 'Content-Type':
+        //                     'application/json'
+
+        //             },
+
+        //             body: JSON.stringify({
+
+        //                 message: text,
+
+        //                 session_id: session_id
+
+        //             })
+
+        //         });
+
+        //         const data = await res.json();
+
+        //         const reply = data && data.response
+
+        //             ? String(data.response)
+
+        //             : 'No response';
+
+        //         hideTypingIndicator();
+
+        //         appendMessage(reply, 'bot');
+
+        //     } catch (err) {
+
+        //         hideTypingIndicator();
+
+        //         appendMessage(
+        //             'Error contacting server.',
+        //             'bot'
+        //         );
+
+        //         console.error(err);
+
+        //     } finally {
+
+        //         setLoading(false);
+
+        //     }
+
+        // }
         async function sendMessage() {
+
             const text = messageEl.value.trim();
             if (!text) return;
 
-            /* Add user message to chat */
+            // 1. Show user message
             appendMessage(text, 'user');
+
             messageEl.value = '';
             autoResizeMessage();
             messageEl.focus();
+
+            // 2. UI states
             setLoading(true);
             showTypingIndicator();
 
             try {
-                const res = await fetch('/chat', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ message: text })
-                });
-                const data = await res.json();
-                const reply = data && data.response ? String(data.response) : 'No response.';
 
-                /* Add bot response to chat (auto-scrolls via appendMessage) */
+                const res = await fetch('/chat-stream', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        message: text,
+                        session_id: session_id
+                    })
+                });
+
+                if (!res.body) {
+                    throw new Error("Streaming not supported in response");
+                }
+
+                const reader = res.body.getReader();
+                const decoder = new TextDecoder();
+
                 hideTypingIndicator();
-                appendMessage(reply, 'bot');
+
+                // 3. Create bot message container FIRST
+                const botMessageEl = document.createElement('div');
+                botMessageEl.className = 'message bot';
+
+                const mdContainer = document.createElement('div');
+                mdContainer.className = 'md';
+
+                botMessageEl.appendChild(mdContainer);
+                chatEl.appendChild(botMessageEl);
+
+                let fullText = "";
+
+                // 4. STREAM LOOP (TOKEN BY TOKEN)
+                while (true) {
+
+                    const { value, done } = await reader.read();
+                    if (done) break;
+
+                    const chunk = decoder.decode(value, { stream: true });
+
+                    // Clean SSE format if backend uses it
+                    const cleaned = chunk
+                        .replaceAll("data:", "")
+                        .replaceAll("\n\n", "");
+
+                    fullText += cleaned;
+
+                    // 5. Live markdown rendering
+                    mdContainer.innerHTML = renderMarkdown(fullText);
+
+                    // auto scroll
+                    chatEl.scrollTop = chatEl.scrollHeight;
+                }
+
             } catch (err) {
-                hideTypingIndicator();
-                appendMessage('Error contacting server.', 'bot');
+
                 console.error(err);
+                hideTypingIndicator();
+
+                appendMessage(
+                    'Error: Unable to reach server or stream failed.',
+                    'bot'
+                );
+
             } finally {
+
                 setLoading(false);
             }
         }
