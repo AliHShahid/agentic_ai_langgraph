@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Modern Dark Chat</title>
+    <style>
+        :root {
+            /* Material/Google-ish flat (dark) */
+            --bg: #1F1F1F;
+            --surface: #303134;
+            --surface-2: #303134;
+            --text: #e8eaed;
+            --muted: #9aa0a6;
+            --border: #3c4043;
+            --accent: #1a73e8;
+            --accent-2: #ea4335;
+            --code-bg: #282829;
+            /* Subtle dark elevation */
+            --shadow: 0 1px 2px rgba(0, 0, 0, 0.42), 0 1px 3px 1px rgba(0, 0, 0, 0.34);
+            --maxwidth: 1360px;
+            --header-h: 0px;
+            /* Space reserved so messages never sit under the fixed composer/footer */
+            --composer-safe: 150px;
+            /* Extra scroll depth so the scrollbar thumb isn't huge */
+            --scroll-depth: 180px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            min-height: 100%;
+            margin: 0;
+        }
+
+        body {
+            font-family: "Segoe UI Variable Text", "Segoe UI", Inter, system-ui, sans-serif;
+            color: var(--text);
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body,
+        textarea#message {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        body::-webkit-scrollbar,
+        textarea#message::-webkit-scrollbar {
+            width: 0;
+            height: 0;
+            display: none;
+        }
+
+        /* Chat container scrollbar styling */
+        #chat {
+            /* Firefox scrollbar */
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.34) rgba(255, 255, 255, 0.08);
+        }
+
+        /* WebKit browsers (Chrome, Safari, Edge) scrollbar */
+        #chat::-webkit-scrollbar {
+            width: 14px;
+            height: 14px;
+        }
+
+        #chat::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 999px;
+            margin: 8px 0;
+        }
+
+        #chat::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.36);
+            border-radius: 999px;
+            border: 3px solid transparent;
+            background-clip: content-box;
+            min-height: 48px;
+            transition: background 200ms ease;
+        }
+
+        #chat::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.46);
+            background-clip: content-box;
+        }
+
+        #chat::-webkit-scrollbar-thumb:active {
+            background: rgba(255, 255, 255, 0.56);
+            background-clip: content-box;
+        }
+
+        body::before,
+        body::after {
+            /* Flatten the background (no glow overlays) */
+            content: none;
+        }
+
+        .app {
+            width: 100%;
+            max-width: var(--maxwidth);
+            background: radial-gradient(1200px 600px at 50% -120px, rgba(47, 109, 246, 0.18), transparent 60%),
+                linear-gradient(180deg, #141414 0%, #0f0f0f 55%, #0b0b0b 100%);
+            background: transparent;
+        }
+
+        .header {
+            display: none;
+        }
+
+        .header-inner {
+            pointer-events: auto;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 12px 14px;
+            border-radius: 12px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+        }
+
+        .brand {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .brand .title {
+            font-weight: 650;
+            letter-spacing: -0.02em;
+            font-size: 0.98rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .brand .subtitle {
+            font-size: 0.82rem;
+            color: var(--muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .header-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 10px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 0.82rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.18);
+        }
+
+        .stage {
+            flex: 1;
+            position: relative;
+            height: 100vh;
+            padding: 18px 28px calc(var(--composer-safe) + 18px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .greeting {
+            display: none;
+        }
+
+        .chat-area {
+            min-height: calc(100vh - 188px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Chat message container - scrollable area for chat history */
+        #chat {
+            flex: 1 1 auto;
+            /* Takes up all available space in the flex container */
+            min-height: 0;
+            /* Allow flex to shrink below content size */
+            position: relative;
+            padding-top: 0;
+            padding-right: 22px;
+            padding-bottom: var(--scroll-depth);
+            padding-left: 12px;
+            /* Bottom padding adds scroll depth; stage padding reserves composer space */
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 12px;
+            /* Space between messages */
+            overflow-y: auto;
+            /* Enable vertical scrolling */
+            overflow-x: hidden;
+            /* Prevent horizontal scrolling */
+            scroll-behavior: smooth;
+            /* Smooth scroll animation */
+            scroll-padding-bottom: 40px;
+            /* Ensure messages don't hide behind composer */
+        }
+
+        .message {
+            max-width: 200px;
+            padding: 16px 18px;
+            border-radius: 16px;
+            line-height: 1.45;
+            word-break: break-word;
+            font-size: 1rem;
+            letter-spacing: -0.01em;
+            box-shadow: var(--shadow);
+            animation: messageIn 240ms ease-out both;
+        }
+
+        .user {
+            align-self: flex-end;
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            margin-right: 56px;
+        }
+
+        .bot {
+            align-self: flex-start;
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            max-width: 700px;
+        }
+
+        .bot .md {
+            line-height: 1.6;
+            font-size: 0.98rem;
+        }
+
+        .bot .md p {
+            margin: 0.4rem 0;
+        }
+
+        .bot .md h1,
+        .bot .md h2,
+        .bot .md h3 {
+            margin: 0.55rem 0 0.35rem;
+            letter-spacing: -0.02em;
+        }
+
+        .bot .md h1 {
+            font-size: 1.08rem;
+        }
+
+        .bot .md h2 {
+            font-size: 1.02rem;
+            opacity: 0.98;
+        }
+
+        .bot .md h3 {
+            font-size: 0.98rem;
+            opacity: 0.92;
+        }
+
+        .bot .md ul {
+            margin: 0.4rem 0 0.55rem;
+            padding-left: 1.1rem;
+        }
+
+        .bot .md li {
+            margin: 0.22rem 0;
+        }
+
+        .bot .md hr {
+            border: none;
+            height: 1px;
+            background: var(--border);
+            margin: 0.75rem 0;
+        }
+
+        .bot .md code.inline {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.92em;
+            padding: 0.15em 0.45em;
+            border-radius: 8px;
+            background: var(--code-bg);
+            border: 1px solid var(--border);
+        }
+
+        .codeblock {
+            position: relative;
+            margin: 0.55rem 0 0.7rem;
+            border-radius: 12px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            overflow: hidden;
+        }
+
+        .codeblock .codebar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 12px;
+            background: var(--code-bg);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .codeblock .lang {
+            font-size: 0.78rem;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .copy-btn {
+            appearance: none;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text);
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, filter 0.2s ease;
+        }
+
+        .copy-btn:hover {
+            background: var(--code-bg);
+            border-color: rgba(26, 115, 232, 0.45);
+            filter: brightness(1.05);
+            transform: translateY(-1px);
+        }
+
+        .copy-btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .codeblock pre {
+            margin: 0;
+            padding: 12px;
+            overflow: auto;
+        }
+
+        .codeblock code {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.92rem;
+            line-height: 1.55;
+            color: var(--text);
+            white-space: pre;
+        }
+
+        .typing {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 2px;
+        }
+
+        /* Typing indicator should be dots only (no bubble) */
+        .message.typing-only {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            padding: 6px 2px;
+            max-width: none;
+        }
+
+        .typing span {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: rgba(154, 160, 166, 0.68);
+            animation: typingDot 900ms ease-in-out infinite;
+        }
+
+        .typing span:nth-child(2) {
+            animation-delay: 120ms;
+        }
+
+        .typing span:nth-child(3) {
+            animation-delay: 240ms;
+        }
+
+        @keyframes typingDot {
+
+            0%,
+            100% {
+                transform: translateY(0);
+                opacity: 0.55;
+            }
+
+            50% {
+                transform: translateY(-3px);
+                opacity: 1;
+            }
+        }
+
+        .composer-wrap {
+            position: fixed;
+            /* min-height: 10px; */
+            left: 50%;
+            bottom: 22px;
+            transform: translateX(-50%);
+            width: min(60vw, 800px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+            padding: 0 10px;
+            z-index: 10;
+        }
+
+        .composer {
+            width: 100%;
+            min-height: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0px 8px 0px 20px;
+            border-radius: 999px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+        }
+
+        .composer:focus-within {
+            transform: translateY(-1px);
+            border-color: rgba(26, 115, 232, 0.45);
+            box-shadow: var(--shadow), 0 0 0 3px rgba(26, 115, 232, 0.20);
+        }
+
+        textarea#message {
+            flex: 1;
+            min-height: 24px;
+            max-height: 220px;
+            resize: none;
+            overflow: hidden;
+            /* Vertical padding makes the first line sit centered */
+            padding: 20px 10px 8px 0;
+            border: none;
+            background: transparent;
+            color: var(--text);
+            outline: none;
+            font-size: 1.08rem;
+            line-height: 1.2;
+            display: block;
+        }
+
+        /* Single-line visual centering inside the pill */
+        .composer textarea#message {
+            align-self: center;
+        }
+
+        textarea#message::placeholder {
+            color: rgba(154, 160, 166, 0.85);
+            opacity: 1;
+        }
+
+        textarea#message:focus::placeholder {
+            color: rgba(154, 160, 166, 0.70);
+        }
+
+        button#send {
+            width: 48px;
+            height: 48px;
+            margin: auto 0 auto auto;
+            border: none;
+            border-radius: 50%;
+            background: var(--accent);
+            color: #ffffff;
+            cursor: pointer;
+            display: grid;
+            place-items: center;
+            transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+            box-shadow: none;
+            flex: 0 0 auto;
+            animation: none;
+        }
+
+        button#send::before {
+            content: "↑";
+            font-size: 28px;
+            line-height: 1;
+            transform: translateY(-1px);
+        }
+
+        button#send:hover {
+            transform: translateY(-1px) scale(1.02);
+            filter: brightness(1.06);
+        }
+
+        button#send:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        button#send.is-loading {
+            box-shadow: 0 1px 2px rgba(234, 67, 53, 0.25), 0 1px 3px 1px rgba(234, 67, 53, 0.18);
+        }
+
+        button#send.is-loading::before {
+            content: "";
+        }
+
+        button[disabled] {
+            opacity: 0.65;
+            cursor: not-allowed;
+        }
+
+        .loader {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.16);
+            border-top-color: white;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes driftGlow {
+            from {
+                transform: translate3d(-1.5%, -1%, 0) scale(1);
+            }
+
+            to {
+                transform: translate3d(1.5%, 1%, 0) scale(1.04);
+            }
+        }
+
+        @keyframes fadeRise {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes messageIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px) scale(0.985);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes softPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 10px 22px rgba(47, 109, 246, 0.32);
+            }
+
+            50% {
+                box-shadow: 0 12px 26px rgba(47, 109, 246, 0.4);
+            }
+        }
+
+        .footer-note {
+            display: none;
+        }
+
+        @media (max-width: 920px) {
+            .stage {
+                height: 100vh;
+                padding: 12px 18px calc(var(--composer-safe) + 16px);
+            }
+
+            .greeting {
+                display: none;
+            }
+
+            #chat {
+                padding-right: 18px;
+                padding-left: 10px;
+            }
+
+            .composer-wrap {
+                width: calc(100vw - 40px);
+                bottom: 12px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .stage {
+                height: 100vh;
+                padding: 10px 10px calc(var(--composer-safe) + 12px);
+            }
+
+            .greeting {
+                display: none;
+            }
+
+            #chat {
+                padding-right: 14px;
+                padding-left: 8px;
+            }
+
+            .message {
+                max-width: 82%;
+            }
+
+            .composer-wrap {
+                width: calc(100vw - 20px);
+                bottom: 6px;
+                padding: 0 4px;
+                gap: 0;
+            }
+
+            .composer {
+                min-height: 52px;
+                border-radius: 999px;
+                padding: 7px 10px 7px 16px;
+            }
+
+            textarea#message {
+                font-size: 1.12rem;
+                padding-top: 7px;
+                padding-bottom: 7px;
+            }
+
+            button#send {
+                width: 44px;
+                height: 44px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app" role="application">
+        <div class="stage">
+            <div class="greeting">Hi there! How can I help you today?</div>
+            <div id="chat" aria-live="polite"></div>
+        </div>
+
+        <div class="composer-wrap">
+            <div class="composer">
+                <textarea id="message" placeholder="Type a message" aria-label="Message"></textarea>
+                <button id="send" onclick="sendMessage()" aria-label="Send message"></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const messageEl = document.getElementById('message');
+        const chatEl = document.getElementById('chat');
+        const sendBtn = document.getElementById('send');
+        const composerWrapEl = document.querySelector('.composer-wrap');
+
+        let typingEl = null;
+
+        function updateComposerSafe() {
+            if (!composerWrapEl) return;
+
+            const cs = getComputedStyle(composerWrapEl);
+            const bottom = Number.parseFloat(cs.bottom || '0') || 0;
+            const safe = Math.ceil(composerWrapEl.offsetHeight + bottom + 16);
+            document.documentElement.style.setProperty('--composer-safe', `${safe}px`);
+        }
+
+        /**
+         * Append a message to the chat and auto-scroll to bottom
+         * The chat container scrollbar only scrolls this area while keeping
+         * the composer fixed at the bottom
+         */
+        function appendMessage(text, cls) {
+            if (!chatEl) return;
+
+            const wrap = document.createElement('div');
+            wrap.className = `message ${cls}`;
+            const messageCount = chatEl.querySelectorAll('.message').length;
+            wrap.style.animationDelay = `${Math.min(messageCount * 60, 240)}ms`;
+            if (cls === 'bot') {
+                wrap.innerHTML = `<div class="md">${renderMarkdown(text)}</div>`;
+                bindCopyButtons(wrap);
+            } else {
+                wrap.innerHTML = `<div>${escapeHtml(text).replaceAll('\n', '<br>')}</div>`;
+            }
+            chatEl.appendChild(wrap);
+
+            /* Auto-scroll behavior:
+               - user messages + typing indicator: keep view pinned to bottom
+               - bot replies: show the start (first line) of the new reply */
+            requestAnimationFrame(() => {
+                if (cls === 'bot') {
+                    // Scroll the chat container so the new bot message starts in view.
+                    // scrollIntoView targets the nearest scroll container (the #chat div).
+                    wrap.scrollIntoView({ block: 'start' });
+                    // Small nudge for nicer spacing under the top padding.
+                    chatEl.scrollTop = Math.max(0, chatEl.scrollTop - 8);
+                } else {
+                    chatEl.scrollTop = chatEl.scrollHeight;
+                }
+            });
+        }
+
+        function showTypingIndicator() {
+            if (!chatEl) return;
+            if (typingEl) typingEl.remove();
+
+            typingEl = document.createElement('div');
+            typingEl.className = 'message bot typing-only';
+            typingEl.innerHTML = `
+                <div class="md">
+                    <div class="typing" aria-label="Assistant is typing">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+            `.trim();
+            chatEl.appendChild(typingEl);
+
+            requestAnimationFrame(() => {
+                chatEl.scrollTop = chatEl.scrollHeight;
+            });
+        }
+
+        function hideTypingIndicator() {
+            if (typingEl) typingEl.remove();
+            typingEl = null;
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str
+                .replaceAll('&', '&amp;')
+                .replaceAll('<', '&lt;')
+                .replaceAll('>', '&gt;');
+        }
+
+        function setLoading(on) {
+            if (on) {
+                sendBtn.disabled = true;
+                sendBtn.classList.add('is-loading');
+                sendBtn.innerHTML = '<span class="loader" aria-hidden="true"></span>';
+            } else {
+                sendBtn.disabled = false;
+                sendBtn.classList.remove('is-loading');
+                sendBtn.innerHTML = '';
+            }
+        }
+
+        function bindCopyButtons(container) {
+            const buttons = container.querySelectorAll('.copy-btn');
+            buttons.forEach((btn) => {
+                btn.addEventListener('click', async () => {
+                    const code = btn.closest('.codeblock')?.querySelector('code');
+                    const text = code ? code.innerText : '';
+                    if (!text) return;
+
+                    const original = btn.textContent;
+                    try {
+                        if (navigator.clipboard && navigator.clipboard.writeText) {
+                            await navigator.clipboard.writeText(text);
+                        } else {
+                            fallbackCopy(text);
+                        }
+                        btn.textContent = 'Copied';
+                        btn.style.borderColor = 'rgba(47, 109, 246, 0.45)';
+                    } catch {
+                        btn.textContent = 'Copy failed';
+                    } finally {
+                        setTimeout(() => {
+                            btn.textContent = original;
+                            btn.style.borderColor = '';
+                        }, 1200);
+                    }
+                });
+            });
+        }
+
+        function fallbackCopy(text) {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.left = '-9999px';
+            ta.style.top = '0';
+            document.body.appendChild(ta);
+            ta.focus();
+            ta.select();
+            document.execCommand('copy');
+            ta.remove();
+        }
+
+        function renderMarkdown(input) {
+            const raw = String(input ?? '');
+
+            // Split out fenced code blocks first so we don't markdown-transform inside them.
+            const codeRegex = /```([a-zA-Z0-9_-]+)?\n([\s\S]*?)```/g;
+            let out = '';
+            let lastIndex = 0;
+            let match;
+
+            while ((match = codeRegex.exec(raw)) !== null) {
+                const before = raw.slice(lastIndex, match.index);
+                out += renderMarkdownBlocks(escapeHtml(before));
+
+                const lang = (match[1] || '').trim();
+                const code = match[2] || '';
+                out += renderCodeBlock(code, lang);
+
+                lastIndex = match.index + match[0].length;
+            }
+
+            out += renderMarkdownBlocks(escapeHtml(raw.slice(lastIndex)));
+            return out;
+        }
+
+        function renderCodeBlock(codeRaw, lang) {
+            const safeCode = escapeHtml(String(codeRaw ?? '')).replace(/\n$/, '');
+            const safeLang = escapeHtml(String(lang ?? '')).slice(0, 24);
+            return `
+                <div class="codeblock">
+                    <div class="codebar">
+                        <div class="lang">${safeLang || 'code'}</div>
+                        <button type="button" class="copy-btn" aria-label="Copy code">Copy</button>
+                    </div>
+                    <pre><code>${safeCode}</code></pre>
+                </div>
+            `.trim();
+        }
+
+        function renderMarkdownBlocks(escapedText) {
+            const lines = String(escapedText ?? '').split(/\r?\n/);
+            let html = '';
+            let inList = false;
+            let paragraph = '';
+
+            function flushParagraph() {
+                const text = paragraph.trim();
+                if (!text) return;
+                html += `<p>${renderInline(text)}</p>`;
+                paragraph = '';
+            }
+
+            function closeList() {
+                if (inList) {
+                    html += '</ul>';
+                    inList = false;
+                }
+            }
+
+            for (const line of lines) {
+                const trimmed = line.trim();
+
+                if (!trimmed) {
+                    flushParagraph();
+                    closeList();
+                    continue;
+                }
+
+                if (/^---+$/.test(trimmed)) {
+                    flushParagraph();
+                    closeList();
+                    html += '<hr />';
+                    continue;
+                }
+
+                const header = /^(#{1,3})\s+(.+)$/.exec(trimmed);
+                if (header) {
+                    flushParagraph();
+                    closeList();
+                    const level = header[1].length;
+                    const tag = level === 1 ? 'h1' : level === 2 ? 'h2' : 'h3';
+                    html += `<${tag}>${renderInline(header[2])}</${tag}>`;
+                    continue;
+                }
+
+                const listItem = /^[-*]\s+(.+)$/.exec(trimmed);
+                if (listItem) {
+                    flushParagraph();
+                    if (!inList) {
+                        html += '<ul>';
+                        inList = true;
+                    }
+                    html += `<li>${renderInline(listItem[1])}</li>`;
+                    continue;
+                }
+
+                closeList();
+                paragraph += (paragraph ? ' ' : '') + trimmed;
+            }
+
+            flushParagraph();
+            closeList();
+
+            return html;
+        }
+
+        function renderInline(escapedLine) {
+            return String(escapedLine)
+                .replace(/`([^`]+)`/g, '<code class="inline">$1</code>')
+                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+        }
+
+        function autoResizeMessage() {
+            messageEl.style.height = 'auto';
+            messageEl.style.height = `${Math.min(messageEl.scrollHeight, 220)}px`;
+            updateComposerSafe();
+        }
+
+        messageEl.addEventListener('input', autoResizeMessage);
+        autoResizeMessage();
+
+        window.addEventListener('resize', updateComposerSafe);
+        updateComposerSafe();
+
+        /**
+         * Handle Enter key to send message (Shift+Enter for newline)
+         */
+        messageEl.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        /**
+         * Send a message to the backend and display the response
+         * Auto-scrolls chat to show new messages
+         */
+        async function sendMessage() {
+            const text = messageEl.value.trim();
+            if (!text) return;
+
+            /* Add user message to chat */
+            appendMessage(text, 'user');
+            messageEl.value = '';
+            autoResizeMessage();
+            messageEl.focus();
+            setLoading(true);
+            showTypingIndicator();
+
+            try {
+                const res = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: text })
+                });
+                const data = await res.json();
+                const reply = data && data.response ? String(data.response) : 'No response.';
+
+                /* Add bot response to chat (auto-scrolls via appendMessage) */
+                hideTypingIndicator();
+                appendMessage(reply, 'bot');
+            } catch (err) {
+                hideTypingIndicator();
+                appendMessage('Error contacting server.', 'bot');
+                console.error(err);
+            } finally {
+                setLoading(false);
+            }
+        }
+    </script>
+
+</body>
+
+</html>
