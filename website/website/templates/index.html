@@ -1,0 +1,1815 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-adsense-account" content="ca-pub-4804316026326750">
+    <title>DEVRYZE - Ease built for you</title>
+    <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Add to your style block near line 14 */
+        /* body,
+        html {
+            overflow-x: hidden;
+            Prevents horizontal shaking/scrolling
+            width: 100%;
+            position: relative;
+        } */
+
+        body,
+        html {
+            overflow-x: hidden;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            /* This ensures the body itself doesn't expand */
+            position: relative;
+        }
+
+        /* Force every section to respect the screen width */
+        section {
+            max-width: 100vw;
+            overflow: hidden;
+        }
+
+        /* Force the nav to never exceed the screen width */
+        nav {
+            width: 100% !important;
+            left: 0 !important;
+            right: 0 !important;
+        }
+
+        /* Add this to your existing <style> block */
+        /* body,
+        html {
+            max-width: 100vw;
+            overflow-x: hidden;
+        } */
+
+        /* Ensure images don't break containers */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        #chatbot-toggle {
+            transition: transform 180ms ease, filter 220ms ease;
+            transform-origin: center;
+            will-change: transform, filter;
+            touch-action: none;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        #chatbot-toggle img {
+            transition: transform 180ms ease;
+            pointer-events: none;
+        }
+
+        #chatbot-toggle:hover {
+            transform: translateY(-4px) scale(1.08);
+            filter: drop-shadow(0 10px 22px rgba(255, 216, 74, 0.35));
+        }
+
+        #chatbot-toggle:hover img {
+            transform: rotate(-4deg);
+        }
+
+        #chatbot-toggle:active {
+            transform: translateY(0) scale(0.94);
+            filter: drop-shadow(0 5px 12px rgba(255, 216, 74, 0.2));
+        }
+
+        #chatbot-toggle.is-open {
+            filter: drop-shadow(0 10px 24px rgba(255, 216, 74, 0.42));
+        }
+
+        #chatbot-toggle.is-dragging {
+            transition: none !important;
+            cursor: grabbing !important;
+            filter: drop-shadow(0 14px 30px rgba(255, 216, 74, 0.45));
+        }
+
+        #chatbot-toggle.toy-bounce {
+            animation: robotToyBounce 520ms cubic-bezier(0.22, 0.9, 0.3, 1.25);
+        }
+
+        @keyframes robotToyBounce {
+            0% {
+                transform: scale(0.88) rotate(0deg);
+            }
+
+            35% {
+                transform: scale(1.12) rotate(-6deg);
+            }
+
+            62% {
+                transform: scale(0.97) rotate(4deg);
+            }
+
+            100% {
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.15;
+        }
+
+        .btn-border-runner {
+            position: relative;
+            border: 1px solid #333;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .btn-border-runner::before {
+            content: "";
+            position: absolute;
+            inset: -2px;
+            background: conic-gradient(from 0deg,
+                    transparent,
+                    #3b82f6,
+                    transparent 25%);
+            border-radius: inherit;
+            opacity: 0;
+            z-index: -2;
+        }
+
+        .btn-border-runner:hover::before {
+            opacity: 1;
+            animation: spin 1.5s linear infinite;
+        }
+
+        .btn-border-runner::after {
+            content: "";
+            position: absolute;
+            inset: 2px;
+            background: #111111;
+            border-radius: inherit;
+            z-index: -1;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .font-script {
+            font-family: 'Sacramento', cursive;
+        }
+
+        .font-sharetech {
+            font-family: 'Share Tech', sans-serif;
+        }
+
+        .parallax-bg {
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            transition: transform 0.5s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeInUp 0.5s ease-out;
+        }
+    </style>
+    <style>
+        .toast-bar {
+            width: 100%;
+            animation: shrinkBar 6s linear forwards;
+        }
+
+        @keyframes shrinkBar {
+            from {
+                width: 100%;
+            }
+
+            to {
+                width: 0%;
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .animate-slide {
+            animation: slideUp 0.3s ease;
+        }
+    </style>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4193031241294587"
+        crossorigin="anonymous">
+        </script>
+</head>
+
+<body class="bg-[#1A1A1A] text-gray-900 antialiased overflow-x-hidden">
+
+    <!-- <div class="blob bg-red-600 w-96 h-96 rounded-full top-0 right-0 translate-x-1/2 -translate-y-1/2"></div> -->
+    <!-- <div class="blob bg-gray-200 w-96 h-96 rounded-full bottom-0 left-0 -translate-x-1/2 translate-y-1/2"></div> -->
+    <div class="blob bg-red-600 w-64 h-64 md:w-96 md:h-96 rounded-full top-0 right-0 translate-x-1/3 -translate-y-1/2">
+    </div>
+
+    <nav class="fixed w-full z-50 bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+
+            <a href="/"
+                class="text-2xl tracking-tighter text-white font-black hover:text-blue-400 transition-colors group">
+                DEV<span class="text-blue-400 group-hover:text-white transition-colors">RYZE</span>
+                <!-- <span class="block text-[8px] font-mono tracking-[0.5em] text-zinc-600 uppercase mt-[-4px]">//
+                    Intelligence_Layer</span> -->
+            </a>
+
+            <div class="hidden md:flex flex-1 justify-center items-center space-x-2 text-white">
+                <a href="#services" class="nav-link">SERVICES</a>
+                <a href="#about" class="nav-link">ABOUT</a>
+                <!-- <a href="#" class="nav-link">SPOTLIGHT</a> -->
+
+                <div class="relative group">
+                    <button class="nav-link flex items-center gap-2">
+                        PROJECTS
+                        <svg class="w-3 h-3 opacity-50 group-hover:rotate-180 transition-transform" fill="none"
+                            stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                            <path d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    <div
+                        class="absolute left-0 mt-4 w-56 bg-[#0F0F0F] border border-white/10 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0 overflow-hidden">
+                        <div class="p-2 space-y-1">
+                            <a href="{% url 'saamay' %}" class="dropdown-link"><span
+                                    class="text-zinc-700 mr-2">/01</span> SAAMAY_AI</a>
+                            <a href="{% url 'adryze' %}" class="dropdown-link"><span
+                                    class="text-zinc-700 mr-2">/02</span> ADRYZE_V2</a>
+                            <a href="{% url 'documind' %}" class="dropdown-link"><span
+                                    class="text-zinc-700 mr-2">/03</span> DOCUMIND_CORE</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden md:block">
+                <a href="#contact"
+                    class="px-6 py-2 bg-[#FFD84A] text-black font-black uppercase text-[10px] tracking-widest hover:bg-white transition-all transform active:scale-95">
+                    Get Started
+                </a>
+            </div>
+
+            <button id="menuBtn" class="md:hidden text-white p-2">
+                <div class="w-6 h-px bg-white mb-1.5"></div>
+                <div class="w-6 h-px bg-white mb-1.5"></div>
+                <div class="w-4 h-px bg-[#FFD84A] ml-2"></div>
+            </button>
+        </div>
+
+        <div id="mobileMenu"
+            class="md:hidden bg-[#0A0A0A] border-t border-white/5 max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+            <div class="px-8 py-10 space-y-8 text-white">
+                <a href="#services" class="block text-2xl font-black tracking-tighter hover:text-[#FFD84A]">SERVICES</a>
+                <a href="#about" class="block text-2xl font-black tracking-tighter hover:text-[#FFD84A]">ABOUT</a>
+
+                <div>
+                    <button id="mobileLearnBtn"
+                        class="flex justify-between w-full text-2xl font-black tracking-tighter hover:text-[#FFD84A]">
+                        PROJECTS <span class="text-[#FFD84A]">+</span>
+                    </button>
+                    <div id="mobileLearnMenu" class="hidden pl-4 mt-6 space-y-4 border-l border-white/5">
+                        <a href="{% url 'saamay' %}" class="block font-mono text-sm text-zinc-500">/ SAAMAY_AI</a>
+                        <a href="{% url 'adryze' %}" class="block font-mono text-sm text-zinc-500">/ ADRYZE_V2</a>
+                        <a href="{% url 'documind' %}" class="block font-mono text-sm text-zinc-500">/ DOCUMIND_CORE</a>
+                    </div>
+                </div>
+
+                <a href="#contact"
+                    class="block bg-[#FFD84A] text-black text-center py-4 font-black uppercase tracking-widest text-xs">
+                    Get Started
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <style>
+        .nav-link {
+            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            font-size: 10px;
+            letter-spacing: 0.25em;
+            padding: 0.75rem 1.5rem;
+            transition: color 0.3s;
+            text-transform: uppercase;
+        }
+
+        .nav-link:hover {
+            color: #FFD84A;
+        }
+
+        .dropdown-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            /* Monospace for links */
+            font-size: 11px;
+            color: #71717a;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 8px;
+        }
+
+        .dropdown-link:hover {
+            background: rgba(255, 216, 74, 0.05);
+            color: white;
+            padding-left: 1.5rem;
+        }
+    </style>
+    <script>
+        // System UI Controller
+        const menuBtn = document.getElementById("menuBtn");
+        const mobileMenu = document.getElementById("mobileMenu");
+        const mobileLearnBtn = document.getElementById("mobileLearnBtn");
+        const mobileLearnMenu = document.getElementById("mobileLearnMenu");
+
+        // Toggle Main Mobile Overlay
+        menuBtn.addEventListener("click", () => {
+            // Toggle max-height for smooth transition
+            if (mobileMenu.style.maxHeight) {
+                mobileMenu.style.maxHeight = null;
+            } else {
+                mobileMenu.style.maxHeight = mobileMenu.scrollHeight + "px";
+            }
+        });
+
+        // Toggle Archive Sub-directory
+        mobileLearnBtn.addEventListener("click", () => {
+            const isHidden = mobileLearnMenu.classList.contains("hidden");
+            const statusIcon = mobileLearnBtn.querySelector('span');
+
+            if (isHidden) {
+                mobileLearnMenu.classList.remove("hidden");
+                statusIcon.style.transform = "rotate(45deg)";
+                statusIcon.style.color = "#FFD84A";
+                // Re-calculate parent height to prevent clipping
+                mobileMenu.style.maxHeight = (mobileMenu.scrollHeight + mobileLearnMenu.scrollHeight) + "px";
+            } else {
+                mobileLearnMenu.classList.add("hidden");
+                statusIcon.style.transform = "rotate(0deg)";
+                statusIcon.style.color = "white";
+                mobileMenu.style.maxHeight = mobileMenu.scrollHeight + "px";
+            }
+        });
+
+        // Desktop Dropdown Logic (DocuMind Fade Effect)
+        const learnBtn = document.querySelector(".group button");
+        const learnMenu = document.querySelector(".group div");
+
+        if (learnBtn && learnMenu) {
+            learnBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const isVisible = !learnMenu.classList.contains("invisible");
+                if (isVisible) {
+                    learnMenu.classList.add("invisible", "opacity-0");
+                } else {
+                    learnMenu.classList.remove("invisible", "opacity-0");
+                }
+            });
+        }
+    </script>
+
+    <!-- Chatbot Widget (Floating Button + Popup) -->
+    <button id="chatbot-toggle" type="button" aria-label="Open chatbot"
+        style="position: fixed; right: 24px; bottom: 24px; z-index: 10000; width: 104px; height: 104px; border: none; border-radius: 0; background: transparent; padding: 0; cursor: grab; box-shadow: none; overflow: visible;">
+        <img src="{% static 'images/chatbot/GraidentAiRobot.png' %}" alt="Chatbot"
+            style="width: 100%; height: 100%; object-fit: contain; border-radius: 0; display: block; background: transparent;">
+    </button>
+
+    <div id="chatbot-popup" aria-hidden="true"
+        style="display: none; position: fixed; right: 24px; bottom: 96px; z-index: 9999; width: 380px; height: 560px; max-width: 95vw; max-height: 80vh; border-radius: 16px; overflow: hidden; box-shadow: 0 2px 16px #0008; background: #18181b; border: 1px solid #2a2a2a;">
+        <div
+            style="height: 44px; display: flex; align-items: center; justify-content: space-between; padding: 0 12px; background: #0F0F0F; color: #fff; border-bottom: 1px solid #2a2a2a;">
+            <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.04em;">DEVRYZE CHATBOT</span>
+            <button id="chatbot-close" type="button" aria-label="Close chatbot"
+                style="border: none; background: transparent; color: #fff; font-size: 20px; line-height: 1; cursor: pointer;">×</button>
+        </div>
+        <iframe src="https://alihassanshahid-devryze-agent.hf.space" title="DEVRYZE Chatbot" loading="lazy"
+            allow="clipboard-write" referrerpolicy="no-referrer"
+            style="width: 100%; height: calc(100% - 44px); border: 0;"></iframe>
+        <!-- <a href="https://alihassanshahid-influxai.hf.space" target="_blank" rel="noopener noreferrer" -->
+        <!-- style="position:absolute;left:12px;bottom:12px;background:#FFD84A;color:#18181b;padding:6px 10px;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none;"> -->
+        <!-- Open chatbot in new tab -->
+        <!-- </a> -->
+    </div>
+
+    <script>
+        const chatbotToggleBtn = document.getElementById("chatbot-toggle");
+        const chatbotPopup = document.getElementById("chatbot-popup");
+        const chatbotCloseBtn = document.getElementById("chatbot-close");
+        let suppressNextClick = false;
+
+        const dragState = {
+            pointerId: null,
+            startPointerX: 0,
+            startPointerY: 0,
+            startLeft: 0,
+            startTop: 0,
+            isDragging: false
+        };
+
+        function clamp(value, min, max) {
+            return Math.min(Math.max(value, min), max);
+        }
+
+        function lockChatbotToFixedCoordinates() {
+            const rect = chatbotToggleBtn.getBoundingClientRect();
+            chatbotToggleBtn.style.left = `${rect.left}px`;
+            chatbotToggleBtn.style.top = `${rect.top}px`;
+            chatbotToggleBtn.style.right = "auto";
+            chatbotToggleBtn.style.bottom = "auto";
+        }
+
+        function keepChatbotInViewport() {
+            const width = chatbotToggleBtn.offsetWidth;
+            const height = chatbotToggleBtn.offsetHeight;
+            const maxLeft = Math.max(0, window.innerWidth - width);
+            const maxTop = Math.max(0, window.innerHeight - height);
+
+            const currentLeft = parseFloat(chatbotToggleBtn.style.left || "0");
+            const currentTop = parseFloat(chatbotToggleBtn.style.top || "0");
+
+            chatbotToggleBtn.style.left = `${clamp(currentLeft, 0, maxLeft)}px`;
+            chatbotToggleBtn.style.top = `${clamp(currentTop, 0, maxTop)}px`;
+        }
+
+        function toggleChatbot(forceOpen = null) {
+            const isOpen = chatbotPopup.style.display !== "none";
+            const shouldOpen = forceOpen === null ? !isOpen : forceOpen;
+
+            chatbotPopup.style.display = shouldOpen ? "block" : "none";
+            chatbotPopup.setAttribute("aria-hidden", shouldOpen ? "false" : "true");
+            chatbotToggleBtn.setAttribute("aria-label", shouldOpen ? "Close chatbot" : "Open chatbot");
+            chatbotToggleBtn.classList.toggle("is-open", shouldOpen);
+        }
+
+        chatbotToggleBtn.addEventListener("click", (event) => {
+            if (suppressNextClick) {
+                event.preventDefault();
+                event.stopPropagation();
+                suppressNextClick = false;
+                return;
+            }
+            toggleChatbot();
+        });
+        chatbotCloseBtn.addEventListener("click", () => toggleChatbot(false));
+
+        lockChatbotToFixedCoordinates();
+
+        chatbotToggleBtn.addEventListener("pointerdown", (event) => {
+            dragState.pointerId = event.pointerId;
+            dragState.startPointerX = event.clientX;
+            dragState.startPointerY = event.clientY;
+            dragState.startLeft = parseFloat(chatbotToggleBtn.style.left || "0");
+            dragState.startTop = parseFloat(chatbotToggleBtn.style.top || "0");
+            dragState.isDragging = false;
+            chatbotToggleBtn.setPointerCapture(event.pointerId);
+        });
+
+        chatbotToggleBtn.addEventListener("pointermove", (event) => {
+            if (dragState.pointerId !== event.pointerId) {
+                return;
+            }
+
+            const deltaX = event.clientX - dragState.startPointerX;
+            const deltaY = event.clientY - dragState.startPointerY;
+
+            if (!dragState.isDragging && Math.hypot(deltaX, deltaY) > 6) {
+                dragState.isDragging = true;
+                chatbotToggleBtn.classList.remove("toy-bounce");
+                chatbotToggleBtn.classList.add("is-dragging");
+            }
+
+            if (!dragState.isDragging) {
+                return;
+            }
+
+            event.preventDefault();
+
+            const maxLeft = Math.max(0, window.innerWidth - chatbotToggleBtn.offsetWidth);
+            const maxTop = Math.max(0, window.innerHeight - chatbotToggleBtn.offsetHeight);
+            const nextLeft = clamp(dragState.startLeft + deltaX, 0, maxLeft);
+            const nextTop = clamp(dragState.startTop + deltaY, 0, maxTop);
+
+            chatbotToggleBtn.style.left = `${nextLeft}px`;
+            chatbotToggleBtn.style.top = `${nextTop}px`;
+
+            const img = chatbotToggleBtn.querySelector("img");
+            if (img) {
+                const tilt = clamp(deltaX / 8, -14, 14);
+                img.style.transform = `rotate(${tilt}deg) scale(1.03)`;
+            }
+        });
+
+        chatbotToggleBtn.addEventListener("pointerup", (event) => {
+            if (dragState.pointerId !== event.pointerId) {
+                return;
+            }
+
+            chatbotToggleBtn.releasePointerCapture(event.pointerId);
+
+            const img = chatbotToggleBtn.querySelector("img");
+            if (img) {
+                img.style.transform = "";
+            }
+
+            if (dragState.isDragging) {
+                suppressNextClick = true;
+                chatbotToggleBtn.classList.remove("is-dragging");
+                chatbotToggleBtn.classList.remove("toy-bounce");
+                void chatbotToggleBtn.offsetWidth;
+                chatbotToggleBtn.classList.add("toy-bounce");
+            }
+
+            dragState.pointerId = null;
+            dragState.isDragging = false;
+        });
+
+        chatbotToggleBtn.addEventListener("pointercancel", () => {
+            dragState.pointerId = null;
+            dragState.isDragging = false;
+            chatbotToggleBtn.classList.remove("is-dragging");
+            const img = chatbotToggleBtn.querySelector("img");
+            if (img) {
+                img.style.transform = "";
+            }
+        });
+
+        window.addEventListener("resize", keepChatbotInViewport);
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") {
+                toggleChatbot(false);
+            }
+        });
+    </script>
+    {% if messages %}
+    {% for message in messages %}
+    <div id="toast"
+        class="fixed bottom-6 right-6 bg-[#0F0F0F]/90 backdrop-blur-xl text-white rounded-xl border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] w-[360px] z-50 overflow-hidden animate-slide">
+
+        <div class="p-5 flex gap-4 items-start relative">
+            <div class="absolute top-2 right-10 font-mono text-[8px] text-zinc-700 tracking-widest uppercase">sys_msg_ok
+            </div>
+
+            <div class="mt-1">
+                <div
+                    class="w-6 h-6 rounded-full bg-[#FFD84A]/10 flex items-center justify-center border border-[#FFD84A]/20">
+                    <svg class="w-3.5 h-3.5 text-[#FFD84A]" fill="none" stroke="currentColor" stroke-width="3"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                </div>
+            </div>
+
+            <div class="flex-1">
+                <p class="font-bold text-xs uppercase tracking-widest text-white">Transmission_Complete</p>
+                <p class="font-mono text-[11px] text-zinc-500 mt-1 leading-relaxed">
+                    Order_ID: 2941-X <br>
+                    Status: DATA_PACKET_RECEIVED
+                </p>
+            </div>
+
+            <button onclick="closeToast()" class="text-zinc-600 hover:text-white transition-colors p-1 mt-[-4px]">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="h-[2px] bg-white/5">
+            <div id="progressBar" class="h-full bg-[#FFD84A] toast-bar shadow-[0_0_10px_#FFD84A]"></div>
+        </div>
+    </div>
+    <!-- <div id="toast"
+        class="fixed bottom-6 right-6 bg-white text-black rounded-2xl shadow-xl w-[360px] z-50 overflow-hidden animate-slide">
+
+        <div class="p-4 flex gap-3 items-start">
+
+            <div class="mt-1">
+                <svg class="w-6 h-6 text-green-500" fill="none" stroke="currentColor" stroke-width="2"
+                    viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"></path>
+                </svg>
+            </div>
+
+            <div class="flex-1">
+                <p class="font-medium text-sm">Order Completed</p>
+                <p class="text-xs text-gray-500 mt-1">
+                    We've processed your order successfully.
+            </div>
+
+            <button onclick="closeToast()"
+                class="text-gray-400 hover:text-black transition text-lg leading-none mt-0.5">
+                ✕
+            </button>
+        </div>
+
+        <div class="h-[3px] bg-gray-200">
+            <div id="progressBar" class="h-full bg-green-500 toast-bar"></div>
+        </div>
+    </div> -->
+    {% endfor %}
+    {% endif %}
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const toast = document.getElementById("toast");
+            const countdown = document.getElementById("countdown");
+            const bar = document.getElementById("progressBar");
+
+            if (!toast) return;
+
+            const duration = 6;
+            let timeLeft = duration;
+            let paused = false;
+
+            // Update countdown every second
+            const timer = setInterval(() => {
+                if (!paused) {
+                    timeLeft--;
+                    if (countdown) countdown.textContent = timeLeft;
+
+                    if (timeLeft <= 0) {
+                        closeToast();
+                    }
+                }
+            }, 1000);
+
+            function closeToast() {
+                clearInterval(timer);
+                toast.style.opacity = "0";
+                toast.style.transform = "translateY(10px)";
+                toast.style.transition = "all 0.3s ease";
+                setTimeout(() => toast.remove(), 300);
+            }
+
+            // Pause on click
+            toast.addEventListener("click", () => {
+                paused = true;
+                if (bar) bar.style.animationPlayState = "paused";
+            });
+
+            // Close button
+            window.closeToast = closeToast;
+        });
+    </script>
+
+    <section class="relative pt-36 pb-24 px-6 text-center max-w-6xl mx-auto overflow-hidden">
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full opacity-[0.03] pointer-events-none"
+            style="background-image: radial-gradient(circle at center, #fff 1px, transparent 1px); background-size: 50px 50px;">
+        </div>
+
+        <!-- <div
+            class="reveal inline-flex items-center gap-3 mb-10 px-4 py-1.5 rounded-full border border-white/5 bg-white/5 backdrop-blur-md">
+            <span class="relative flex h-2 w-2">
+                <span
+                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FFD84A] opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-[#FFD84A]"></span>
+            </span>
+            <span class="font-mono text-[10px] text-zinc-400 uppercase tracking-[0.3em]">System_Status:
+                Operational</span>
+        </div> -->
+
+        <!-- <h1 class="text-6xl md:text-9xl font-black text-white tracking-tighter mb-10 leading-[0.9] reveal">
+            BRIDGE <br />
+            <span class="text-transparent bg-clip-text bg-gradient-to-b from-[#FFD84A] via-[#FFD84A] to-orange-500">
+                CREATIVITY
+            </span>
+            <br /> WITH AI
+        </h1> -->
+        <h1
+            class="text-5xl md:text-9xl font-black text-white tracking-tighter mb-10 leading-[1.1] md:leading-[0.9] reveal">
+            DEVRYZE <br />
+            <span class="text-transparent bg-clip-text bg-gradient-to-b from-[#FFD84A] via-[#FFD84A] to-orange-500">
+                EASE BUILT
+            </span>
+            <br /> FOR YOU
+        </h1>
+
+        <div class="max-w-xl mx-auto mt-12 reveal">
+            <!-- <form id="hero-form" onsubmit="transferEmail(event)"
+                class="group flex items-center border border-white/10 rounded-full bg-black/40 backdrop-blur-xl focus-within:border-[#FFD84A]/40 focus-within:ring-1 focus-within:ring-[#FFD84A]/20 transition-all duration-500 h-16 p-1.5">
+                <input id="hero-email-input" type="email" placeholder="ENTER_EMAIL_FOR_ACCESS..." required
+                    class="flex-1 bg-transparent border-none outline-none px-6 font-mono text-sm text-white placeholder:text-zinc-700">
+                <button type="submit"
+                    class="bg-[#FFD84A] text-black px-10 h-full font-black uppercase text-[10px] tracking-[0.2em] hover:bg-white transition-all rounded-full active:scale-95">
+                    Initialize →
+                </button>
+            </form> -->
+            <form id="hero-form" onsubmit="transferEmail(event)"
+                class="group flex flex-row items-center border border-white/10 rounded-full bg-black/40 backdrop-blur-xl focus-within:border-[#FFD84A]/40 transition-all duration-500 h-14 md:h-16 p-1">
+
+                <input id="hero-email-input" type="email" placeholder="EMAIL..." required
+                    class="flex-1 bg-transparent border-none outline-none px-4 md:px-6 font-mono text-[10px] md:text-sm text-white placeholder:text-zinc-700 min-w-0">
+
+                <button type="submit"
+                    class="bg-[#FFD84A] text-black px-4 md:px-10 h-full font-black uppercase text-[10px] tracking-wider hover:bg-white transition-all rounded-full whitespace-nowrap">
+                    Contact Us
+                </button>
+            </form>
+            <!-- <p class="mt-4 font-mono text-[9px] text-zinc-600 uppercase tracking-widest">Encrypted_Uplink_Secure</p> -->
+        </div>
+        <div class="mt-16 reveal">
+            <!-- <p class="font-mono text-[8px] text-zinc-500 uppercase tracking-[0.4em] mb-8 text-center">//
+                CORE_INTEGRATIONS</p> -->
+            <div class="flex items-center justify-center gap-6 md:gap-16 flex-wrap px-4">
+                <img src="{% static 'images/py.png' %}" alt="Hostinger"
+                    class="h-4 md:h-8 opacity-20 grayscale brightness-200">
+                <img src="{% static 'images/nodejs.png' %}" alt="Meta"
+                    class="h-4 md:h-8 opacity-20 grayscale brightness-200">
+                <img src="{% static 'images/react.png' %}" alt="Amazon"
+                    class="h-4 md:h-8 opacity-20 grayscale brightness-200">
+                <img src="{% static 'images/powerbi.png' %}" alt="Amazon"
+                    class="h-4 md:h-8 opacity-20 grayscale brightness-200">
+                <img src="{% static 'images/n8n.png' %}" alt="Amazon"
+                    class="h-4 md:h-8 opacity-20 grayscale brightness-200">
+            </div>
+        </div>
+        <!-- <div class="mt-24 reveal">
+            <p class="font-mono text-[10px] text-zinc-500 uppercase tracking-[0.4em] mb-10 text-center">//
+                CORE_INTEGRATIONS</p>
+            <div class="flex items-center justify-center gap-8 md:gap-16 flex-wrap">
+                {% load static %}
+                <img src="{% static 'images/platforms/hostinger.png' %}" alt="Hostinger"
+                    class="h-6 md:h-8 opacity-20 grayscale brightness-200 hover:opacity-100 transition-opacity duration-500">
+
+                <div
+                    class="h-10 w-10 flex items-center justify-center rounded-lg border border-white/5 bg-white/5 opacity-20 hover:opacity-100 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="24" height="24" fill="white">
+                        <path
+                            d="M32 4C20 4 12 12 12 24c0 12 20 36 20 36s20-24 20-36c0-12-8-20-20-20zm0 28a8 8 0 1 1 0-16 8 8 0 0 1 0 16z" />
+                    </svg>
+                </div>
+
+                <img src="{% static 'images/nodejs.png' %}" alt="Meta"
+                    class="h-6 md:h-8 opacity-20 grayscale brightness-200 hover:opacity-100 transition-opacity duration-500">
+                <img src="{% static 'images/platforms/amazon.png' %}" alt="Amazon"
+                    class="h-6 md:h-8 opacity-20 grayscale brightness-200 hover:opacity-100 transition-opacity duration-500">
+                <img src="{% static 'images/platforms/tiktok.png' %}" alt="TikTok"
+                    class="h-6 md:h-8 opacity-20 grayscale brightness-200 hover:opacity-100 transition-opacity duration-500">
+                <img src="{% static 'images/platforms/linkedin.png' %}" alt="LinkedIn"
+                    class="h-6 md:h-8 opacity-20 grayscale brightness-200 hover:opacity-100 transition-opacity duration-500">
+            </div>
+
+        </div> -->
+    </section>
+    <!-- <section class="py-16 overflow-hidden bg-[#0A0A0A] border-y border-white/5 relative">
+        <div class="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#0A0A0A] to-transparent z-10"></div>
+        <div class="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#0A0A0A] to-transparent z-10"></div>
+
+        <div class="max-w-[1400px] mx-auto px-6">
+            <div class="mb-8 flex items-center gap-2 opacity-30">
+                <span class="font-mono text-[9px] text-white tracking-[0.3em] uppercase">SYSTEM_INTEGRATIONS_V2</span>
+                <div class="h-px flex-1 bg-white/10"></div>
+            </div>
+
+            <div class="flex gap-20 items-center animate-logo-scroll w-max hover:[animation-play-state:paused]">
+
+                <div class="flex gap-20 items-center">
+                    <img src="{% static 'images/client_logos/caleyx-logo.png' %}" alt="Client"
+                        class="h-8 md:h-12 w-auto opacity-40 grayscale brightness-200 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-crosshair">
+                    <img src="{% static 'images/client_logos/tetra_logo.png' %}" alt="Client"
+                        class="h-8 md:h-12 w-auto opacity-40 grayscale brightness-200 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-crosshair">
+                    <img src="{% static 'images/client_logos/ritma_logo.png' %}" alt="Client"
+                        class="h-8 md:h-12 w-auto opacity-40 grayscale brightness-200 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-crosshair">
+                    <img src="{% static 'images/client_logos/pupil_logo.png' %}" alt="Client"
+                        class="h-8 md:h-12 w-auto opacity-40 grayscale brightness-200 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-crosshair">
+                    <img src="{% static 'images/client_logos/motif_logo.png' %}" alt="Client"
+                        class="h-8 md:h-12 w-auto opacity-40 grayscale brightness-200 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-crosshair">
+                    <img src="{% static 'images/client_logos/mos_logo.png' %}" alt="Client"
+                        class="h-8 md:h-12 w-auto opacity-40 grayscale brightness-200 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-crosshair">
+                    <img src="{% static 'images/client_logos/hg_logo.png' %}" alt="Client"
+                        class="h-8 md:h-12 w-auto opacity-40 grayscale brightness-200 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-crosshair">
+                    <img src="{% static 'images/client_logos/directly_logo.png' %}" alt="Client"
+                        class="h-8 md:h-12 w-auto opacity-40 grayscale brightness-200 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-crosshair">
+                </div>
+
+                <div class="flex gap-20 items-center">
+                    <img src="{% static 'images/client_logos/caleyx-logo.png' %}" alt="Client"
+                        class="h-8 md:h-12 w-auto opacity-40 grayscale brightness-200 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-crosshair">
+                    <img src="{% static 'images/client_logos/tetra_logo.png' %}" alt="Client"
+                        class="h-8 md:h-12 w-auto opacity-40 grayscale brightness-200 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-crosshair">
+                    <img src="{% static 'images/client_logos/ritma_logo.png' %}" alt="Client"
+                        class="h-8 md:h-12 w-auto opacity-40 grayscale brightness-200 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-crosshair">
+                    <img src="{% static 'images/client_logos/pupil_logo.png' %}" alt="Client"
+                        class="h-8 md:h-12 w-auto opacity-40 grayscale brightness-200 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-crosshair">
+                    <img src="{% static 'images/client_logos/motif_logo.png' %}" alt="Client"
+                        class="h-8 md:h-12 w-auto opacity-40 grayscale brightness-200 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-crosshair">
+                    <img src="{% static 'images/client_logos/mos_logo.png' %}" alt="Client"
+                        class="h-8 md:h-12 w-auto opacity-40 grayscale brightness-200 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-crosshair">
+                    <img src="{% static 'images/client_logos/hg_logo.png' %}" alt="Client"
+                        class="h-8 md:h-12 w-auto opacity-40 grayscale brightness-200 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-crosshair">
+                    <img src="{% static 'images/client_logos/directly_logo.png' %}" alt="Client"
+                        class="h-8 md:h-12 w-auto opacity-40 grayscale brightness-200 hover:opacity-100 hover:grayscale-0 transition-all duration-500 cursor-crosshair">
+                </div>
+
+            </div>
+        </div>
+    </section> -->
+
+    <!-- <style>
+        @keyframes logo-scroll {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        .animate-logo-scroll {
+            animation: logo-scroll 40s linear infinite;
+        }
+    </style> -->
+    <section id="about" class="relative z-20 py-24 lg:py-40 bg-[#0F0F0F] border-t border-white/5">
+        <div class="absolute inset-0 opacity-[0.03] pointer-events-none"
+            style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+        <div class="px-6 md:px-10 max-w-7xl mx-auto relative z-10">
+
+            <div class="mb-20">
+                <!-- <span class="text-[#FFD84A] font-mono tracking-[0.3em] uppercase text-xs">// COMPANY_MANIFESTO</span> -->
+                <h2 class="text-5xl md:text-7xl font-bold tracking-tighter text-white mt-4">
+                    About <span class="text-zinc-600">DEV</span>RYZE
+                </h2>
+            </div>
+
+            <div
+                class="grid grid-cols-1 md:grid-cols-12 gap-px bg-white/10 border border-white/10 overflow-hidden rounded-3xl">
+
+                <div
+                    class="md:col-span-8 bg-[#0F0F0F] p-8 md:p-12 group hover:bg-zinc-900/50 transition-all duration-500">
+                    <div class="flex justify-between items-start mb-12">
+                        <h3 class="text-sm font-mono text-zinc-500 uppercase tracking-widest">01. What We do</h3>
+                        <div class="w-2 h-2 rounded-full bg-[#FFD84A] animate-pulse"></div>
+                    </div>
+                    <h4 class="text-3xl md:text-4xl font-bold text-white mb-6">End-to-end product architecture.</h4>
+                    <p class="text-zinc-500 text-lg leading-relaxed max-w-2xl">
+                        We bridge the gap between complex AI research and production-ready software. Our workflow
+                        handles the entire lifecycle: from initial architectural design to global-scale deployment and
+                        neural-link maintenance.
+                    </p>
+                </div>
+
+                <div
+                    class="md:col-span-4 bg-[#141414] p-8 md:p-12 flex flex-col justify-between border-l border-white/10">
+                    <h3 class="text-sm font-mono text-zinc-500 uppercase tracking-widest">02. Mission</h3>
+                    <div>
+                        <p class="text-2xl font-bold text-white leading-tight mb-4">
+                            Building the <span class="text-[#FFD84A]">intelligence layer</span> for the modern
+                            enterprise.
+                        </p>
+                        <div class="h-1 w-12 bg-[#FFD84A]"></div>
+                    </div>
+                </div>
+
+                <div class="md:col-span-7 bg-[#0F0F0F] p-8 md:p-12 border-t border-white/10 group">
+                    <h3 class="text-sm font-mono text-zinc-500 uppercase tracking-widest mb-12">03.
+                        Core Values</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-10">
+                        <div class="space-y-4">
+                            <span class="text-xs font-mono text-[#FFD84A]">[ INNOVATE ]</span>
+                            <p class="text-sm text-zinc-400">Pushing the limits of generative models and robotics.</p>
+                        </div>
+                        <div class="space-y-4">
+                            <span class="text-xs font-mono text-[#FFD84A]">[ PRECISION ]</span>
+                            <p class="text-sm text-zinc-400">Clean code, optimized weights, and sub-second latency.</p>
+                        </div>
+                        <div class="space-y-4">
+                            <span class="text-xs font-mono text-[#FFD84A]">[ SYNC ]</span>
+                            <p class="text-sm text-zinc-400">Transparent collaboration across global timezones.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="md:col-span-5 bg-[#141414] p-8 md:p-12 border-t border-l border-white/10 overflow-hidden relative group">
+                    <h3 class="text-sm font-mono text-zinc-500 uppercase tracking-widest mb-6">04. Where We Work
+                    </h3>
+                    <p class="text-zinc-500 text-sm mb-8">Work with partners worldwide.</p>
+
+                    <div
+                        class="h-40 flex items-center justify-center border border-white/5 rounded-2xl bg-black/50 overflow-hidden relative">
+                        <div
+                            class="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent via-white/5 to-transparent h-1/2 w-full animate-[scan_3s_linear_infinite]">
+                        </div>
+                        <canvas id="skillsOrbit"
+                            class="w-full h-full opacity-40 group-hover:opacity-80 transition-opacity duration-700"></canvas>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <style>
+        @keyframes scan {
+            from {
+                transform: translateY(-100%);
+            }
+
+            to {
+                transform: translateY(200%);
+            }
+        }
+    </style>
+
+    <section class="max-w-7xl mx-auto px-6 py-12 lg:py-20">
+        <div
+            class="relative group bg-[#0F0F0F] border border-white/10 rounded-[2rem] overflow-hidden hover:border-orange-500/50 transition-all duration-500">
+
+            <div class="absolute inset-0 opacity-[0.02] pointer-events-none"
+                style="background-image: linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px); background-size: 30px 30px;">
+            </div>
+
+            <div
+                class="relative z-10 flex flex-col lg:flex-row items-center justify-between p-8 md:p-12 lg:p-16 gap-12">
+
+                <div class="flex-1 space-y-6">
+                    <div class="flex items-center gap-3">
+                        <!-- <span class="font-mono text-[10px] text-orange-500 tracking-[0.4em] uppercase">//
+                            ADV_ENGINE_v4</span> -->
+                        <div class="h-[1px] w-8 bg-orange-500/30"></div>
+                    </div>
+
+                    <h2 class="text-4xl md:text-5xl font-bold tracking-tighter text-white leading-[1.1]">
+                        Transform
+                        <span class="text-orange-500">your business</span><br>
+                        with expert AI strategy and implementation guidance.
+                    </h2>
+
+                    <div class="space-y-4 max-w-md">
+                        <p class="text-zinc-500 text-base md:text-lg leading-relaxed">
+                            We build intelligent, scalable, and results-driven digital products that streamline
+                            operations, enhance user experiences, and accelerate business growth.
+                        </p>
+                        <!-- <div class="flex gap-4 pt-2">
+                            <div
+                                class="px-3 py-1 rounded border border-white/5 bg-white/5 font-mono text-[10px] text-zinc-400">
+                                META_CAPI</div>
+                            <div
+                                class="px-3 py-1 rounded border border-white/5 bg-white/5 font-mono text-[10px] text-zinc-400">
+                                GOOGLE_LSA</div>
+                            <div
+                                class="px-3 py-1 rounded border border-white/5 bg-white/5 font-mono text-[10px] text-zinc-400">
+                                PMAX_OPT</div>
+                        </div> -->
+                    </div>
+
+                    <div class="pt-6">
+                        <a href="#"
+                            class="group relative inline-flex items-center gap-3 px-8 py-3 bg-orange-500 text-black font-bold text-sm tracking-widest uppercase overflow-hidden transition-all hover:pr-12">
+                            <span class="relative z-10">Start Now</span>
+                            <span class="absolute right-4 opacity-0 group-hover:opacity-100 transition-all">→</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="flex-1 w-full max-w-xl">
+                    <div
+                        class="relative bg-black rounded-2xl border border-white/10 shadow-2xl overflow-hidden font-mono text-sm leading-relaxed">
+                        <div class="bg-zinc-900 px-4 py-3 border-b border-white/5 flex items-center justify-between">
+                            <div class="flex gap-2">
+                                <div class="w-3 h-3 rounded-full bg-red-500/20 border border-red-500/40"></div>
+                                <div class="w-3 h-3 rounded-full bg-orange-500/20 border border-orange-500/40"></div>
+                                <div class="w-3 h-3 rounded-full bg-green-500/20 border border-green-500/40"></div>
+                            </div>
+                            <div class="text-[10px] text-zinc-600 tracking-widest uppercase">run.sh</div>
+                        </div>
+
+                        <div class="p-6 h-[300px] overflow-hidden relative">
+                            <div class="space-y-1 text-zinc-400 animate-terminal-scroll">
+                                <p class="text-blue-400"># Initializing Bidding Engine...</p>
+                                <p class="text-zinc-600">> fetch meta_pixel_events --status="purchase"</p>
+                                <p class="text-green-500">> sync success [200 OK]</p>
+                                <p class="text-zinc-600">> optimising target_roas -> 4.5x</p>
+                                <p class="text-orange-500">> script run: automated_bid_adjust.py</p>
+                                <p class="text-zinc-500">> adjusting budget for high_intent_users...</p>
+                                <p class="text-zinc-600">> push conversions to Meta_CAPI</p>
+                                <p class="text-green-500">> server_response: 12 leads processed</p>
+                                <br>
+                                <p class="text-blue-400"># Scanning Google LSA Feed...</p>
+                                <p class="text-zinc-600">> checking local_availability: "true"</p>
+                                <p class="text-orange-500">> bidding_multiplier: +15% for zip_90210</p>
+                                <p class="text-zinc-600">> tracking custom_attribution_v4</p>
+                                <p class="text-green-500">> data_dump: roas_report.csv generated</p>
+                                <p class="text-zinc-400 animate-pulse underline">_ SYSTEM_READY</p>
+                            </div>
+
+                            <div
+                                class="absolute bottom-6 right-6 bg-orange-500/10 backdrop-blur-md border border-orange-500/30 p-4 rounded-xl">
+                                <div class="text-[10px] text-orange-500 font-bold mb-1 tracking-widest">LIVE_ROAS</div>
+                                <div class="text-white text-3xl font-black tabular-nums">4.82x</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <style>
+        @keyframes terminal-scroll {
+
+            0%,
+            10% {
+                transform: translateY(0);
+            }
+
+            90%,
+            100% {
+                transform: translateY(-40%);
+            }
+        }
+
+        .animate-terminal-scroll {
+            animation: terminal-scroll 10s ease-in-out infinite alternate;
+        }
+    </style>
+    <!-- Header Section -->
+    <!-- <section class="py-8 bg-[#FFF9F4]">
+    </section> -->
+
+    <!-- <section class="relative w-full overflow-hidden bg-[#0F0F0F] border-y border-white/5 py-6">
+        <div class="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#0F0F0F] to-transparent z-10"></div>
+        <div class="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#0F0F0F] to-transparent z-10"></div>
+
+        <div class="max-w-[1400px] mx-auto">
+            <div class="flex w-max animate-ticker-left hover:[animation-play-state:paused] cursor-default">
+
+                <div class="flex items-center gap-16 mx-8">
+                    <div class="flex items-center gap-3">
+                        <span class="text-[#FFD84A] font-mono text-sm opacity-50">[01]</span>
+                        <span class="text-white text-lg font-bold uppercase tracking-[0.2em]">2000+ CLIENTS</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-[#FFD84A] font-mono text-sm opacity-50">[02]</span>
+                        <span class="text-white text-lg font-bold uppercase tracking-[0.2em]">700+ AGENCIES</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-[#FFD84A] font-mono text-sm opacity-50">[03]</span>
+                        <span class="text-white text-lg font-bold uppercase tracking-[0.2em]">23+ COUNTRIES</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-[#FFD84A] font-mono text-sm opacity-50">[04]</span>
+                        <span class="text-white text-lg font-bold uppercase tracking-[0.2em]">$500M+ AD_SPEND</span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-16 mx-8">
+                    <div class="flex items-center gap-3">
+                        <span class="text-[#FFD84A] font-mono text-sm opacity-50">[01]</span>
+                        <span class="text-white text-lg font-bold uppercase tracking-[0.2em]">2000+ CLIENTS</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-[#FFD84A] font-mono text-sm opacity-50">[02]</span>
+                        <span class="text-white text-lg font-bold uppercase tracking-[0.2em]">700+ AGENCIES</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-[#FFD84A] font-mono text-sm opacity-50">[03]</span>
+                        <span class="text-white text-lg font-bold uppercase tracking-[0.2em]">23+ COUNTRIES</span>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="text-[#FFD84A] font-mono text-sm opacity-50">[04]</span>
+                        <span class="text-white text-lg font-bold uppercase tracking-[0.2em]">$500M+ AD_SPEND</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section> -->
+
+    <section id="services" class="bg-[#0F0F0F] py-24 lg:py-40 text-white border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="mb-20">
+                <!-- <span class="text-[#FFD84A] font-mono tracking-[0.3em] uppercase text-xs">// SYSTEM_CAPABILITIES</span> -->
+                <h2 class="text-5xl md:text-7xl font-bold tracking-tighter text-white mt-4">
+                    Our <span class="text-zinc-600">Services.</span>
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-6">
+
+                <div
+                    class="md:col-span-4 flex flex-col bg-[#141414] border border-white/5 rounded-3xl p-10 hover:border-[#FFD84A]/30 transition-all duration-500 group shadow-2xl relative overflow-hidden">
+                    <!-- <div class="absolute top-6 right-8 font-mono text-zinc-700 text-xs">MODULE_01</div> -->
+                    <div
+                        class="w-12 h-12 mb-8 flex items-center justify-center rounded-xl bg-[#FFD84A]/10 text-[#FFD84A] group-hover:shadow-[0_0_20px_rgba(255,216,74,0.2)] transition-all">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path
+                                d="M12 2C9.243 2 7 4.243 7 7v10c0 2.757 2.243 5 5 5s5-2.243 5-5V7c0-2.757-2.243-5-5-5z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-3xl font-bold mb-4 tracking-tight">AI Chatbots & RAG</h3>
+                    <p class="text-zinc-500 text-lg mb-8 max-w-xl leading-relaxed">
+                        We architect retrieval-augmented assistants that cite sources, respect enterprise guardrails,
+                        and integrate with legacy data silos via vector embeddings.
+                    </p>
+                    <div class="flex flex-wrap gap-2 mt-auto">
+                        <span
+                            class="bg-black border border-white/5 text-[#FFD84A] font-mono text-[10px] px-3 py-1 rounded-md">VECTOR_SEARCH</span>
+                        <span
+                            class="bg-black border border-white/5 text-[#FFD84A] font-mono text-[10px] px-3 py-1 rounded-md">LLM_GUARDRAILS</span>
+                    </div>
+                </div>
+
+                <div
+                    class="md:col-span-2 flex flex-col bg-[#141414] border border-white/5 rounded-3xl p-8 hover:border-orange-500/30 transition-all duration-500 relative">
+                    <!-- <div class="absolute top-6 right-8 font-mono text-zinc-700 text-[10px]">MODULE_02</div> -->
+                    <div
+                        class="w-10 h-10 mb-6 flex items-center justify-center rounded-lg bg-orange-500/10 text-orange-500">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path
+                                d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.868-.014-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.532 1.031 1.532 1.031.892 1.528 2.341 1.086 2.91.831.091-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.942 0-1.091.39-1.984 1.029-2.682-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.748-1.025 2.748-1.025.546 1.377.202 2.394.1 2.647.64.698 1.028 1.591 1.028 2.682 0 3.841-2.338 4.686-4.566 4.933.36.31.678.924.678 1.861 0 1.344-.012 2.427-.012 2.756 0 .268.18.579.688.481A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-2">AI Strategy</h3>
+                    <p class="text-zinc-500 text-sm leading-relaxed">System architecture and responsible integration
+                        roadmaps.</p>
+                </div>
+
+                <div
+                    class="md:col-span-3 flex flex-col bg-[#141414] border border-white/5 rounded-3xl p-8 hover:border-[#FFD84A]/30 transition-all">
+                    <h3 class="text-xl font-bold mb-4">Workflow Automation</h3>
+                    <p class="text-zinc-500 text-sm mb-6 leading-relaxed">Automate repetitive business processes through
+                        intelligent pipeline orchestration and event-driven logic.</p>
+                    <div class="flex gap-2 mt-auto">
+                        <span class="text-[10px] font-mono text-zinc-600 tracking-tighter uppercase">Status:
+                            Production_Ready</span>
+                    </div>
+                </div>
+
+                <div
+                    class="md:col-span-3 flex flex-col bg-[#141414] border border-white/5 rounded-3xl p-8 hover:border-[#FFD84A]/30 transition-all group">
+                    <h3 class="text-xl font-bold mb-4">ML & Deep Learning</h3>
+                    <p class="text-zinc-500 text-sm mb-6 leading-relaxed">From computer vision models to predictive
+                        analytics, we deploy specialized neural networks at scale.</p>
+                    <div class="flex gap-3">
+                        <div class="w-1.5 h-1.5 rounded-full bg-[#FFD84A] animate-ping"></div>
+                        <span
+                            class="text-[10px] font-mono text-zinc-400 uppercase tracking-widest">Active_Processing</span>
+                    </div>
+                </div>
+                <div
+                    class="md:col-span-3 flex flex-col bg-[#141414] border border-white/5 rounded-3xl p-8 hover:border-[#FFD84A]/30 transition-all group relative">
+                    <div class="absolute top-6 right-8 font-mono text-zinc-700 text-[10px]">MODULE_05</div>
+                    <div
+                        class="w-10 h-10 mb-6 flex items-center justify-center rounded-lg bg-blue-500/10 text-blue-400">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path
+                                d="M12 2a10 10 0 100 20 10 10 0 000-20zm1 17.93V20h-2v-.07A8.001 8.001 0 014.07 13H4v-2h.07A8.001 8.001 0 0111 4.07V4h2v.07A8.001 8.001 0 0119.93 11H20v2h-.07A8.001 8.001 0 0113 19.93z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Full-Stack Development</h3>
+                    <p class="text-zinc-500 text-sm mb-6 leading-relaxed">
+                        Engineering scalable web architectures with a focus on SSR/ISR optimization, cloud-native
+                        security, and sub-second performance.
+                    </p>
+                    <div class="flex flex-wrap gap-2 mt-auto">
+                        <span
+                            class="bg-black border border-white/5 text-blue-400 font-mono text-[9px] px-2 py-0.5 rounded">NEXT.JS</span>
+                        <span
+                            class="bg-black border border-white/5 text-blue-400 font-mono text-[9px] px-2 py-0.5 rounded">DJANGO_API</span>
+                    </div>
+                </div>
+
+                <div
+                    class="md:col-span-3 flex flex-col bg-[#141414] border border-white/5 rounded-3xl p-8 hover:border-[#FFD84A]/30 transition-all group relative">
+                    <div class="absolute top-6 right-8 font-mono text-zinc-700 text-[10px]">MODULE_06</div>
+                    <div
+                        class="w-10 h-10 mb-6 flex items-center justify-center rounded-lg bg-green-500/10 text-green-500">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M3 3v18h18V3H3zm16 16H5V5h14v14zm-9-4h2v-6h-2v6zm4-2h2v-4h-2v4zM7 13h2v-2H7v2z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Data Analytics</h3>
+                    <p class="text-zinc-500 text-sm mb-6 leading-relaxed">
+                        Processing complex datasets into actionable telemetry. We build interactive visual layers and
+                        automated reporting engines.
+                    </p>
+                    <div class="flex gap-3">
+                        <span
+                            class="text-[10px] font-mono text-zinc-600 uppercase tracking-widest">Querying_Active</span>
+                    </div>
+                </div>
+
+                <div
+                    class="md:col-span-6 flex flex-col md:flex-row items-center bg-[#141414] border border-white/5 rounded-3xl p-8 md:p-12 hover:border-[#FFD84A]/30 transition-all group overflow-hidden">
+                    <div class="flex-1">
+                        <!-- <div class="font-mono text-[#FFD84A] text-xs mb-4">// CROSS_PLATFORM_MOBILE</div> -->
+                        <h3 class="text-3xl font-bold mb-4">Mobile App</h3>
+                        <p class="text-zinc-500 text-lg max-w-lg mb-6 leading-relaxed">
+                            High-performance mobile experiences built with Flutter and Native Android. We bridge the gap
+                            between hardware and software.
+                        </p>
+                        <div class="flex gap-4">
+                            <div class="flex flex-col">
+                                <span class="text-white font-bold">iOS + Android</span>
+                                <span class="text-zinc-600 text-xs font-mono">Cross Platform</span>
+                            </div>
+                            <div class="w-px h-10 bg-white/10"></div>
+                            <div class="flex flex-col">
+                                <!-- <span class="text-white font-bold">24ms</span> -->
+                                <!-- <span class="text-zinc-600 text-xs font-mono">Response_Time</span> -->
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        class="hidden md:block w-48 h-48 bg-gradient-to-tr from-[#FFD84A]/5 to-transparent rounded-full border border-white/5 flex items-center justify-center">
+                        <svg class="w-20 h-20 text-[#FFD84A]/20" fill="none" stroke="currentColor" stroke-width="1"
+                            viewBox="0 0 24 24">
+                            <path d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                        </svg>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="portfolio" aria-labelledby="featured-work" class="py-24 lg:py-40 bg-[#0F0F0F] border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+
+            <div class="flex flex-col md:flex-row md:items-end md:justify-between mb-20">
+                <div>
+                    <!-- <span class="text-[#FFD84A] font-mono tracking-[0.3em] uppercase text-xs">// PROJECT_ARCHIVES</span> -->
+                    <h2 id="featured-work" class="text-5xl md:text-7xl font-bold tracking-tighter text-white mt-4">
+                        Featured <span class="text-zinc-600">Work.</span>
+                    </h2>
+                </div>
+                <!-- <a class="mt-8 md:mt-0 font-mono text-[10px] text-zinc-500 hover:text-[#FFD84A] uppercase tracking-widest transition-all flex items-center gap-2 group"
+                    href="/portfolio">
+                    Access Full Directory
+                    <span class="transition-transform duration-300 group-hover:translate-x-2">→</span>
+                </a> -->
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+
+                <a href="{% url 'saamay' %}" class="group relative block outline-none">
+                    <article
+                        class="bg-[#141414] border border-white/5 rounded-3xl overflow-hidden transition-all duration-500 group-hover:border-[#FFD84A]/30 group-hover:shadow-[0_0_40px_rgba(255,216,74,0.05)]">
+                        <div class="relative aspect-[16/10] overflow-hidden border-b border-white/5">
+                            <div
+                                class="absolute inset-0 z-10 pointer-events-none bg-gradient-to-b from-transparent via-white/5 to-transparent h-1/2 w-full animate-[scan_4s_linear_infinite] opacity-0 group-hover:opacity-100">
+                            </div>
+                            <img src="{% static 'images/saamay.png' %}" alt="Saamay AI"
+                                class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105">
+                            <div
+                                class="absolute top-4 left-4 font-mono text-[9px] text-white bg-black/60 backdrop-blur-md px-2 py-1 rounded">
+                                ID: 001_SAAMAY</div>
+                        </div>
+
+                        <div class="p-8">
+                            <h3 class="text-xl font-bold text-white mb-3 tracking-tight">Saamay AI</h3>
+                            <p class="text-zinc-500 text-sm mb-6 leading-relaxed line-clamp-2">
+                                A Flutter-based Voice Agent for real-time Quranic recitation learning and accuracy
+                                tracking.
+                            </p>
+
+                            <div class="flex flex-wrap gap-2 mb-8">
+                                <span
+                                    class="font-mono text-[9px] text-[#FFD84A] border border-[#FFD84A]/20 px-2 py-0.5 rounded">FLUTTER</span>
+                                <span
+                                    class="font-mono text-[9px] text-zinc-500 border border-white/5 px-2 py-0.5 rounded">VOICE_AI</span>
+                                <span
+                                    class="font-mono text-[9px] text-zinc-500 border border-white/5 px-2 py-0.5 rounded">WHISPER</span>
+                            </div>
+
+                            <span
+                                class="inline-flex items-center gap-2 font-mono text-[10px] text-zinc-500 group-hover:text-white transition-colors">
+                                See More →
+                            </span>
+                        </div>
+                    </article>
+                </a>
+
+                <a href="{% url 'adryze' %}" class="group relative block outline-none">
+                    <article
+                        class="bg-[#141414] border border-white/5 rounded-3xl overflow-hidden transition-all duration-500 group-hover:border-orange-500/30 group-hover:shadow-[0_0_40px_rgba(249,115,22,0.05)]">
+                        <div class="relative aspect-[16/10] overflow-hidden border-b border-white/5">
+                            <div
+                                class="absolute inset-0 z-10 pointer-events-none bg-gradient-to-b from-transparent via-white/5 to-transparent h-1/2 w-full animate-[scan_4s_linear_infinite] opacity-0 group-hover:opacity-100">
+                            </div>
+                            <img src="{% static 'images/adryze.png' %}" alt="Adryze"
+                                class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105">
+                            <div
+                                class="absolute top-4 left-4 font-mono text-[9px] text-white bg-black/60 backdrop-blur-md px-2 py-1 rounded">
+                                ID: 002_ADRYZE</div>
+                        </div>
+
+                        <div class="p-8">
+                            <h3 class="text-xl font-bold text-white mb-3 tracking-tight">Adryze Website + Customer
+                                Support Agent</h3>
+                            <p class="text-zinc-500 text-sm mb-6 leading-relaxed line-clamp-2">
+                                High-performance marketing platform integrating Django and real-time ad analytics.
+                            </p>
+
+                            <div class="flex flex-wrap gap-2 mb-8">
+                                <span
+                                    class="font-mono text-[9px] text-orange-400 border border-orange-400/20 px-2 py-0.5 rounded">DJANGO</span>
+                                <span
+                                    class="font-mono text-[9px] text-zinc-500 border border-white/5 px-2 py-0.5 rounded">MARKETING_OPS</span>
+                            </div>
+
+                            <span
+                                class="inline-flex items-center gap-2 font-mono text-[10px] text-zinc-500 group-hover:text-white transition-colors">
+                                See More →
+                            </span>
+                        </div>
+                    </article>
+                </a>
+
+                <a href="{% url 'documind' %}" class="group relative block outline-none">
+                    <article
+                        class="bg-[#141414] border border-white/5 rounded-3xl overflow-hidden transition-all duration-500 group-hover:border-[#FFD84A]/30 group-hover:shadow-[0_0_40px_rgba(255,216,74,0.05)]">
+                        <div class="relative aspect-[16/10] overflow-hidden border-b border-white/5">
+                            <div
+                                class="absolute inset-0 z-10 pointer-events-none bg-gradient-to-b from-transparent via-white/5 to-transparent h-1/2 w-full animate-[scan_4s_linear_infinite] opacity-0 group-hover:opacity-100">
+                            </div>
+                            <img src="{% static 'images/documind.png' %}" alt="Documind AI"
+                                class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105">
+                            <div
+                                class="absolute top-4 left-4 font-mono text-[9px] text-white bg-black/60 backdrop-blur-md px-2 py-1 rounded">
+                                ID: 003_DOCUMIND</div>
+                        </div>
+
+                        <div class="p-8">
+                            <h3 class="text-xl font-bold text-white mb-3 tracking-tight">Documind AI</h3>
+                            <p class="text-zinc-500 text-sm mb-6 leading-relaxed line-clamp-2">
+                                Intelligent CV processing engine utilizing YOLOv8 and RAG for deep document
+                                intelligence.
+                            </p>
+
+                            <div class="flex flex-wrap gap-2 mb-8">
+                                <span
+                                    class="font-mono text-[9px] text-[#FFD84A] border border-[#FFD84A]/20 px-2 py-0.5 rounded">YOLOV8</span>
+                                <span
+                                    class="font-mono text-[9px] text-zinc-500 border border-white/5 px-2 py-0.5 rounded">RAG_PIPELINE</span>
+                            </div>
+
+                            <span
+                                class="inline-flex items-center gap-2 font-mono text-[10px] text-zinc-500 group-hover:text-white transition-colors">
+                                See More →
+                            </span>
+                        </div>
+                    </article>
+                </a>
+
+            </div>
+        </div>
+    </section>
+    <footer class="relative bg-[#0A0A0A] pt-24 pb-12 px-8 md:px-16 border-t border-white/5">
+        <div class="absolute inset-0 opacity-[0.02] pointer-events-none"
+            style="background-image: url('https://grainy-gradients.vercel.app/noise.svg');"></div>
+
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-16 mb-20">
+
+                <div class="md:col-span-4 space-y-8">
+                    <div>
+                        <div class="text-4xl font-bold tracking-tighter text-white">
+                            DEV<span class="text-blue-400">RYZE</span>
+                        </div>
+                        <!-- <p class="font-mono text-[10px] text-zinc-600 tracking-[0.3em] mt-2">v4.0.2_STABLE_BUILD</p> -->
+                    </div>
+
+                    <p class="leading-relaxed text-zinc-400 text-base max-w-sm">
+                        Architecting custom intelligence layers and precision software ecosystems for the next
+                        generation of global enterprises.
+                    </p>
+
+                    <div class="flex flex-wrap gap-x-6 gap-y-2 pt-4 border-t border-white/5">
+                        <a href="https://www.linkedin.com/company/pk-devryze/"
+                            class="font-mono text-[11px] text-zinc-500 hover:text-[#FFD84A] transition">LN //
+                            LINKEDIN</a>
+                        <!-- <a href="#" class="font-mono text-[11px] text-zinc-500 hover:text-[#FFD84A] transition">GH //
+                            GITHUB</a>
+                        <a href="#" class="font-mono text-[11px] text-zinc-500 hover:text-[#FFD84A] transition">TW //
+                            X_CORP</a> -->
+                        <a href="https://www.instagram.com/devryze_pk/"
+                            class="font-mono text-[11px] text-zinc-500 hover:text-[#FFD84A] transition">IG //
+                            INSTAGRAM</a>
+                    </div>
+                </div>
+
+                <div class="md:col-span-3 space-y-8">
+                    <h3
+                        class="font-mono text-xs font-semibold uppercase tracking-widest text-[#FFD84A] flex items-center gap-2">
+                        <span class="w-1 h-1 bg-[#FFD84A]"></span> Directory
+                    </h3>
+                    <ul class="space-y-4">
+                        <li><a href="#about"
+                                class="text-zinc-400 hover:text-white transition-all text-sm flex items-center gap-3">
+                                <span class="font-mono text-[9px] text-zinc-700">01</span> About</a>
+                        </li>
+                        <li><a href="#services"
+                                class="text-zinc-400 hover:text-white transition-all text-sm flex items-center gap-3">
+                                <span class="font-mono text-[9px] text-zinc-700">02</span> Services</a>
+                        </li>
+                        <li><a href="#portfolio"
+                                class="text-zinc-400 hover:text-white transition-all text-sm flex items-center gap-3">
+                                <span class="font-mono text-[9px] text-zinc-700">03</span> Case Studies</a>
+                        </li>
+                        <!-- <li><a href="#"
+                                class="text-zinc-400 hover:text-white transition-all text-sm flex items-center gap-3">
+                                <span class="font-mono text-[9px] text-zinc-700">04</span> Legal_Terms</a>
+                        </li> -->
+                    </ul>
+                </div>
+
+                <div id="contact"
+                    class="md:col-span-5 bg-[#111] border border-white/5 p-8 rounded-2xl shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 font-mono text-[9px] text-zinc-800">SECURE_UPLINK</div>
+
+                    <h3 class="text-xl font-bold mb-6 text-white flex items-center gap-3">
+                        Contact Us
+                    </h3>
+
+                    <form id="contactForm" method="POST" action="{% url 'home' %}"
+                        data-api-endpoint="{% url 'submit_lead_api' %}" class="space-y-4">
+                        {% csrf_token %}
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="text" name="name" placeholder="FULL_NAME" required
+                                class="bg-black border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-zinc-700 focus:border-[#FFD84A]/50 focus:ring-0 transition outline-none">
+
+                            <input type="email" name="email" id="contact-email" placeholder="EMAIL_ADDR" required
+                                class="bg-black border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-zinc-700 focus:border-[#FFD84A]/50 focus:ring-0 transition outline-none">
+                        </div>
+
+                        <input type="text" name="company" placeholder="ORGANIZATION" required
+                            class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-zinc-700 focus:border-[#FFD84A]/50 focus:ring-0 transition outline-none">
+
+                        <div class="relative">
+                            <select id="package" name="package" required
+                                class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-sm text-zinc-400 focus:border-[#FFD84A]/50 focus:ring-0 transition outline-none appearance-none">
+                                <option value="" disabled selected>Select Service</option>
+                                <option value="chatbots">AI Chatbots & RAG
+                                </option>
+                                <option value="automation">Workflow Automation</option>
+                                <option value="mobile">Mobile App Development
+                                </option>
+                                <option value="consult">AI Consultation
+                                </option>
+                                <option value="web">Web Development</option>
+                                <option value="analytics">Data Analysis
+                                </option>
+                                <option value="mldl">Machine Learning Tasks
+                                </option>
+                                <option value="custom">CUSTOM_REQ</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-zinc-700">
+                                ▼</div>
+                        </div>
+                        <input type="tel" name="phone" placeholder="Phone Number" required
+                            class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-zinc-700 focus:border-[#FFD84A]/50 focus:ring-0 transition outline-none">
+
+                        <textarea name="message" rows="3" placeholder="DESCRIBE_PROJECT_SCOPE..."
+                            class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-zinc-700 focus:border-[#FFD84A]/50 focus:ring-0 transition outline-none"></textarea>
+
+                        <button type="submit"
+                            class="w-full py-4 bg-[#FFD84A] text-black font-black uppercase text-xs tracking-widest rounded-lg hover:bg-white transition-all transform active:scale-[0.98]">
+                            TRANSMIT_DATA →
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div
+                class="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-mono text-zinc-600">
+                <div>© 2025 DEVRYZE. All Rights Reserved</div>
+                <div class="flex items-center gap-4">
+                    <!-- <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                        SERVER_STABLE</span> -->
+                    <!-- <span>LATENCY: 14MS</span> -->
+                    <!-- <span>ENCRYPTION: AES-256</span> -->
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        function transferEmail(event) {
+            event.preventDefault();
+            const emailValue = document.getElementById('hero-email-input').value;
+            const contactSection = document.getElementById('contact');
+            const contactInput = document.getElementById('contact-email');
+
+            contactSection.scrollIntoView({ behavior: 'smooth' });
+
+            setTimeout(() => {
+                contactInput.value = emailValue;
+                contactInput.style.borderColor = "#DC2626";
+                contactInput.style.backgroundColor = "#FEF2F2";
+                document.querySelector('input[name="name"]').focus();
+            }, 500);
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const prefillEmail = localStorage.getItem('prefillEmail');
+            if (prefillEmail) {
+                const contactInput = document.getElementById('contact-email');
+                contactInput.value = prefillEmail;
+
+                // Highlight the field
+                // contactInput.style.borderColor = "#f0f4f5";
+                contactInput.style.backgroundColor = "#f0f4f5";
+                contactInput.style.color = "#000000";
+
+                // Focus on the name input
+                const nameInput = document.querySelector('input[name="name"]');
+                if (nameInput) nameInput.focus();
+
+                // Scroll to form
+                document.getElementById('contact').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                // Clear the localStorage so it doesn't persist
+                localStorage.removeItem('prefillEmail');
+            }
+        });
+    </script>
+    <script>
+        const contactForm = document.getElementById('contactForm');
+
+        if (contactForm) {
+            contactForm.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                const apiEndpoint = contactForm.dataset.apiEndpoint || contactForm.action;
+                const csrfToken = contactForm.querySelector('input[name="csrfmiddlewaretoken"]')?.value || '';
+                const formData = new FormData(contactForm);
+                const payload = Object.fromEntries(formData.entries());
+
+                try {
+                    const response = await fetch(apiEndpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': csrfToken,
+                        },
+                        credentials: 'same-origin',
+                        body: JSON.stringify(payload),
+                    });
+
+                    if (response.ok) {
+                        contactForm.reset();
+                        alert('Thank you! We received your inquiry.');
+                        return;
+                    }
+                } catch (error) {
+                    console.error('API submission failed, falling back to standard form POST:', error);
+                }
+
+                contactForm.submit();
+            });
+        }
+    </script>
+    <script>
+        const canvas = document.getElementById("skillsOrbit");
+        const ctx = canvas.getContext("2d");
+
+        let w, h, cx, cy;
+
+        function resize() {
+            w = canvas.width = canvas.offsetWidth;
+            h = canvas.height = canvas.offsetHeight;
+            cx = w / 2;
+            cy = h / 2;
+        }
+        resize();
+        window.addEventListener("resize", resize);
+
+
+
+        /* =========================
+           ⭐ STARFIELD
+        ========================= */
+
+        const stars = Array.from({ length: 70 }, () => ({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            s: Math.random() * 1.5,
+            v: 0.2 + Math.random() * 0.3
+        }));
+
+        function drawStars() {
+            ctx.fillStyle = "white";
+            stars.forEach(st => {
+                st.y += st.v;
+                if (st.y > h) st.y = 0;
+                ctx.fillRect(st.x, st.y, st.s, st.s);
+            });
+        }
+
+
+
+        /* =========================
+           🌍 SKILL ICONS
+        ========================= */
+
+        const skills = [
+            "tensorflow", "pytorch", "opencv", "react", "nodejs",
+            "docker", "kubernetes", "fastapi", "django",
+            "mongodb", "postgresql", "python", "ai", "rag", "phpstorm", "hostinger"
+        ];
+
+        // preload images
+        // const images = {};
+        // skills.forEach(name => {
+        // const img = new Image();
+        // img.src = `/icons/${name}.svg`; // change path if needed
+        // images[name] = img;
+        // });
+        const images = {};
+
+        skills.forEach(name => {
+            const img = new Image();
+            img.src = "{% static 'icons/' %}" + name + ".svg";
+            images[name] = img;
+        });
+
+        const radius = 55;
+        const fov = 260;
+
+        let rotationX = 0, rotationY = 0, autoSpin = 0.003;
+
+        const nodes = skills.map((label, i) => {
+            const phi = Math.acos(-1 + (2 * i) / skills.length);
+            const theta = Math.sqrt(skills.length * Math.PI) * phi;
+
+            return {
+                label,
+                x: radius * Math.cos(theta) * Math.sin(phi),
+                y: radius * Math.sin(theta) * Math.sin(phi),
+                z: radius * Math.cos(phi)
+            };
+        });
+
+
+
+        /* =========================
+           🎮 DRAG ROTATE
+        ========================= */
+
+        let dragging = false, lastX = 0, lastY = 0;
+
+        canvas.onmousedown = e => { dragging = true; lastX = e.clientX; lastY = e.clientY };
+        window.onmouseup = () => dragging = false;
+
+        window.onmousemove = e => {
+            if (!dragging) return;
+            rotationY += (e.clientX - lastX) * 0.005;
+            rotationX += (e.clientY - lastY) * 0.005;
+            lastX = e.clientX;
+            lastY = e.clientY;
+        };
+
+
+
+        /* =========================
+           📡 RADAR
+        ========================= */
+
+        let sweep = 0;
+        function drawRadar() {
+            sweep += 0.03;
+            const r = radius + 18;
+
+            const g = ctx.createLinearGradient(cx, cy, cx + Math.cos(sweep) * r, cy + Math.sin(sweep) * r);
+            g.addColorStop(0, "rgba(0,255,255,0)");
+            g.addColorStop(1, "rgba(0,255,255,0.25)");
+
+            ctx.strokeStyle = g;
+            ctx.lineWidth = 2;
+
+            ctx.beginPath();
+            ctx.arc(cx, cy, r, sweep, sweep + 0.5);
+            ctx.stroke();
+        }
+
+
+
+        /* =========================
+           🚀 ANIMATE
+        ========================= */
+
+        let pulse = 0;
+
+        function draw() {
+            ctx.clearRect(0, 0, w, h);
+
+            drawStars();
+
+            rotationY += autoSpin;
+            pulse += 0.05;
+
+            const pts = [];
+
+            nodes.forEach(n => {
+                let y = n.y * Math.cos(rotationX) - n.z * Math.sin(rotationX);
+                let z = n.z * Math.cos(rotationX) + n.y * Math.sin(rotationX);
+
+                let x = n.x * Math.cos(rotationY) - z * Math.sin(rotationY);
+                z = z * Math.cos(rotationY) + n.x * Math.sin(rotationY);
+
+                const scale = fov / (fov + z);
+
+                pts.push({
+                    x: cx + x * scale,
+                    y: cy + y * scale,
+                    z, scale,
+                    label: n.label
+                });
+            });
+
+            pts.sort((a, b) => b.z - a.z);
+
+
+            /* 🔴 pulsing red links */
+            const alpha = 0.5 + Math.sin(pulse) * 0.4;
+            ctx.strokeStyle = `rgba(255,40,40,${alpha})`;
+
+            for (let i = 0; i < pts.length; i++) {
+                for (let j = i + 1; j < pts.length; j++) {
+                    const dx = pts[i].x - pts[j].x;
+                    const dy = pts[i].y - pts[j].y;
+                    if (Math.hypot(dx, dy) < 55) {
+                        ctx.beginPath();
+                        ctx.moveTo(pts[i].x, pts[i].y);
+                        ctx.lineTo(pts[j].x, pts[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+
+            /* 🟢 draw real icons */
+            pts.forEach(p => {
+                const size = 16 * p.scale + 8;
+
+                ctx.shadowColor = "#00ffff";
+                ctx.shadowBlur = 10;
+
+                const img = images[p.label];
+                if (img.complete) {
+                    ctx.drawImage(img, p.x - size / 2, p.y - size / 2, size, size);
+                }
+
+                ctx.shadowBlur = 0;
+            });
+
+            drawRadar();
+
+            requestAnimationFrame(draw);
+        }
+
+        draw();
+    </script>
+
+</body>
+
+</html>

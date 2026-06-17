@@ -1,0 +1,238 @@
+<!-- HERO -->
+<section class="flex flex-col justify-center items-center text-center px-6 pt-20 pb-16">
+    <h1 class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-extrabold mb-6">
+        How It <span class="text-orange-500">Works</span>
+    </h1>
+    <p class="text-gray-500 text-lg sm:text-xl max-w-2xl">
+        Scale your sales with strategies designed to increase real profit.
+    </p>
+</section>
+
+{% load static %}
+
+<!-- STEPS -->
+<section
+    class="py-20 rounded-t-[32px] overflow-hidden text-white bg-gradient-to-tr from-black to-zinc-900 py-16 px-8 md:px-16">
+
+    <div class="max-w-7xl mx-auto px-6 space-y-28">
+
+        <!-- Step 1 -->
+        <div class="grid md:grid-cols-2 gap-14 items-center">
+            <div class="relative">
+                <span
+                    class="text-[140px] md:text-[160px] font-extrabold text-gray-200 opacity-40 absolute -top-16 -left-4 select-none">01</span>
+                <div class="relative z-10">
+                    <h3 class="text-3xl font-bold mb-4">
+                        <span class="text-orange-500">Strategy</span> & Audience Research
+                    </h3>
+                    <p class="text-gray-600 text-lg leading-relaxed">
+                        We identify your target customers & define goals to align your ads with real buyer intent.
+                    </p>
+                </div>
+            </div>
+
+            <div class="rounded-2xl overflow-hidden shadow-lg transform transition hover:scale-[1.02]">
+                <img src="{% static 'images/1.jpg' %}" alt="Strategy and research"
+                    class="w-full aspect-[16/10] object-cover">
+            </div>
+        </div>
+
+        <div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+
+        <!-- Step 2 -->
+        <div class="grid md:grid-cols-2 gap-14 items-center">
+            <div
+                class="order-2 md:order-1 rounded-2xl overflow-hidden shadow-lg transform transition hover:scale-[1.02]">
+                <img src="{% static 'images/2.jpg' %}" alt="Campaign execution"
+                    class="w-full aspect-[16/10] object-cover">
+            </div>
+
+            <div class="relative order-1 md:order-2">
+                <span
+                    class="text-[140px] md:text-[160px] font-extrabold text-gray-200 opacity-40 absolute -top-16 -left-4 select-none">02</span>
+                <div class="relative z-10">
+                    <h3 class="text-3xl font-bold mb-4">
+                        Campaign Setup & <span class="text-orange-500">Creative Execution</span>
+                    </h3>
+                    <p class="text-gray-600 text-lg leading-relaxed">
+                        We build scroll-stopping ads, high-converting landing pages, and optimize every detail for
+                        performance.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+
+        <!-- Step 3 -->
+        <div class="grid md:grid-cols-2 gap-14 items-center">
+            <div class="relative">
+                <span
+                    class="text-[140px] md:text-[160px] font-extrabold text-gray-200 opacity-40 absolute -top-16 -left-4 select-none">03</span>
+                <div class="relative z-10">
+                    <h3 class="text-3xl font-bold mb-4">
+                        Monitor, Optimize & <span class="text-orange-500">Scale</span>
+                    </h3>
+                    <p class="text-gray-600 text-lg leading-relaxed">
+                        We analyze performance, double down on what works, and scale your campaigns for maximum ROI.
+                    </p>
+                </div>
+            </div>
+
+            <div class="rounded-2xl overflow-hidden shadow-lg transform transition hover:scale-[1.02]">
+                <img src="{% static 'images/3.jpg' %}" alt="Scaling campaigns"
+                    class="w-full aspect-[16/10] object-cover">
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+
+---
+
+<!-- STEPS -->
+<section class="max-w-6xl mx-auto px-6 space-y-10 pb-32">
+
+    <!-- STEP CARD -->
+    {% for step in "123" %}
+    {% endfor %}
+
+    <!-- STEP 1 -->
+    <div class="group bg-white rounded-3xl border border-black/5 shadow-[0_10px_40px_rgba(0,0,0,0.06)] 
+            transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
+
+        <div class="grid md:grid-cols-[1.3fr_1fr] gap-10 px-10 py-10">
+            <div class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <div
+                        class="h-12 w-12 flex items-center justify-center rounded-xl bg-orange-500/10 text-orange-600 font-bold">
+                        1</div>
+                    <h3 class="text-3xl font-bold tracking-tight">Strategy & Audience Research</h3>
+                </div>
+                <p class="text-gray-600 max-w-md">
+                    We deeply understand your audience, goals, and positioning to build campaigns that convert.
+                </p>
+            </div>
+
+            <div class="flex justify-end items-center">
+                <img src="{% static 'images/no_bg.png' %}"
+                    class="rounded-2xl w-[460px] h-[260px] object-cover border border-black/5" />
+            </div>
+        </div>
+
+        <button onclick="toggleDetails('step1', this)"
+            class="w-full flex justify-between px-10 py-5 border-t text-xs font-semibold tracking-wider text-gray-600 hover:text-black transition">
+            SEE PROCESS + DELIVERABLES
+            <span class="transition-transform duration-300">↓</span>
+        </button>
+
+        <div id="step1" class="max-h-0 overflow-hidden transition-all duration-500 px-10">
+            <div class="py-6 text-gray-600">
+                <ul class="space-y-2 list-disc ml-6">
+                    <li>Audience research</li>
+                    <li>Offer positioning</li>
+                    <li>Competitor analysis</li>
+                    <li>Growth strategy</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div
+        class="group bg-white rounded-3xl border border-black/5 shadow-[0_10px_40px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
+        <div class="grid md:grid-cols-[1.3fr_1fr] gap-10 px-10 py-10">
+            <div class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <div
+                        class="h-12 w-12 flex items-center justify-center rounded-xl bg-orange-500/10 text-orange-600 font-bold">
+                        2</div>
+                    <h3 class="text-3xl font-bold tracking-tight">Campaign Setup & Creative Execution</h3>
+                </div>
+                <p class="text-gray-600 max-w-md">
+                    We design high-converting ads, visuals, and landing flows tailored to your audience.
+                </p>
+            </div>
+
+            <div class="flex justify-end items-center">
+                <img src="{% static 'images/4.jpg' %}"
+                    class="rounded-2xl w-[460px] h-[260px] object-cover border border-black/5" />
+            </div>
+        </div>
+
+        <button onclick="toggleDetails('step2', this)"
+            class="w-full flex justify-between px-10 py-5 border-t text-xs font-semibold tracking-wider text-gray-600 hover:text-black transition">
+            SEE PROCESS + DELIVERABLES
+            <span class="transition-transform duration-300">↓</span>
+        </button>
+
+        <div id="step2" class="max-h-0 overflow-hidden transition-all duration-500 px-10">
+            <div class="py-6 text-gray-600">
+                <ul class="space-y-2 list-disc ml-6">
+                    <li>Ad creatives</li>
+                    <li>Funnels</li>
+                    <li>Copywriting</li>
+                    <li>Launch testing</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div
+        class="group bg-white rounded-3xl border border-black/5 shadow-[0_10px_40px_rgba(0,0,0,0.06)] transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_60px_rgba(0,0,0,0.08)]">
+        <div class="grid md:grid-cols-[1.3fr_1fr] gap-10 px-10 py-10">
+            <div class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <div
+                        class="h-12 w-12 flex items-center justify-center rounded-xl bg-orange-500/10 text-orange-600 font-bold">
+                        3</div>
+                    <h3 class="text-3xl font-bold tracking-tight">Monitor, Optimize & Scale</h3>
+                </div>
+                <p class="text-gray-600 max-w-md">
+                    We analyze, refine, and aggressively scale what works to maximize ROI.
+                </p>
+            </div>
+
+            <div class="flex justify-end items-center">
+                <img src="{% static 'images/4.jpg' %}"
+                    class="rounded-2xl w-[460px] h-[260px] object-cover border border-black/5" />
+            </div>
+        </div>
+
+        <button onclick="toggleDetails('step3', this)"
+            class="w-full flex justify-between px-10 py-5 border-t text-xs font-semibold tracking-wider text-gray-600 hover:text-black transition">
+            SEE PROCESS + DELIVERABLES
+            <span class="transition-transform duration-300">↓</span>
+        </button>
+
+        <div id="step3" class="max-h-0 overflow-hidden transition-all duration-500 px-10">
+            <div class="py-6 text-gray-600">
+                <ul class="space-y-2 list-disc ml-6">
+                    <li>Performance reports</li>
+                    <li>A/B testing</li>
+                    <li>Scaling systems</li>
+                    <li>Continuous optimization</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SCRIPT -->
+<script>
+    function toggleDetails(id, button) {
+        const el = document.getElementById(id);
+        const arrow = button.querySelector("span:last-child");
+
+        if (el.style.maxHeight) {
+            el.style.maxHeight = null;
+            arrow.style.transform = "rotate(0deg)";
+        } else {
+            el.style.maxHeight = el.scrollHeight + "px";
+            arrow.style.transform = "rotate(180deg)";
+        }
+    }
+</script>

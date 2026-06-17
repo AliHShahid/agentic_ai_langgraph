@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saamay AI - System Archive</title>
+    <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&family=JetBrains+Mono&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0F0F0F;
+            color: white;
+            scroll-behavior: smooth;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s cubic-bezier(0.17, 0.55, 0.55, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Tech Grid Background */
+        .bg-tech {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+    </style>
+</head>
+
+<body class="antialiased overflow-x-hidden bg-tech">
+
+
+    <nav class="fixed w-full z-50 bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+
+            <a href="/"
+                class="text-2xl tracking-tighter text-white font-black hover:text-blue-400 transition-colors group">
+                DEV<span class="text-blue-400 group-hover:text-white transition-colors">RYZE</span>
+                <!-- <span class="block text-[8px] font-mono tracking-[0.5em] text-zinc-600 uppercase mt-[-4px]">//
+                    Intelligence_Layer</span> -->
+            </a>
+
+            <div class="hidden md:flex flex-1 justify-center items-center space-x-2 text-white">
+                <a href="{% url 'home' %}#services" class="nav-link">SERVICES</a>
+                <a href="{% url 'home' %}#about" class="nav-link">ABOUT_FIRM</a>
+                <!-- <a href="#" class="nav-link">SPOTLIGHT</a> -->
+
+                <div class="relative group">
+                    <button class="nav-link flex items-center gap-2">
+                        ARCHIVES
+                        <svg class="w-3 h-3 opacity-50 group-hover:rotate-180 transition-transform" fill="none"
+                            stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                            <path d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    <div
+                        class="absolute left-0 mt-4 w-56 bg-[#0F0F0F] border border-white/10 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0 overflow-hidden">
+                        <div class="p-2 space-y-1">
+                            <a href="{% url 'saamay' %}" class="dropdown-link"><span
+                                    class="text-zinc-700 mr-2">/01</span> SAAMAY_AI</a>
+                            <a href="{% url 'adryze' %}" class="dropdown-link"><span
+                                    class="text-zinc-700 mr-2">/02</span> ADRYZE_V2</a>
+                            <a href="{% url 'documind' %}" class="dropdown-link"><span
+                                    class="text-zinc-700 mr-2">/03</span> DOCUMIND_CORE</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden md:block">
+                <a href="#contact"
+                    class="px-6 py-2 bg-[#FFD84A] text-black font-black uppercase text-[10px] tracking-widest hover:bg-white transition-all transform active:scale-95">
+                    Initialize_Uplink
+                </a>
+            </div>
+
+            <button id="menuBtn" class="md:hidden text-white p-2">
+                <div class="w-6 h-px bg-white mb-1.5"></div>
+                <div class="w-6 h-px bg-white mb-1.5"></div>
+                <div class="w-4 h-px bg-[#FFD84A] ml-2"></div>
+            </button>
+        </div>
+
+        <div id="mobileMenu"
+            class="md:hidden bg-[#0A0A0A] border-t border-white/5 max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+            <div class="px-8 py-10 space-y-8 text-white">
+                <a href="{% url 'home' %}#services"
+                    class="block text-2xl font-black tracking-tighter hover:text-[#FFD84A]">SERVICES</a>
+                <a href="{% url 'home' %}#about"
+                    class="block text-2xl font-black tracking-tighter hover:text-[#FFD84A]">ABOUT_FIRM</a>
+
+                <div>
+                    <button id="mobileLearnBtn"
+                        class="flex justify-between w-full text-2xl font-black tracking-tighter hover:text-[#FFD84A]">
+                        ARCHIVES <span class="text-[#FFD84A]">+</span>
+                    </button>
+                    <div id="mobileLearnMenu" class="hidden pl-4 mt-6 space-y-4 border-l border-white/5">
+                        <a href="{% url 'saamay' %}" class="block font-mono text-sm text-zinc-500">/ SAAMAY_AI</a>
+                        <a href="{% url 'adryze' %}" class="block font-mono text-sm text-zinc-500">/ ADRYZE_V2</a>
+                        <a href="{% url 'documind' %}" class="block font-mono text-sm text-zinc-500">/ DOCUMIND_CORE</a>
+                    </div>
+                </div>
+
+                <a href="#contact"
+                    class="block bg-[#FFD84A] text-black text-center py-4 font-black uppercase tracking-widest text-xs">
+                    Initialize_Uplink
+                </a>
+            </div>
+        </div>
+    </nav>
+    <style>
+        .nav-link {
+            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            font-size: 10px;
+            letter-spacing: 0.25em;
+            padding: 0.75rem 1.5rem;
+            transition: color 0.3s;
+            text-transform: uppercase;
+        }
+
+        .nav-link:hover {
+            color: #FFD84A;
+        }
+
+        .dropdown-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            /* Monospace for links */
+            font-size: 11px;
+            color: #71717a;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 8px;
+        }
+
+        .dropdown-link:hover {
+            background: rgba(255, 216, 74, 0.05);
+            color: white;
+            padding-left: 1.5rem;
+        }
+    </style>
+    <script>
+        // System UI Controller
+        const menuBtn = document.getElementById("menuBtn");
+        const mobileMenu = document.getElementById("mobileMenu");
+        const mobileLearnBtn = document.getElementById("mobileLearnBtn");
+        const mobileLearnMenu = document.getElementById("mobileLearnMenu");
+
+        // Toggle Main Mobile Overlay
+        menuBtn.addEventListener("click", () => {
+            // Toggle max-height for smooth transition
+            if (mobileMenu.style.maxHeight) {
+                mobileMenu.style.maxHeight = null;
+            } else {
+                mobileMenu.style.maxHeight = mobileMenu.scrollHeight + "px";
+            }
+        });
+
+        // Toggle Archive Sub-directory
+        mobileLearnBtn.addEventListener("click", () => {
+            const isHidden = mobileLearnMenu.classList.contains("hidden");
+            const statusIcon = mobileLearnBtn.querySelector('span');
+
+            if (isHidden) {
+                mobileLearnMenu.classList.remove("hidden");
+                statusIcon.style.transform = "rotate(45deg)";
+                statusIcon.style.color = "#FFD84A";
+                // Re-calculate parent height to prevent clipping
+                mobileMenu.style.maxHeight = (mobileMenu.scrollHeight + mobileLearnMenu.scrollHeight) + "px";
+            } else {
+                mobileLearnMenu.classList.add("hidden");
+                statusIcon.style.transform = "rotate(0deg)";
+                statusIcon.style.color = "white";
+                mobileMenu.style.maxHeight = mobileMenu.scrollHeight + "px";
+            }
+        });
+
+        // Desktop Dropdown Logic (DocuMind Fade Effect)
+        const learnBtn = document.querySelector(".group button");
+        const learnMenu = document.querySelector(".group div");
+
+        if (learnBtn && learnMenu) {
+            learnBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                const isVisible = !learnMenu.classList.contains("invisible");
+                if (isVisible) {
+                    learnMenu.classList.add("invisible", "opacity-0");
+                } else {
+                    learnMenu.classList.remove("invisible", "opacity-0");
+                }
+            });
+        }
+    </script>
+    
+    <!-- <nav class="p-8 fixed w-full z-50 mix-blend-difference">
+        <a href="/" class="font-mono text-[10px] tracking-[0.4em] text-white hover:text-[#FFD84A] transition">
+            // RETURN_TO_CORE
+        </a>
+    </nav> -->
+
+    <section class="min-h-screen flex flex-col justify-center px-6 max-w-7xl mx-auto pt-36">
+        <div class="reveal">
+            <span class="text-[#FFD84A] font-mono tracking-[0.4em] uppercase text-[10px] block mb-4">//
+                VOICE_ENGINE_PHONETIC_SYNC</span>
+            <h1 class="text-6xl md:text-9xl font-black tracking-tighter leading-[0.9] mb-10">
+                SAAMAY <br><span class="text-zinc-800">INTELLIGENCE</span>
+            </h1>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 border-t border-white/5 pt-12">
+                <div class="space-y-2">
+                    <p class="font-mono text-[9px] text-zinc-600 uppercase tracking-widest">Industry</p>
+                    <p class="text-sm font-medium">EdTech / Speech Recognition</p>
+                </div>
+                <div class="space-y-2">
+                    <p class="font-mono text-[9px] text-zinc-600 uppercase tracking-widest">Core_Pipeline</p>
+                    <p class="text-sm font-medium">Saamay AI model / Flutter / Python</p>
+                </div>
+                <div class="space-y-2 flex gap-10">
+                    <div>
+                        <p class="font-mono text-[9px] text-zinc-600 uppercase tracking-widest">Accuracy</p>
+                        <p class="text-2xl font-bold text-[#FFD84A]">98%</p>
+                    </div>
+                    <div>
+                        <p class="font-mono text-[9px] text-zinc-600 uppercase tracking-widest">Latency</p>
+                        <p class="text-2xl font-bold text-white">20ms</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-20 reveal group relative max-w-5xl">
+            <div class="absolute -top-10 -right-10 w-64 h-64 bg-[#FFD84A]/5 rounded-full blur-[100px]"></div>
+            <div class="relative bg-[#141414] border border-white/5 rounded-[2.5rem] p-4 shadow-2xl overflow-hidden">
+                <div
+                    class="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent via-white/5 to-transparent h-1/2 w-full animate-[scan_4s_linear_infinite]">
+                </div>
+                <img src="https://via.placeholder.com/1200x600/141414/ffffff?text=Saamay+AI+UI+Spectrogram"
+                    alt="Saamay AI Interface"
+                    class="rounded-[2rem] w-full grayscale opacity-80 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-700">
+            </div>
+        </div>
+    </section>
+
+    <section class="py-40 px-6 max-w-5xl mx-auto border-t border-white/5">
+        <div class="reveal">
+            <span class="font-mono text-[10px] text-zinc-600 tracking-[0.3em] uppercase block mb-6">BLOCK_01 //
+                THE_CHALLENGE</span>
+            <h2 class="text-4xl md:text-5xl font-bold tracking-tight mb-8">Bridging the Tajweed Gap.</h2>
+            <p class="text-2xl text-zinc-500 leading-relaxed font-light">
+                Reciters require <span class="text-white">frame-by-frame phonetic feedback</span>. Saamay AI replaces
+                the need for physical proximity to a tutor by deploying an edge-computing model capable of detecting
+                minute Arabic phoneme variances in real-time.
+            </p>
+        </div>
+    </section>
+
+    <section class="py-40 bg-[#0A0A0A] border-y border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <h2 class="font-mono text-[10px] text-zinc-600 tracking-[0.4em] uppercase mb-16">// CORE_SYSTEM_ARCHITECTURE
+            </h2>
+
+
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mt-20">
+                <div
+                    class="reveal bg-[#111] border border-white/5 p-10 rounded-3xl group hover:border-[#FFD84A]/30 transition-all">
+                    <span class="font-mono text-xs text-[#FFD84A] mb-6 block">UPLINK_01 // ASR_MODELS</span>
+                    <h4 class="text-2xl font-bold mb-4">Fine-tuned Whisper Integration</h4>
+                    <p class="text-zinc-500 text-sm leading-relaxed">
+                        Custom fine-tuning of OpenAI’s Whisper on 5,000+ hours of diverse Arabic dialects and Quranic
+                        recitation styles to ensure absolute phonetic accuracy.
+                    </p>
+                </div>
+
+                <div
+                    class="reveal bg-[#111] border border-white/5 p-10 rounded-3xl group hover:border-[#FFD84A]/30 transition-all">
+                    <span class="font-mono text-xs text-[#FFD84A] mb-6 block">UPLINK_02 // INTERFACE</span>
+                    <h4 class="text-2xl font-bold mb-4">Low-Latency Flutter UI</h4>
+                    <p class="text-zinc-500 text-sm leading-relaxed">
+                        A Fastapi bridge for real-time audio buffering, ensuring that visual feedback appears within 20ms of
+                        the user's vocalization.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-32 text-center">
+        <div class="reveal">
+            <span class="font-mono text-[10px] text-zinc-600 tracking-[0.4em] uppercase block mb-8">Project_Status:
+                Completed</span>
+            <h2 class="text-4xl md:text-6xl font-black mb-12">HAVE A VISION?</h2>
+            <a href="/#contact"
+                class="bg-[#FFD84A] text-black px-12 py-5 rounded-full font-black text-xs tracking-widest uppercase hover:bg-white transition-all transform active:scale-95 inline-block">
+                Initialize_Project →
+            </a>
+        </div>
+    </footer>
+    <script>
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+
+    <footer class="relative bg-[#0A0A0A] pt-24 pb-12 px-8 md:px-16 border-t border-white/5">
+        <div class="absolute inset-0 opacity-[0.02] pointer-events-none"
+            style="background-image: url('https://grainy-gradients.vercel.app/noise.svg');"></div>
+
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-16 mb-20">
+
+                <div class="md:col-span-4 space-y-8">
+                    <div>
+                        <div class="text-4xl font-bold tracking-tighter text-white">
+                            DEV<span class="text-blue-400">RYZE</span>
+                        </div>
+                        <p class="font-mono text-[10px] text-zinc-600 tracking-[0.3em] mt-2">v4.0.2_STABLE_BUILD</p>
+                    </div>
+
+                    <p class="leading-relaxed text-zinc-400 text-base max-w-sm">
+                        Architecting custom intelligence layers and precision software ecosystems for the next
+                        generation of global enterprises.
+                    </p>
+
+                    <div class="flex flex-wrap gap-x-6 gap-y-2 pt-4 border-t border-white/5">
+                        <a href="https://www.linkedin.com/company/pk-devryze/"
+                            class="font-mono text-[11px] text-zinc-500 hover:text-[#FFD84A] transition">LN //
+                            LINKEDIN</a>
+                        <!-- <a href="#" class="font-mono text-[11px] text-zinc-500 hover:text-[#FFD84A] transition">GH //
+                            GITHUB</a>
+                        <a href="#" class="font-mono text-[11px] text-zinc-500 hover:text-[#FFD84A] transition">TW //
+                            X_CORP</a> -->
+                        <a href="https://www.instagram.com/devryze_pk/"
+                            class="font-mono text-[11px] text-zinc-500 hover:text-[#FFD84A] transition">IG //
+                            INSTAGRAM</a>
+                    </div>
+                </div>
+
+                <div class="md:col-span-3 space-y-8">
+                    <h3
+                        class="font-mono text-xs font-semibold uppercase tracking-widest text-[#FFD84A] flex items-center gap-2">
+                        <span class="w-1 h-1 bg-[#FFD84A]"></span> Directory
+                    </h3>
+                    <ul class="space-y-4">
+                        <li><a href="#about"
+                                class="text-zinc-400 hover:text-white transition-all text-sm flex items-center gap-3">
+                                <span class="font-mono text-[9px] text-zinc-700">01</span> About_Firm</a>
+                        </li>
+                        <li><a href="#services"
+                                class="text-zinc-400 hover:text-white transition-all text-sm flex items-center gap-3">
+                                <span class="font-mono text-[9px] text-zinc-700">02</span> Capabilities</a>
+                        </li>
+                        <li><a href="#portfolio"
+                                class="text-zinc-400 hover:text-white transition-all text-sm flex items-center gap-3">
+                                <span class="font-mono text-[9px] text-zinc-700">03</span> Case_Archives</a>
+                        </li>
+                        <li><a href="#"
+                                class="text-zinc-400 hover:text-white transition-all text-sm flex items-center gap-3">
+                                <span class="font-mono text-[9px] text-zinc-700">04</span> Legal_Terms</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div id="contact"
+                    class="md:col-span-5 bg-[#111] border border-white/5 p-8 rounded-2xl shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4 font-mono text-[9px] text-zinc-800">SECURE_UPLINK</div>
+
+                    <h3 class="text-xl font-bold mb-6 text-white flex items-center gap-3">
+                        Contact Us
+                    </h3>
+
+                    <form method="POST" action="{% url 'home' %}" class="space-y-4">
+                        {% csrf_token %}
+                        <div class="grid grid-cols-2 gap-4">
+                            <input type="text" name="name" placeholder="FULL_NAME" required
+                                class="bg-black border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-zinc-700 focus:border-[#FFD84A]/50 focus:ring-0 transition outline-none">
+
+                            <input type="email" name="email" id="contact-email" placeholder="EMAIL_ADDR" required
+                                class="bg-black border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-zinc-700 focus:border-[#FFD84A]/50 focus:ring-0 transition outline-none">
+                        </div>
+
+                        <input type="text" name="company" placeholder="ORGANIZATION" required
+                            class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-zinc-700 focus:border-[#FFD84A]/50 focus:ring-0 transition outline-none">
+
+                        <div class="relative">
+                            <select id="package" name="package" required
+                                class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-sm text-zinc-400 focus:border-[#FFD84A]/50 focus:ring-0 transition outline-none appearance-none">
+                                <option value="" disabled selected>-- SELECT_PACKAGE --</option>
+                                <option value="chatbots">AI Chatbots & RAG
+                                </option>
+                                <option value="automation">Workflow Automation</option>
+                                <option value="mobile">Mobile App Ecosystems
+                                </option>
+                                <option value="consult">AI Consultation
+                                </option>
+                                <option value="web">Web Development</option>
+                                <option value="analytics">Data Analysis
+                                </option>
+                                <option value="mldl">Machine Learning Tasks
+                                </option>
+                                <option value="custom">CUSTOM_REQ</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-zinc-700">
+                                ▼</div>
+                        </div>
+                        <input type="tel" name="phone" placeholder="Phone Number" required
+                            class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-zinc-700 focus:border-[#FFD84A]/50 focus:ring-0 transition outline-none">
+
+                        <textarea name="message" rows="3" placeholder="DESCRIBE_PROJECT_SCOPE..."
+                            class="w-full bg-black border border-white/10 rounded-lg px-4 py-3 text-sm text-white placeholder-zinc-700 focus:border-[#FFD84A]/50 focus:ring-0 transition outline-none"></textarea>
+
+                        <button type="submit"
+                            class="w-full py-4 bg-[#FFD84A] text-black font-black uppercase text-xs tracking-widest rounded-lg hover:bg-white transition-all transform active:scale-[0.98]">
+                            TRANSMIT_DATA →
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div
+                class="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-[10px] font-mono text-zinc-600">
+                <div>© 2026 DEVRYZE_SYSTEMS. ALL_RIGHTS_RESERVED.</div>
+                <div class="flex items-center gap-4">
+                    <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 bg-green-500 rounded-full"></span>
+                        SERVER_STABLE</span>
+                    <span>LATENCY: 14MS</span>
+                    <span>ENCRYPTION: AES-256</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        function transferEmail(event) {
+            event.preventDefault();
+            const emailValue = document.getElementById('hero-email-input').value;
+            const contactSection = document.getElementById('contact');
+            const contactInput = document.getElementById('contact-email');
+
+            contactSection.scrollIntoView({ behavior: 'smooth' });
+
+            setTimeout(() => {
+                contactInput.value = emailValue;
+                contactInput.style.borderColor = "#DC2626";
+                contactInput.style.backgroundColor = "#FEF2F2";
+                document.querySelector('input[name="name"]').focus();
+            }, 500);
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            const prefillEmail = localStorage.getItem('prefillEmail');
+            if (prefillEmail) {
+                const contactInput = document.getElementById('contact-email');
+                contactInput.value = prefillEmail;
+
+                // Highlight the field
+                // contactInput.style.borderColor = "#f0f4f5";
+                contactInput.style.backgroundColor = "#f0f4f5";
+                contactInput.style.color = "#000000";
+
+                // Focus on the name input
+                const nameInput = document.querySelector('input[name="name"]');
+                if (nameInput) nameInput.focus();
+
+                // Scroll to form
+                document.getElementById('contact').scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                // Clear the localStorage so it doesn't persist
+                localStorage.removeItem('prefillEmail');
+            }
+        });
+    </script>
+</body>
+
+</html>

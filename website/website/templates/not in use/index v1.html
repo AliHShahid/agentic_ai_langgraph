@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Future Work - AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Fonts & Smooth Scrolling */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Subtle red glow for background blobs */
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.15;
+            /* Faint red glow */
+        }
+    </style>
+</head>
+
+<body class="bg-white text-gray-900 antialiased overflow-x-hidden">
+
+    <div class="blob bg-red-600 w-96 h-96 rounded-full top-0 right-0 translate-x-1/2 -translate-y-1/2"></div>
+    <div class="blob bg-gray-200 w-96 h-96 rounded-full bottom-0 left-0 -translate-x-1/2 translate-y-1/2"></div>
+
+    <nav class="fixed w-full h-14 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="text-2xl font-black tracking-tighter">
+                RYZE<span class="text-red-600">.AI</span>
+            </div>
+            <div class="hidden md:flex space-x-8 text-sm font text-gray-600" style="font-size: 16px;">
+                <a href="#features" class="hover:text-black transition">Features</a>
+                <a href="#pricing" class="hover:text-black transition">Pricing</a>
+                <a href="#contact" class="hover:text-black transition">Contact</a>
+            </div>
+            <a href="#contact"
+                class="bg-black text-white px-4 py-2 rounded font hover:bg-red-600 transition duration-300">
+                Get Access
+            </a>
+        </div>
+    </nav>
+
+    <section class="pt-40 pb-20 px-6 text-center max-w-5xl mx-auto">
+        <!-- <div
+            class="inline-block px-4 py-1.5 mb-8 rounded-full bg-red-50 border border-red-100 text-sm font-bold text-red-600">
+            🚀 The Future of Productivity
+        </div> -->
+        <h1 class="text-6xl md:text-8xl font-black tracking-tight mb-8 leading-tight text-gray-900">
+            DOMINATE YOUR <br />
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-500">WORKFLOW</span>
+        </h1>
+        <p class="text-xl md:text-2xl text-gray-500 mb-12 max-w-3xl mx-auto font-light leading-relaxed">
+            Stop wasting time on chaos. Our AI organizes your schedule, prioritizes tasks, and ensures you never miss a
+            deadline again.
+        </p>
+
+        <!-- <div class="flex flex-col md:flex-row justify-center gap-5">
+            <a href="#contact"
+                class="bg-red-600 hover:bg-red-700 text-white px-10 py-5 rounded-xl font-bold text-lg transition shadow-xl shadow-red-200">
+                Start Free Trial
+            </a>
+            <button
+                class="bg-white border-2 border-gray-200 hover:border-black text-black px-10 py-5 rounded-xl font-bold text-lg transition">
+                Watch Demo
+            </button>
+        </div> -->
+
+        <div class="max-w-lg mx-auto mt-8 hover:scale-[1.01] transition-transform duration-300">
+            <form id="hero-form" onsubmit="transferEmail(event)"
+                class="flex items-center border-[0.5px] border-black rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow duration-300 h-10 md:h-14 overflow-hidden pl-1 pr-1 py-1">
+
+                <input id="hero-email-input" type="email" placeholder="Enter your email" required
+                    class="flex-1 bg-transparent border-none outline-none px-4 md:px-6 text-[0.9rem] md:text-lg text-black placeholder:text-zinc-500 min-w-0 h-full">
+
+                <button type="submit"
+                    class="bg-black text-white px-6 md:px-8 h-full font-medium whitespace-nowrap hover:bg-zinc-800 transition-colors flex items-center gap-2 rounded-md">
+                    <span class="text-sm md:text-lg">Get started</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-chevron-right w-4 h-4" aria-hidden="true">
+                        <path d="m9 18 6-6-6-6"></path>
+                    </svg>
+                </button>
+
+            </form>
+        </div>
+        <!-- <div class="mt-20 relative mx-auto w-full max-w-5xl bg-white rounded-2xl border border-gray-200 shadow-2xl p-2">
+            <div class="bg-gray-50 rounded-xl aspect-video flex items-center justify-center border border-gray-100">
+                <div class="text-center">
+                    <p class="text-gray-400 font-bold text-lg tracking-widest uppercase">Dashboard Preview</p>
+                    <p class="text-gray-300 text-sm mt-2">Charts & AI Analytics go here</p>
+                </div>
+            </div>
+        </div> -->
+        <div class="mt-20 relative mx-auto w-full max-w-5xl bg-white rounded-2xl border border-gray-200 shadow-2xl p-2">
+
+            <div class="bg-gray-50 rounded-xl aspect-video relative overflow-hidden border border-gray-100 group">
+
+                <video class="w-full h-full object-cover opacity-90 transition duration-500 group-hover:scale-105"
+                    autoplay loop muted playsinline
+                    poster="https://via.placeholder.com/1920x1080.png?text=Loading+Dashboard...">
+                    <source src="https://cdn.dribbble.com/userupload/123456/file/large-sample-video.mp4"
+                        type="video/mp4">
+                </video>
+
+                <div
+                    class="absolute top-6 right-6 w-48 md:w-64 bg-white/90 backdrop-blur-md p-3 rounded-xl shadow-lg border border-white/50 transform transition duration-500 hover:-translate-y-2 hover:shadow-2xl z-10 hidden md:block">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div
+                            class="w-8 h-8 rounded-full bg-red-100 text-red-600 flex items-center justify-center font-bold">
+                            AI</div>
+                        <div class="text-xs font-bold text-gray-800">Efficiency Score</div>
+                    </div>
+                    <img src="https://www.freepik.com/free-vector/coloured-statistics-design_1024048.htm#fromView=keyword&page=1&position=5&uuid=6c2e6ee8-e005-449c-8a82-7ae9d50f61eb&query=Chart+analysis"
+                        alt="Chart" class="rounded-lg w-full h-auto">
+                </div>
+
+                <div
+                    class="absolute -bottom-10 left-6 md:bottom-6 md:left-6 w-32 md:w-48 bg-black rounded-[2rem] border-4 border-gray-800 shadow-2xl overflow-hidden z-20 transform transition duration-500 hover:scale-105">
+                    <div class="relative aspect-[9/16]">
+                        <video class="w-full h-full object-cover" autoplay loop muted playsinline>
+                            <source
+                                src="https://assets.mixkit.co/videos/preview/mixkit-holding-a-smartphone-with-a-green-screen-43952-large.mp4"
+                                type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+
+                <div
+                    class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/80 backdrop-blur-md text-white px-6 py-2 rounded-full border border-white/10 shadow-2xl opacity-0 group-hover:opacity-100 transition duration-300">
+                    <span class="flex items-center gap-2 text-sm font-bold">
+                        <span class="w-2 h-2 bg-red-500 rounded-full animate-pulse"></span>
+                        Live Demo
+                    </span>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="features" class="py-24 px-6 bg-gray-50">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-black mb-4">Wall of <span
+                        class="text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-500">LOVE</span>
+                </h2>
+                <p class="text-gray-500">Built for high-performers who value speed.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-lg hover:-translate-y-2 transition duration-300 border border-gray-100">
+                    <div
+                        class="w-14 h-14 bg-red-100 rounded-xl flex items-center justify-center mb-6 text-red-600 text-2xl">
+                        ⚡</div>
+                    <h3 class="text-xl font-bold mb-3">Instant Speed</h3>
+                    <p class="text-gray-500 leading-relaxed">No loading times. No lag. Our AI engine processes your data
+                        in milliseconds.</p>
+                </div>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-lg hover:-translate-y-2 transition duration-300 border border-gray-100">
+                    <div
+                        class="w-14 h-14 bg-black rounded-xl flex items-center justify-center mb-6 text-white text-2xl">
+                        🔒</div>
+                    <h3 class="text-xl font-bold mb-3">Bank-Grade Security</h3>
+                    <p class="text-gray-500 leading-relaxed">Your data is encrypted and stored locally. We prioritize
+                        your privacy above all.</p>
+                </div>
+                <div
+                    class="bg-white p-8 rounded-2xl shadow-lg hover:-translate-y-2 transition duration-300 border border-gray-100">
+                    <div
+                        class="w-14 h-14 bg-red-100 rounded-xl flex items-center justify-center mb-6 text-red-600 text-2xl">
+                        📈</div>
+                    <h3 class="text-xl font-bold mb-3">Growth Analytics</h3>
+                    <p class="text-gray-500 leading-relaxed">Visualize your productivity trends with our beautiful,
+                        clean data reports.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-24 px-6 relative bg-white">
+        <div class="max-w-2xl mx-auto">
+            <div class="bg-white p-10 md:p-14 rounded-3xl border border-gray-200 shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-red-600 to-black"></div>
+
+                <h2 class="text-4xl font-black mb-3 text-center">Join the Waitlist</h2>
+                <p class="text-gray-500 text-center mb-10">Limited spots available for our beta launch.</p>
+
+                {% if success %}
+                <div
+                    class="bg-green-50 border border-green-200 text-green-700 px-6 py-4 rounded-xl mb-8 text-center font-bold flex items-center justify-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    Application Received!
+                </div>
+                {% endif %}
+
+                <form method="POST" action="{% url 'home' %}" class="space-y-6">
+                    {% csrf_token %}
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label
+                                class="block text-xs font-bold text-gray-900 uppercase tracking-wider mb-2">Name</label>
+                            <input type="text" name="name" required
+                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-4 focus:outline-none focus:border-red-600 focus:bg-white transition placeholder-gray-400 font-medium"
+                                placeholder="John Doe">
+                        </div>
+                        <div>
+                            <label
+                                class="block text-xs font-bold text-gray-900 uppercase tracking-wider mb-2">Email</label>
+                            <!-- <input type="email" name="email" required
+                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-4 focus:outline-none focus:border-red-600 focus:bg-white transition placeholder-gray-400 font-medium"
+                                placeholder="john@company.com"> -->
+                            <input type="email" name="email" id="contact-email" required
+                                class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-4 focus:outline-none focus:border-red-600 focus:bg-white transition placeholder-gray-400 font-medium"
+                                placeholder="john@company.com">
+                        </div>
+                    </div>
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-gray-900 uppercase tracking-wider mb-2">Company</label>
+                        <input type="text" name="company"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-4 focus:outline-none focus:border-red-600 focus:bg-white transition placeholder-gray-400 font-medium">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-900 uppercase tracking-wider mb-2">How can we
+                            help?</label>
+                        <textarea name="message" rows="3"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-4 focus:outline-none focus:border-red-600 focus:bg-white transition placeholder-gray-400 font-medium"></textarea>
+                    </div>
+
+                    <button type="submit"
+                        class="w-full bg-black hover:bg-gray-800 text-white font-bold py-5 rounded-xl shadow-lg transition duration-300 text-lg flex justify-center items-center gap-2 group">
+                        Request Access
+                        <span class="group-hover:translate-x-1 transition">→</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-50 border-t border-gray-200 py-12">
+        <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center">
+            <div class="text-xl font-black mb-4 md:mb-0">
+                RYZE<span class="text-red-600">.AI</span>
+            </div>
+            <div class="text-gray-500 text-sm font-medium">
+                &copy; 2024 Ryze Clone. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+</body>
+<script>
+    function transferEmail(event) {
+        event.preventDefault(); // Stop the top form from refreshing the page
+
+        // 1. Get the value from the top input
+        const emailValue = document.getElementById('hero-email-input').value;
+
+        // 2. Find the contact section and the email field
+        const contactSection = document.getElementById('contact');
+        const contactInput = document.getElementById('contact-email');
+
+        // 3. Scroll smoothly to the contact form
+        contactSection.scrollIntoView({ behavior: 'smooth' });
+
+        // 4. Fill the email and focus on the Name field (so they can just type their name)
+        // We use a small timeout to let the scroll finish slightly
+        setTimeout(() => {
+            contactInput.value = emailValue;
+            // Highlight the field briefly so they see it worked
+            contactInput.style.borderColor = "#DC2626"; // Red border
+            contactInput.style.backgroundColor = "#FEF2F2"; // Light red bg
+
+            // Optional: Focus the Name field so they can keep typing immediately
+            // Assuming your Name input has name="name", let's focus it:
+            document.querySelector('input[name="name"]').focus();
+        }, 500);
+    }
+</script>
+</body>
+
+</html>
+<!-- VER 1 -->

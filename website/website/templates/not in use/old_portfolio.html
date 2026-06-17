@@ -1,0 +1,154 @@
+<section id="portfolio" aria-labelledby="featured-work" class="py-16 bg-[#1A1A1A] rounded-b-3xl">
+
+    <div class="container-responsive mx-auto px-4 sm:px-6 md:px-12">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-12">
+            <div>
+                <h2 id="featured-work" class="text-3xl md:text-4xl font-bold text-white font-[Space_Grotesk] mb-2">
+                    Featured Work
+                </h2>
+                <p class="text-gray-400 text-lg">A few recent projects</p>
+            </div>
+            <a class="mt-4 md:mt-0 text-gray-300 hover:text-[#FF7B2B] no-underline transition-colors duration-200 inline-flex items-center gap-1 group"
+                href="/portfolio">See more
+                <span class="transition-transform duration-200 group-hover:translate-x-0.5">→</span>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <!-- Saamay AI -->
+            <!-- <a href="#"
+                    class="text-gray-300 hover:text-[#FF7B2B] no-underline text-sm inline-flex items-center gap-1 group/cta"> -->
+            <a href="{% url 'saamay' %}"
+                class="inline-flex ring-[#FFD84A] items-center gap-2 rounded-full px-4 py-2 text-sm ring-1 bg-white/0 text-gray-200 hover:bg-[#FFD84A] hover:text-black transition-all duration-300">
+                <!-- <article
+                        class="group bg-[#111] rounded-xl overflow-hidden hover:-translate-y-1 hover:shadow-lg/20 transition-all duration-200"> -->
+                <article
+                    class="group bg-[#222] border border-white/5 rounded-2xl overflow-hidden hover:shadow-[0_0_30px_rgba(255,216,74,0.05)] transition-all duration-300">
+                    <div class="relative aspect-[16/10] overflow-hidden rounded-t-2xl">
+                        <img src="https://via.placeholder.com/600x400?text=Saamay+AI"
+                            alt="Screenshot of Saamay AI Flutter Quran Assistant"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                            loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-white text-lg mb-2 truncate">Saamay AI</h3>
+                        <p class="text-gray-400 text-sm mb-3 truncate">
+                            Flutter-based AI speech-to-text Quran assistant for seamless recitation, learning, and
+                            tracking.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span
+                                class="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium text-gray-200/90 border border-white/10">Flutter</span>
+                            <span
+                                class="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium text-gray-200/90 border border-white/10">AI</span>
+                            <span
+                                class="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium text-gray-200/90 border border-white/10">Speech-to-Text</span>
+                        </div>
+                        <span
+                            class="inline-flex ring-[#FF7B2B] items-center gap-2 rounded-full px-3 py-1 text-xs ring-1 bg-white/0 text-gray-200 hover:bg-white/[0.03] transition-colors">
+                            View case study
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="h-4 w-4">
+                                <path d="M5 12h14"></path>
+                                <path d="m12 5 7 7-7 7"></path>
+                            </svg>
+                        </span>
+                    </div>
+                </article>
+            </a>
+
+            <!-- Adryze Website -->
+            <!-- <a href="#"
+                    class="text-gray-300 hover:text-[#FF7B2B] no-underline text-sm inline-flex items-center gap-1 group/cta"> -->
+            <a href="{% url 'adryze' %}"
+                class="inline-flex ring-[#FFD84A] items-center gap-2 rounded-full px-4 py-2 text-sm ring-1 bg-white/0 text-gray-200 hover:bg-[#FFD84A] hover:text-black transition-all duration-300">
+                <!-- <article
+                        class="group bg-[#111] rounded-xl overflow-hidden hover:-translate-y-1 hover:shadow-lg/20 transition-all duration-200"> -->
+                <article
+                    class="group bg-[#222] border border-white/5 rounded-2xl overflow-hidden hover:shadow-[0_0_30px_rgba(255,216,74,0.05)] transition-all duration-300">
+                    <div class="relative aspect-[16/10] overflow-hidden rounded-t-2xl">
+                        <img src="{% static 'images/ads.jpg' %}" alt="Screenshot of Adryze Django website"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                            loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-white text-lg mb-2 truncate">Adryze Website</h3>
+                        <p class="text-gray-400 text-sm mb-3 truncate">
+                            A professional Django website for Adryze showcasing projects, services, and company
+                            branding.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span
+                                class="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium text-gray-200/90 border border-white/10">Django</span>
+                            <span
+                                class="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium text-gray-200/90 border border-white/10">Web
+                                Development</span>
+                            <span
+                                class="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium text-gray-200/90 border border-white/10">Portfolio</span>
+                        </div>
+                        <span
+                            class="inline-flex ring-[#FF7B2B] items-center gap-2 rounded-full px-3 py-1 text-xs ring-1 bg-white/0 text-gray-200 hover:bg-white/[0.03] transition-colors">
+                            View case study
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="h-4 w-4">
+                                <path d="M5 12h14"></path>
+                                <path d="m12 5 7 7-7 7"></path>
+                            </svg>
+                        </span>
+                    </div>
+                </article>
+            </a>
+
+            <!-- Big CV Project -->
+
+            <!-- <a href="{% url 'documind' %}"
+                    class="text-gray-300 hover:text-[#FF7B2B] no-underline text-sm inline-flex items-center gap-1 group/cta"> -->
+            <a href="{% url 'documind' %}" class="inline-flex ring-[#FFD84A] items-center gap-2 rounded-full px-4 py-2 text-sm ring-1
+                    bg-white/0 text-gray-200 hover:bg-[#FFD84A] hover:text-black transition-all duration-300">
+
+                <!-- <article
+                        class="group bg-[#111] rounded-xl overflow-hidden hover:-translate-y-1 hover:shadow-lg/20 transition-all duration-200"> -->
+                <article
+                    class="group bg-[#222] border border-white/5 rounded-2xl overflow-hidden hover:shadow-[0_0_30px_rgba(255,216,74,0.05)] transition-all duration-300">
+                    <div class="relative aspect-[16/10] overflow-hidden rounded-t-2xl">
+                        <img src="{% static 'images/ads.jpg' %}" alt="Screenshot of Computer Vision project"
+                            class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+                            loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-white text-lg mb-2 truncate">Documind AI</h3>
+                        <p class="text-gray-400 text-sm mb-3 truncate">
+                            Advanced computer vision project demonstrating real-time object detection and
+                            analysis
+                            for large-scale applications.
+                        </p>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span
+                                class="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium text-gray-200/90 border border-white/10">Computer
+                                Vision</span>
+                            <span
+                                class="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium text-gray-200/90 border border-white/10">AI</span>
+                            <span
+                                class="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-medium text-gray-200/90 border border-white/10">Machine
+                                Learning</span>
+                        </div>
+                        <span
+                            class="inline-flex ring-[#FF7B2B] items-center gap-2 rounded-full px-3 py-1 text-xs ring-1 bg-white/0 text-gray-200 hover:bg-white/[0.03] transition-colors">
+                            View case study
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="h-4 w-4">
+                                <path d="M5 12h14"></path>
+                                <path d="m12 5 7 7-7 7"></path>
+                            </svg>
+                        </span>
+                    </div>
+                </article>
+            </a>
+
+        </div>
+    </div>
+</section>

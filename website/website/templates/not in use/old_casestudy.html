@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>How It Works</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-white">
+    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <!-- <div class="text-2xl font-black tracking-tighter">
+                AD<span class="text-red-600">RYZE</span>
+            </div> -->
+            <a href="/" class="text-2xl font-black tracking-tighter">
+                AD<span class="text-orange-500">RYZE</span>
+            </a>
+            <div class="hidden md:flex space-x-8 text-sm font-bold text-gray-600">
+                <!-- <a href="#testimonials" class="hover:text-black transition">Wall of Love</a> -->
+                <a href="#testimonials" class="relative text-black px-6 py-2.5 rounded-lg font-bold transition duration-300
+          before:content-[''] before:absolute before:top-0 before:left-0 before:h-0.5 before:bg-orange-500
+          before:w-0 hover:before:w-10 before:transition-all before:duration-300">Wall of Love</a>
+                <!-- <a href="{% url 'how_it_works' %}" class="hover:text-black transition">How it Works</a> -->
+                <a href="{% url 'how_it_works' %}" class="relative text-black px-6 py-2.5 rounded-lg font-bold transition duration-300
+          before:content-[''] before:absolute before:top-0 before:left-0 before:h-0.5 before:bg-orange-500
+          before:w-0 hover:before:w-10 before:transition-all before:duration-300">How it Works</a>
+            </div>
+            <a href="/" class="relative text-black px-6 py-2.5 rounded-lg font-bold transition duration-300
+          before:content-[''] before:absolute before:top-0 before:left-0 before:h-0.5 before:bg-orange-500
+          before:w-0 hover:before:w-20 before:transition-all before:duration-300">
+                ← Back to Home
+            </a>
+
+
+        </div>
+    </nav>
+    <div class="h-40"></div> <!-- Spacer equal to navbar height -->
+    {% load static %}
+    <section class="bg-white text-black py-24">
+        <div class="max-w-[1400px] mx-auto px-6">
+
+            <!-- Heading -->
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-12">
+                <div class="space-y-2">
+                    <h2 class="text-4xl md:text-5xl font-black tracking-tight">
+                        Our latest <span class="text-orange-400">case studies</span>
+                    </h2>
+                    <p class="text-gray-600 max-w-xl">
+                        Explore our success stories, strategies, and insights to see how we help brands grow and scale
+                        effectively.
+                    </p>
+                </div>
+                <a href="/case-studies"
+                    class="mt-4 md:mt-0 px-6 py-2.5 rounded-full border border-gray-300 font-bold text-black hover:bg-purple-600 hover:text-white transition">
+                    View All
+                </a>
+            </div>
+
+            <!-- Cards -->
+            <div class="grid md:grid-cols-3 gap-8">
+
+                <!-- Card 1 -->
+                <div class="bg-white rounded-xl shadow hover:shadow-xl transition overflow-hidden">
+                    <img src="{% static 'images/4.jpg' %}" class="w-full h-64 object-cover">
+                    <div class="p-6 space-y-2">
+                        <h3 class="text-xl font-semibold">E-Commerce Apparel Brand</h3>
+                        <p class="text-gray-600 text-sm">
+                            Meta + Google Ads | 90-Day Scale
+                        </p>
+                        <a href="#" onclick="openPanel('case1')"
+                            class="text-purple-600 font-bold inline-flex items-center mt-2">
+                            Read more →
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-white rounded-xl shadow hover:shadow-xl transition overflow-hidden">
+                    <img src="{% static 'images/2.jpg' %}" class="w-full h-64 object-cover">
+                    <div class="p-6 space-y-2">
+                        <h3 class="text-xl font-semibold">Beauty & Skin Care</h3>
+                        <p class="text-gray-600 text-sm">
+                            TikTok + Meta Full Funnel
+                        </p>
+                        <a href="#" onclick="openPanel('case2')"
+                            class="text-purple-600 font-bold inline-flex items-center mt-2">
+                            Read more →
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-white rounded-xl shadow hover:shadow-xl transition overflow-hidden">
+                    <img src="{% static 'images/4.jpg' %}" class="w-full h-64 object-cover">
+                    <div class="p-6 space-y-2">
+                        <h3 class="text-xl font-semibold">Amazon FBA Brand</h3>
+                        <p class="text-gray-600 text-sm">
+                            Amazon Ads + Retargeting
+                        </p>
+                        <a href="#" onclick="openPanel('case3')"
+                            class="text-purple-600 font-bold inline-flex items-center mt-2">
+                            Read more →
+                        </a>
+                    </div>
+                </div>
+                <!-- Card 4 -->
+                <div class="bg-white rounded-xl shadow hover:shadow-xl transition overflow-hidden">
+                    <img src="{% static 'images/5.jpg' %}" class="w-full h-64 object-cover">
+                    <div class="p-6 space-y-2">
+                        <h3 class="text-xl font-semibold">Luxury Skincare Brand</h3>
+                        <p class="text-gray-600 text-sm">
+                            Instagram + Meta Ads | 60-Day Launch
+                        </p>
+                        <a href="#" onclick="openPanel('case4')"
+                            class="text-purple-600 font-bold inline-flex items-center mt-2">
+                            Read more →
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="bg-white rounded-xl shadow hover:shadow-xl transition overflow-hidden">
+                    <img src="{% static 'images/6.jpg' %}" class="w-full h-64 object-cover">
+                    <div class="p-6 space-y-2">
+                        <h3 class="text-xl font-semibold">Fitness Equipment Brand</h3>
+                        <p class="text-gray-600 text-sm">
+                            Meta + YouTube Ads | 120-Day Growth
+                        </p>
+                        <a href="#" onclick="openPanel('case5')"
+                            class="text-purple-600 font-bold inline-flex items-center mt-2">
+                            Read more →
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="bg-white rounded-xl shadow hover:shadow-xl transition overflow-hidden">
+                    <img src="{% static 'images/7.jpg' %}" class="w-full h-64 object-cover">
+                    <div class="p-6 space-y-2">
+                        <h3 class="text-xl font-semibold">Home Decor E-Commerce</h3>
+                        <p class="text-gray-600 text-sm">
+                            Pinterest + Meta Ads | 90-Day Scale
+                        </p>
+                        <a href="#" onclick="openPanel('case6')"
+                            class="text-purple-600 font-bold inline-flex items-center mt-2">
+                            Read more →
+                        </a>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <!-- Carousel Arrows -->
+            <div class="flex justify-center mt-12 gap-4">
+                <button
+                    class="p-3 rounded-full border border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white transition">
+                    ←
+                </button>
+                <button
+                    class="p-3 rounded-full border border-purple-600 text-purple-600 hover:bg-purple-600 hover:text-white transition">
+                    →
+                </button>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- BACKDROP -->
+    <div id="panelBackdrop"
+        class="fixed inset-0 bg-black/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300 z-40"
+        onclick="closePanel()"></div>
+
+    <!-- SLIDE-IN PANEL -->
+    <div id="casePanel"
+        class="fixed top-0 right-0 w-full md:w-[600px] h-full bg-white shadow-2xl translate-x-full transition-transform duration-500 z-50 overflow-y-auto">
+
+        <div class="p-8 space-y-6">
+
+            <!-- Close Button -->
+            <div class="flex justify-end">
+                <button onclick="closePanel()" class="text-gray-700 hover:text-black text-xl">&times;</button>
+            </div>
+
+            <!-- Dynamic Content -->
+            <div id="panelContent"></div>
+        </div>
+    </div>
+    <script>
+        const caseData = {
+            case1: `
+    <h2 class="text-3xl font-bold mb-2">E-Commerce Apparel Brand</h2>
+<p class="text-gray-700 mb-4">Meta + Google Ads | 90-Day Scale</p>
+
+<img src="{% static 'images/p1.png' %}" class="rounded-xl border mb-6">
+
+<h3 class="text-xl font-semibold mb-2">The Challenge</h3>
+<ul class="space-y-2 text-gray-700 mb-4 list-disc list-inside">
+  <li>Ad spend was rising faster than revenue</li>
+  <li>Low return on ad spend (ROAS) and high cost per acquisition (CPA)</li>
+  <li>No cohesive multichannel strategy for customer acquisition</li>
+  <li>Needed a structured, multi-platform ad strategy to drive scalable, profitable revenue</li>
+</ul>
+
+<h3 class="text-xl font-semibold mb-2">Our Solution</h3>
+<p class="text-gray-700 leading-relaxed mb-4">
+  Adryze implemented a 90-day multichannel paid acquisition plan, combining Meta and Google Ads with data-driven audience targeting, retargeting, and creative optimization.
+</p>
+<ul class="space-y-2 text-gray-700 mb-4 list-disc list-inside">
+  <li>Optimized creatives, audience segments, and bid strategies</li>
+  <li>High-performing ads and landing pages built with proven conversion techniques</li>
+  <li>Campaigns became highly profitable and repeatable</li>
+</ul>
+
+<h3 class="text-xl font-semibold mb-2">Key Results in 90 Days</h3>
+<ul class="space-y-2 text-gray-700 mb-6 list-disc list-inside">
+  <li>• +142% Revenue Growth</li>
+  <li>• -37% Lower CPA</li>
+  <li>• 3.9x Blended ROAS</li>
+</ul>
+
+<h3 class="text-xl font-semibold mb-2">Services That Made It Happen</h3>
+<ul class="space-y-2 text-gray-700 mb-4 list-disc list-inside">
+  <li>
+    <strong>Meta & Google Ad Campaign Management</strong>
+    <ul class="list-disc list-inside ml-5">
+      <li>Strategy, setup, and multichannel optimization</li>
+      <li>Custom audience targeting & retargeting flows</li>
+      <li>A/B tested creatives and high-converting copy</li>
+    </ul>
+  </li>
+  <li>
+    <strong>TikTok Shop Ads</strong>
+    <ul class="list-disc list-inside ml-5">
+      <li>Engaging, trend-driven videos</li>
+      <li>Top-of-funnel & bottom-of-funnel lead generation</li>
+      <li>Campaigns optimized for sales and engagement</li>
+    </ul>
+  </li>
+  <li>
+    <strong>Amazon Ads</strong>
+    <ul class="list-disc list-inside ml-5">
+      <li>N/A for this brand (optional for multi-platform presence)</li>
+    </ul>
+  </li>
+  <li>
+    <strong>LinkedIn Ads</strong>
+    <ul class="list-disc list-inside ml-5">
+      <li>B2B campaigns if applicable for wholesale or partnerships</li>
+      <li>Ad creatives and landing page optimization</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 class="text-xl font-semibold mb-2">Benefits Delivered</h3>
+<ul class="space-y-2 text-gray-700 mb-6 list-disc list-inside">
+  <li>More revenue without overspending</li>
+  <li>Lower cost per acquisition (CPA)</li>
+  <li>Higher return on ad spend (ROAS)</li>
+  <li>End-to-end campaign management with transparent reporting</li>
+</ul>
+
+<h3 class="text-xl font-semibold mb-2">How It Works (3-Step Process)</h3>
+<ul class="space-y-2 text-gray-700 mb-6 list-disc list-inside">
+  <li><strong>Step 01 — Strategy & Audience Research:</strong> Identify your best customers, study competitors, and define measurable revenue goals.</li>
+  <li><strong>Step 02 — Campaign Setup & Creative Execution:</strong> Build high-performing ads and landing pages with proven conversion techniques.</li>
+  <li><strong>Step 03 — Monitor, Optimize & Scale:</strong> Continuously analyze, optimize, and scale campaigns for maximum ROI.</li>
+</ul>
+
+  `,
+
+            case2: `
+    <h2 class="text-3xl font-bold mb-2">E-Commerce Apparel Brand</h2>
+<p class="text-gray-700 mb-4">Meta + Google | 90-Day Scale</p>
+
+<img src="{% static 'images/p1.png' %}" class="rounded-xl border mb-6">
+
+<p class="text-gray-700 leading-relaxed mb-4">
+  We helped scale profitable revenue using multichannel paid acquisition.
+</p>
+
+<h3 class="text-xl font-semibold mb-2">The Challenge</h3>
+<ul class="space-y-2 text-gray-700 mb-4 list-disc list-inside">
+  <li>Ad spend was rising faster than revenue</li>
+  <li>Low return on ad spend (ROAS) and high cost per acquisition (CPA)</li>
+  <li>No cohesive multichannel strategy for customer acquisition</li>
+</ul>
+
+<h3 class="text-xl font-semibold mb-2">Our Solution</h3>
+<p class="text-gray-700 leading-relaxed mb-4">
+  Adryze implemented a 90-day multichannel paid acquisition plan, combining Meta and Google Ads with data-driven audience targeting, retargeting, and creative optimization:
+</p>
+<ul class="space-y-2 text-gray-700 mb-4 list-disc list-inside">
+  <li>Meta and Google campaigns optimized for profitable scaling</li>
+  <li>Custom audience segmentation & retargeting flows</li>
+  <li>Continuous creative testing to maximize conversions</li>
+</ul>
+
+<h3 class="text-xl font-semibold mb-2">Key Results in 90 Days</h3>
+<ul class="space-y-2 text-gray-700 mb-6 list-disc list-inside">
+  <li>• +142% Revenue Growth</li>
+  <li>• -37% Lower CPA</li>
+  <li>• 3.9x Blended ROAS</li>
+</ul>
+
+<h3 class="text-xl font-semibold mb-2">Benefits Delivered</h3>
+<ul class="space-y-2 text-gray-700 mb-6 list-disc list-inside">
+  <li>More revenue without overspending</li>
+  <li>Lower cost per acquisition (CPA)</li>
+  <li>Higher return on ad spend (ROAS)</li>
+  <li>End-to-end campaign management with transparent reporting</li>
+</ul>
+
+  `,
+
+            case3: `
+    <h2 class="text-3xl font-bold mb-2">Amazon Brand PPC + Retargeting Success</h2>
+    <p class="text-gray-700 mb-4">Amazon Ads + Retargeting</p>
+
+    <img src="{% static 'images/4.jpg' %}" class="rounded-xl border mb-6">
+
+    <p class="text-gray-700 leading-relaxed mb-4">
+An Amazon marketplace brand was struggling with inconsistent ad performance:
+    </p>
+     <ul class="space-y-2 text-gray-700 mb-6">
+      <li>• High ad spend but low sales</li>
+      <li>• Poor campaign structure and weak audience targeting</li>
+      <li>• Fragmented strategy across platforms</li>
+    </ul>
+     <p class="text-gray-700 leading-relaxed mb-4">
+Their Amazon PPC campaigns weren’t converting, and they lacked a cohesive full‑funnel retargeting plan to pull lost visitors back in.
+</p>
+    <p class="text-gray-700 leading-relaxed mb-4">
+        They needed a performance‑focused strategy, better retargeting, and end‑to‑end campaign management to scale profitably.
+</p>
+ <h2 class="text-3xl font-bold mb-2">How Adryze Turned Things Around</h2>
+    <p class="text-gray-700 mb-4">Adryze implemented a full‑funnel paid media strategy, combining Amazon PPC with cross‑platform retargeting (Google + Meta + TikTok). We rebuilt their campaigns from scratch with tight audience segmentation, smart bidding, and conversion‑focused creatives.</p>
+   <p class="text-gray-700 leading-relaxed mb-4">
+In just 90 days:
+    </p>
+     <ul class="space-y-2 text-gray-700 mb-6">
+      <li>✔ ROAS improved by 3x</li>
+      <li>✔ Cost per sale dropped by 42%</li>
+      <li>✔ Retargeting drove back lost users and boosted repeat purchases</li>
+    </ul>
+    `,
+            case4: `
+<h2 class="text-3xl font-bold mb-2">Luxury Skincare Brand</h2>
+<p class="text-gray-700 mb-4">Instagram + Meta Ads | 60-Day Launch</p>
+<img src="{% static 'images/p2.png' %}" class="rounded-xl border mb-6">
+<h3 class="text-xl font-semibold mb-2">The Challenge</h3>
+<ul class="space-y-2 text-gray-700 mb-4 list-disc list-inside">
+  <li>Low brand awareness at launch</li>
+  <li>High competition in skincare niche</li>
+</ul>
+<h3 class="text-xl font-semibold mb-2">Our Solution</h3>
+<p class="text-gray-700 leading-relaxed mb-4">
+We launched a 60-day paid media plan targeting high-intent beauty audiences with Instagram + Meta campaigns, using engaging video creatives.
+</p>
+<h3 class="text-xl font-semibold mb-2">Results</h3>
+<ul class="space-y-2 text-gray-700 mb-6 list-disc list-inside">
+  <li>+120% increase in first-month sales</li>
+  <li>High engagement on social media</li>
+</ul>
+`,
+
+            case5: `
+<h2 class="text-3xl font-bold mb-2">Fitness Equipment Brand</h2>
+<p class="text-gray-700 mb-4">Meta + YouTube Ads | 120-Day Growth</p>
+<img src="{% static 'images/p3.png' %}" class="rounded-xl border mb-6">
+<h3 class="text-xl font-semibold mb-2">The Challenge</h3>
+<ul class="space-y-2 text-gray-700 mb-4 list-disc list-inside">
+  <li>Declining online sales despite growing traffic</li>
+  <li>Low conversion rates on product pages</li>
+</ul>
+<h3 class="text-xl font-semibold mb-2">Our Solution</h3>
+<p class="text-gray-700 leading-relaxed mb-4">
+Implemented full-funnel campaigns with YouTube video ads + Meta retargeting to drive purchase intent and recover lost visitors.
+</p>
+<h3 class="text-xl font-semibold mb-2">Results</h3>
+<ul class="space-y-2 text-gray-700 mb-6 list-disc list-inside">
+  <li>+85% increase in conversions</li>
+  <li>ROAS improved by 2.8x</li>
+</ul>
+`,
+
+            case6: `
+<h2 class="text-3xl font-bold mb-2">Home Decor E-Commerce</h2>
+<p class="text-gray-700 mb-4">Pinterest + Meta Ads | 90-Day Scale</p>
+<img src="{% static 'images/p4.png' %}" class="rounded-xl border mb-6">
+<h3 class="text-xl font-semibold mb-2">The Challenge</h3>
+<ul class="space-y-2 text-gray-700 mb-4 list-disc list-inside">
+  <li>Seasonal sales were unpredictable</li>
+  <li>Lack of visual ad creatives to attract home decor buyers</li>
+</ul>
+<h3 class="text-xl font-semibold mb-2">Our Solution</h3>
+<p class="text-gray-700 leading-relaxed mb-4">
+We created Pinterest-focused campaigns combined with Meta Ads using lifestyle images, targeting high-intent audiences with retargeting flows.
+</p>
+<h3 class="text-xl font-semibold mb-2">Results</h3>
+<ul class="space-y-2 text-gray-700 mb-6 list-disc list-inside">
+  <li>+110% sales growth during 3 months</li>
+  <li>Improved average order value by 20%</li>
+</ul>
+`
+        }
+
+        function openPanel(id) {
+            document.getElementById("panelContent").innerHTML = caseData[id];
+            document.getElementById("panelBackdrop").classList.remove("hidden");
+            setTimeout(() => document.getElementById("panelBackdrop").classList.add("opacity-100"), 10);
+
+            document.getElementById("casePanel").classList.remove("translate-x-full");
+        }
+
+        function closePanel() {
+            document.getElementById("panelBackdrop").classList.remove("opacity-100");
+            document.getElementById("casePanel").classList.add("translate-x-full");
+
+            setTimeout(() => document.getElementById("panelBackdrop").classList.add("hidden"), 300);
+        }
+    </script>
+</body>
+
+</html>

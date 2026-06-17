@@ -1,0 +1,64 @@
+<!-- ABOUT -->
+<section class="max-w-6xl mx-auto px-6 py-20 md:py-28">
+
+    <div class="flex items-center gap-3">
+
+        <!-- Icon -->
+        <div class="w-9 h-9 rounded-lg bg-[#00B4FF] flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37 38" class="w-9 h-9">
+                <rect y="0.916992" width="36.8923" height="37.012" rx="6.14871" fill="#00B4FF" />
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M19.4392 22.28L17.2953 16.5657H16.3045L14.1606 22.28H15.2368L15.587 21.3004H18.0127L18.3629 22.28H19.4392ZM16.7913 17.9779H16.8084L17.6882 20.4024H15.9115L16.7913 17.9779Z"
+                    fill="white" />
+                <path d="M21.3034 22.28V16.5657H20.2357V22.28H21.3034Z" fill="white" />
+                <path fill-rule="evenodd" clip-rule="evenodd"
+                    d="M22.732 29.4228V27.9942H19.1605V29.4228H17.732V27.9942H14.1606L14.1606 29.4228H12.732L12.732 27.9942H12.0177C10.8342 27.9942 9.87486 27.0348 9.87486 25.8514V25.1371H8.44629V23.7085H9.87486V20.1371H8.44629V18.7085H9.87486V15.1371H8.44629V13.7086H9.87486V12.9943C9.87486 11.8108 10.8342 10.8514 12.0177 10.8514H12.732V9.42285H14.1605V10.8514H17.732V9.42285H19.1605V10.8514H22.732V9.42285H24.1605V10.8514H24.8748C26.0583 10.8514 27.0177 11.8108 27.0177 12.9943V13.7086H28.4462V15.1371H27.0177V18.7085H28.4462V20.1371H27.0177V23.7085H28.4462V25.1371H27.0177V25.8514C27.0177 27.0348 26.0583 27.9942 24.8748 27.9942H24.1605V29.4228H22.732ZM12.0177 12.28C11.6232 12.28 11.3034 12.5998 11.3034 12.9943V25.8514C11.3034 26.2459 11.6232 26.5657 12.0177 26.5657H24.8748C25.2693 26.5657 25.5891 26.2459 25.5891 25.8514V12.9943C25.5891 12.5998 25.2693 12.28 24.8748 12.28H12.0177Z"
+                    fill="white" />
+            </svg>
+        </div>
+
+        <!-- Text -->
+        <p class="text-sm font-semibold tracking-wide text-gray-800 uppercase">
+            REVENUE GROWTH
+        </p>
+    </div>
+    <h2 class="text-lg md:text-2xl font-mono font-black mb-10">Scale your sales with strategies designed to increase
+        real
+        profit.
+    </h2>
+    {% load static %}
+
+    <div class="grid md:grid-cols-2 gap-14 items-center">
+        <!-- Text -->
+        <div>
+            <p class="text-gray-600 mb-6 leading-relaxed text-lg">
+                At ADRYZE, we believe on performance-driven growth agency helping e-commerce brands and
+                lead-based businesses scale faster using smart Meta (Facebook & Instagram) and Google Ads
+                strategies. Our focus is simple: profitable growth, quality traffic, and real results — not vanity
+                metrics.
+            </p>
+            <ul class="space-y-5 text-gray-700">
+                <li class="flex items-center gap-3">
+                    <div class="bg-[#FF4801] w-3 h-3 rounded-full"></div>
+                    Revenue Growth
+                </li>
+                <li class="flex items-center gap-3">
+                    <div class="bg-[#FF4801] w-3 h-3 rounded-full"></div>
+                    Lead Generation
+                </li>
+                <li class="flex items-center gap-3">
+                    <div class="bg-[#FF4801] w-3 h-3 rounded-full"></div>
+                    Data Driven
+                </li>
+            </ul>
+        </div>
+
+        <!-- Images -->
+        <div class="relative flex flex-col items-center md:items-end gap-6">
+            <!-- Back Image -->
+            <img src="{% static 'images/influencer.jpg' %}" class="rounded-xl shadow-2xl md:w-[80%]">
+            <!-- Front Circle Accent -->
+            <div class="absolute -bottom-6 -right-6 w-24 h-24 border-4 border-[#FF4801] rounded-full"></div>
+        </div>
+    </div>
+</section>

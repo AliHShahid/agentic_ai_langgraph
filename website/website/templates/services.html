@@ -1,0 +1,454 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Services</title>
+    <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+
+</head>
+
+<body class="bg-white text-gray-800">
+    <nav class="fixed w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+
+            <!-- Logo -->
+            <!-- <div class="text-2xl font-black tracking-tighter">
+                AD<span class="text-[#FF4801]">RYZE</span>
+            </div> -->
+            <!-- Logo -->
+            <a href="/" class="text-2xl font-black tracking-tighter hover:opacity-90 transition">
+                AD<span class="text-[#FF4801]">RYZE</span>
+            </a>
+
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex flex-1 justify-center items-center space-x-6 font-bold">
+
+                <a href="#solutions" class="nav-link">Solutions</a>
+                <a href="{% url 'services' %}" class="nav-link">Services</a>
+                <a href="{% url 'case_study' %}" class="nav-link">Case Studies</a>
+                <a href="{% url 'pricing' %}" class="nav-link">Pricing</a>
+
+                <!-- Learn Dropdown -->
+                <div class="relative">
+                    <button id="learnBtn" class="nav-link flex items-center gap-1">
+                        Learn
+                        <svg class="w-4 h-4 mt-0.5" fill="none" stroke="currentColor" stroke-width="2"
+                            viewBox="0 0 24 24">
+                            <path d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+                    <div id="learnMenu"
+                        class="absolute left-0 mt-3 w-48 bg-white border border-gray-100 shadow-lg rounded-lg opacity-0 invisible transition-all duration-200">
+                        <a href="{% url 'how_it_works' %}" class="dropdown-link">How It Works</a>
+                        <a href="#" class="dropdown-link">Blog</a>
+                        <a href="{% url 'about' %}" class="dropdown-link">About</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="hidden md:block">
+                <a href="#contact"
+                    class="bg-black text-white px-5 py-2 rounded-lg font-bold hover:bg-gray-900 transition">
+                    Get Access
+                </a>
+            </div>
+
+            <!-- Mobile Hamburger -->
+            <button id="menuBtn" class="md:hidden">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu"
+            class="md:hidden bg-white border-t border-gray-100 max-h-0 overflow-hidden transition-all duration-300">
+
+            <div class="px-6 py-4 space-y-4 font-bold">
+                <a href="#solutions" class="block mobile-link">Solutions</a>
+                <a href="#services" class="block mobile-link">Services</a>
+                <a href="{% url 'case_study' %}" class="block mobile-link">Case Studies</a>
+                <a href="{% url 'pricing' %}" class="block mobile-link">Pricing</a>
+
+                <!-- Mobile Dropdown -->
+                <div>
+                    <button id="mobileLearnBtn" class="flex justify-between w-full mobile-link">
+                        Learn
+                        <span>+</span>
+                    </button>
+                    <div id="mobileLearnMenu" class="hidden pl-4 mt-2 space-y-2">
+                        <a href="{% url 'how_it_works' %}" class="block text-gray-600">How It Works</a>
+                        <a href="#" class="block text-gray-600">Blog</a>
+                        <a href="{% url 'about' %}" class="block text-gray-600">About</a>
+                    </div>
+                </div>
+
+                <a href="#contact" class="block bg-black text-white text-center py-2 rounded-lg">
+                    Get Access
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Styles -->
+    <style>
+        .nav-link {
+            position: relative;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 2px;
+            width: 0;
+            background: #FF4801;
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::before {
+            width: 2.5rem;
+        }
+
+        .dropdown-link {
+            display: block;
+            padding: 0.6rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .dropdown-link:hover {
+            background: #fff7ed;
+            color: #FF4801;
+        }
+
+        .mobile-link {
+            padding: 0.5rem 0;
+        }
+    </style>
+
+    <!-- JS -->
+    <script>
+        const menuBtn = document.getElementById("menuBtn");
+        const mobileMenu = document.getElementById("mobileMenu");
+
+        menuBtn.addEventListener("click", () => {
+            mobileMenu.classList.toggle("max-h-[500px]");
+        });
+
+        const learnBtn = document.getElementById("learnBtn");
+        const learnMenu = document.getElementById("learnMenu");
+
+        learnBtn.addEventListener("click", () => {
+            learnMenu.classList.toggle("opacity-0");
+            learnMenu.classList.toggle("invisible");
+        });
+
+        const mobileLearnBtn = document.getElementById("mobileLearnBtn");
+        const mobileLearnMenu = document.getElementById("mobileLearnMenu");
+
+        mobileLearnBtn.addEventListener("click", () => {
+            mobileLearnMenu.classList.toggle("hidden");
+        });
+    </script>
+
+    <!-- Header Section -->
+    <section class="py-8 bg-[#FFF9F4]">
+    </section>
+    <section id="architecture" class="py-24 lg:py-40 bg-[#0A0A0A] border-t border-white/5 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            <div class="mb-20">
+                <span class="text-blue-400 font-mono tracking-[0.3em] uppercase text-xs">//
+                    SYSTEM_ARCHITECTURE_V4</span>
+                <h2 class="text-5xl md:text-7xl font-bold tracking-tighter text-white mt-4">
+                    The <span class="text-zinc-600">Stack.</span>
+                </h2>
+            </div>
+
+            <div class="relative grid grid-cols-1 md:grid-cols-4 gap-4 items-center">
+
+                <div
+                    class="bg-[#111] border border-blue-500/20 p-6 rounded-2xl relative group hover:border-blue-500/50 transition-all">
+                    <div class="font-mono text-[10px] text-blue-400 mb-4">UPLINK_AI</div>
+                    <h4 class="text-white font-bold uppercase tracking-widest text-sm">Neural Logic</h4>
+                    <p class="text-zinc-600 text-[11px] mt-2">RAG / YOLOV8 / LLAMA 3</p>
+                    <div class="absolute -right-2 top-1/2 w-4 h-px bg-blue-500/50 hidden md:block"></div>
+                </div>
+
+                <div
+                    class="bg-[#111] border border-zinc-800 p-6 rounded-2xl relative group hover:border-[#FFD84A]/50 transition-all">
+                    <div class="font-mono text-[10px] text-[#FFD84A] mb-4">CORE_API</div>
+                    <h4 class="text-white font-bold uppercase tracking-widest text-sm">FastAPI / Django</h4>
+                    <p class="text-zinc-600 text-[11px] mt-2">Asynchronous Processing</p>
+                    <div class="absolute -right-2 top-1/2 w-4 h-px bg-white/10 hidden md:block"></div>
+                </div>
+
+                <div
+                    class="bg-[#111] border border-zinc-800 p-6 rounded-2xl relative group hover:border-green-500/50 transition-all">
+                    <div class="font-mono text-[10px] text-green-400 mb-4">VECTOR_DB</div>
+                    <h4 class="text-white font-bold uppercase tracking-widest text-sm">Qdrant / FAISS</h4>
+                    <p class="text-zinc-600 text-[11px] mt-2">Semantic Retrieval</p>
+                    <div class="absolute -right-2 top-1/2 w-4 h-px bg-white/10 hidden md:block"></div>
+                </div>
+
+                <div
+                    class="bg-[#111] border border-zinc-800 p-6 rounded-2xl relative group hover:border-orange-500/50 transition-all">
+                    <div class="font-mono text-[10px] text-orange-500 mb-4">UX_CLIENT</div>
+                    <h4 class="text-white font-bold uppercase tracking-widest text-sm">React / Flutter</h4>
+                    <p class="text-zinc-600 text-[11px] mt-2">Real-time Telemetry</p>
+                </div>
+            </div>
+
+            <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div
+                    class="bg-[#0F0F0F] border border-white/5 p-8 rounded-3xl overflow-hidden font-mono text-[11px] leading-relaxed">
+                    <div class="flex justify-between text-zinc-700 mb-4 border-b border-white/5 pb-2">
+                        <span>STDOUT // AI_ORCHESTRATOR</span>
+                        <span>ACTIVE</span>
+                    </div>
+                    <p class="text-blue-400">> Initializing RAG pipeline...</p>
+                    <p class="text-zinc-500">> Loading embeddings into FAISS index [2.4GB]</p>
+                    <p class="text-zinc-500">> LLAMA_3-70B response latency: 142ms</p>
+                    <p class="text-green-500">> Logic verification successful.</p>
+                </div>
+
+                <div
+                    class="bg-[#0F0F0F] border border-white/5 p-8 rounded-3xl overflow-hidden font-mono text-[11px] leading-relaxed">
+                    <div class="flex justify-between text-zinc-700 mb-4 border-b border-white/5 pb-2">
+                        <span>STDOUT // WEB_ENV</span>
+                        <span>READY</span>
+                    </div>
+                    <p class="text-orange-400">> Spawning Django worker nodes...</p>
+                    <p class="text-zinc-500">> Syncing PostgreSQL schemas [STABLE]</p>
+                    <p class="text-zinc-500">> Frontend build optimized via Tailwind JIT</p>
+                    <p class="text-green-500">> Deployment status: PRODUCTION_LIVE</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section id="testimonials" class="py-24 lg:py-40 bg-[#0F0F0F] border-t border-white/5 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-[0.03] pointer-events-none"
+            style="background-image: radial-gradient(#fff 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+        <div class="max-w-[1400px] mx-auto px-6 relative z-10">
+            <div class="mb-20 text-center md:text-left">
+                <span class="text-[#FFD84A] font-mono tracking-[0.3em] uppercase text-xs">// CLIENT_TELEMETRY</span>
+                <h2 class="text-5xl md:text-7xl font-bold tracking-tighter text-white mt-4">
+                    System <span class="text-zinc-600">Spotlight.</span>
+                </h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <div class="flex flex-col gap-6">
+                    <div class="bg-[#141414] rounded-3xl border border-white/5 overflow-hidden relative group">
+                        <div
+                            class="absolute top-4 left-4 z-20 font-mono text-[9px] text-white/50 bg-black/40 backdrop-blur-md px-2 py-1 rounded">
+                            FEED_LIVE // FB_ADS</div>
+                        <video
+                            class="w-full aspect-[4/5] object-cover grayscale group-hover:grayscale-0 transition-all duration-700 opacity-60 group-hover:opacity-100"
+                            autoplay loop muted playsinline>
+                            <source src="{% static 'videos/facebookad.mp4' %}" type="video/mp4">
+                        </video>
+                        <div class="absolute inset-0 pointer-events-none border-[10px] border-[#0F0F0F] rounded-3xl">
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-[#141414] border border-white/5 rounded-3xl p-8 hover:border-[#FFD84A]/30 transition-all group">
+                        <div class="flex items-center gap-4 mb-6">
+                            <img src="https://i.pravatar.cc/150?img=11" alt="Roger Dunn"
+                                class="w-10 h-10 rounded-xl grayscale group-hover:grayscale-0 transition-all">
+                            <div>
+                                <h4 class="font-bold text-sm text-white tracking-tight">Roger Dunn</h4>
+                                <p class="font-mono text-[10px] text-zinc-600 uppercase">Performance_Lead</p>
+                            </div>
+                        </div>
+                        <p class="text-zinc-400 text-sm leading-relaxed italic">
+                            "It detected issues in our conversion tracking that had gone unnoticed for months. Systemic
+                            efficiency reached peak levels post-deployment."
+                        </p>
+                        <div class="mt-6 pt-6 border-t border-white/5 flex justify-between items-center">
+                            <span class="text-[#FFD84A] text-xs font-mono tracking-widest">VERIFIED_G2</span>
+                            <div class="flex gap-1">
+                                <div class="w-1 h-1 bg-[#FFD84A]"></div>
+                                <div class="w-1 h-1 bg-[#FFD84A]"></div>
+                                <div class="w-1 h-1 bg-[#FFD84A]"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-6">
+                    <div
+                        class="bg-[#FFD84A] rounded-3xl p-8 text-black flex flex-col justify-between min-h-[200px] hover:rotate-1 transition-transform">
+                        <span class="font-mono text-[10px] font-black tracking-widest uppercase">METRIC_IMPACT</span>
+                        <div>
+                            <h4 class="text-6xl font-black tracking-tighter">+63%</h4>
+                            <p class="font-bold text-lg leading-tight mt-2 uppercase tracking-tighter">Delta ROAS
+                                optimization</p>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-[#141414] border border-white/5 rounded-3xl p-8 hover:border-blue-500/30 transition-all">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="flex gap-3">
+                                <img src="https://i.pravatar.cc/150?img=5" alt="Gabriela"
+                                    class="w-10 h-10 rounded-full border border-white/10">
+                                <div>
+                                    <span class="block text-white font-bold text-sm">Gabriela K.</span>
+                                    <span class="block font-mono text-[10px] text-zinc-600">@gabri_isleia</span>
+                                </div>
+                            </div>
+                            <svg class="h-4 w-4 text-zinc-700" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                            </svg>
+                        </div>
+                        <p class="text-zinc-300 text-sm leading-relaxed mb-6">
+                            Managing manually was inefficient. With <span class="text-[#FFD84A]">INFLUX.AI</span>, we
+                            reallocated 12hrs/week to pure strategy.
+                        </p>
+                        <div class="flex gap-4 font-mono text-[10px] text-zinc-600 uppercase">
+                            <span>Likes: 102</span>
+                            <span>Retransmit: 24</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#141414] rounded-3xl border border-white/5 overflow-hidden relative group">
+                        <video
+                            class="w-full aspect-video object-cover grayscale opacity-40 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-700"
+                            autoplay loop muted playsinline>
+                            <source src="{% static 'videos/ad1.mp4' %}" type="video/mp4">
+                        </video>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-6">
+                    <div class="bg-[#141414] rounded-3xl border border-white/5 overflow-hidden relative group">
+                        <video
+                            class="w-full aspect-square object-cover grayscale opacity-40 group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-700"
+                            autoplay loop muted playsinline>
+                            <source src="{% static 'videos/14.mp4' %}" type="video/mp4">
+                        </video>
+                        <div
+                            class="absolute bottom-4 right-4 bg-black/60 backdrop-blur-md px-3 py-1 rounded font-mono text-[9px] text-[#FFD84A]">
+                            ENCRYPTION_ACTIVE</div>
+                    </div>
+
+                    <div
+                        class="bg-[#141414] border border-white/5 rounded-3xl p-8 hover:border-green-500/30 transition-all">
+                        <div class="flex items-center gap-4 mb-6">
+                            <img src="https://i.pravatar.cc/150?img=12" alt="Daniel"
+                                class="w-10 h-10 rounded-xl border border-white/5">
+                            <div>
+                                <h4 class="font-bold text-sm text-white">Daniel Roser</h4>
+                                <p class="font-mono text-[10px] text-zinc-600 uppercase tracking-widest">
+                                    Global_Ads_Strategy</p>
+                            </div>
+                        </div>
+                        <p class="text-zinc-400 text-sm leading-relaxed">
+                            "Analyzed every asset—headlines, visuals, creatives. Our CTR nearly doubled. The data-backed
+                            suggestions are unmatched."
+                        </p>
+                        <div class="mt-6 flex justify-between items-center font-mono text-[10px]">
+                            <span class="text-green-500 uppercase tracking-widest">TRUST_PILOT_VERIFIED</span>
+                            <div class="flex gap-0.5">
+                                <span class="text-green-500">★</span><span class="text-green-500">★</span><span
+                                    class="text-green-500">★</span><span class="text-green-500">★</span><span
+                                    class="text-green-500">★</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-white/5 border border-white/10 rounded-3xl p-8 text-center flex flex-col justify-center min-h-[160px]">
+                        <p class="text-xl font-black tracking-tighter text-white uppercase italic leading-none">
+                            "Automation that outperforms manual optimization."
+                        </p>
+                        <p class="text-zinc-600 font-mono text-[9px] mt-4 uppercase">Mathilde Biggs, CEO MotifDigital
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+    <section class="py-24 bg-white relative overflow-hidden">
+        <div
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full blur-[120px]">
+        </div>
+        <div class="absolute top-0 right-0 w-[600px] h-[600px] opacity-30" style="transform: rotate(63.2664deg);">
+            <div class="absolute top-20 right-20 w-32 h-32 bg-[#FF4801]/20 rounded-full blur-2xl"></div>
+            <div class="absolute bottom-40 left-40 w-40 h-40 bg-blue-500/10 rounded-full blur-2xl"></div>
+        </div>
+        <div class="max-w-[1400px] mx-auto px-3 md:px-5 lg:px-6 relative z-10">
+            <div class="max-w-5xl mx-auto text-center space-y-10">
+                <div style="opacity: 1; transform: none;">
+                    <h2 class="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tighter text-black mb-2">Ready to
+                        <span class="text-[#FF4801]">Grow with </span>Ads?
+                    </h2>
+                </div>
+                <div class="relative max-w-xl mx-auto" style="opacity: 1; transform: none;">
+                    <form id="hero-form" onsubmit="transferEmail(event)"
+                        class="flex items-center border-[0.5px] border-black rounded-lg bg-white shadow-sm hover:shadow-md transition-shadow duration-300 h-10 md:h-14 overflow-hidden pl-1 pr-1 py-1">
+                        <input id="hero-email-input" type="email" placeholder="name@company.com" required=""
+                            class="flex-1 bg-transparent border-none outline-none px-4 md:px-6 text-[0.9rem] md:text-lg text-black placeholder:text-zinc-500 min-w-0 h-full">
+                        <button type="submit"
+                            class="bg-orange-500 text-white px-6 md:px-8 h-full font-medium whitespace-nowrap hover:bg-orange-500 transition-colors flex items-center gap-2 rounded-md">
+                            <span class="text-sm md:text-lg">Get started</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="lucide lucide-chevron-right w-4 h-4" aria-hidden="true">
+                                <path d="m9 18 6-6-6-6"></path>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+                <div
+                    class="flex flex-wrap items-center justify-center gap-6 md:gap-12 text-zinc-500 text-sm font-medium">
+                </div>
+            </div>
+        </div>
+    </section>
+    <script>
+        function transferEmail(event) {
+            event.preventDefault();
+
+            // Get email
+            const emailValue = document.getElementById('hero-email-input').value;
+
+            // Store email in localStorage
+            localStorage.setItem('prefillEmail', emailValue);
+
+            // Redirect to home page
+            window.location.href = '/';  // Django home page URL
+        }
+    </script>
+
+
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+</body>
+
+</html>

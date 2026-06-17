@@ -1,0 +1,34 @@
+<div class="relative group" x-data="{ expanded: false }">
+    <span class="absolute -top-3 -left-4 w-20 h-[2px] bg-blue-400 rotate-12"></span>
+    <span class="absolute -bottom-3 -right-3 w-24 h-[2px] bg-blue-400"></span>
+
+    <div class="bg-[#1a1a1a] border border-white/10 rounded-lg p-8 text-center group-hover:bg-blue-600/10 transition">
+        <div class="text-blue-400 text-4xl mb-4">🔍</div>
+
+        <h3 class="text-xl font-semibold text-white mb-3">
+            Google Ad Campaign Management
+        </h3>
+
+        <!-- Description -->
+        <p class="text-gray-400 text-sm leading-relaxed mb-4" x-show="expanded">
+            Strategy, setup, and optimization for profitable scaling, more leads without rising costs,
+            better return on ad spend (ROAS). End-to-end campaign management.
+        </p>
+
+        <p class="text-gray-400 text-sm leading-relaxed mb-4 line-clamp-2" x-show="!expanded">
+            Strategy, setup, and optimization for profitable scaling, more leads without rising costs,
+            better return on ad spend (ROAS). End-to-end campaign management.
+        </p>
+
+        <!-- Toggle Button -->
+        <button @click="expanded = !expanded" class="text-blue-400 text-xs underline mt-1">
+            <span x-show="!expanded">Read more</span>
+            <span x-show="expanded">Read less</span>
+        </button>
+
+        <!-- <a href="#"
+                            class="inline-block bg-blue-500 text-black text-sm font-medium px-5 py-2 rounded-sm">
+                            Learn More
+                        </a> -->
+    </div>
+</div>

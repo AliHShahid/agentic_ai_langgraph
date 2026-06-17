@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INFLUX.AI - Future of Work</title>
+    <link rel="icon" type="image/png" href="{% static 'images/logo.png' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Add this to your existing <style> block */
+        /* body,
+        html {
+            max-width: 100vw;
+            overflow-x: hidden;
+        } */
+
+        /* Ensure images don't break containers */
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Add to your style block near line 14 */
+        body,
+        html {
+            overflow-x: hidden;
+            /* Prevents horizontal shaking/scrolling */
+            width: 100%;
+            position: relative;
+        }
+
+        /* Force the nav to never exceed the screen width */
+        nav {
+            width: 100% !important;
+            left: 0 !important;
+            right: 0 !important;
+        }
+
+        .blob {
+            position: absolute;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.15;
+        }
+    </style>
+
+
+
+</head>
+
+<body class="bg-[#1A1A1A] text-gray-900 antialiased overflow-x-hidden">
+
+    <div class="blob bg-red-600 w-96 h-96 rounded-full top-0 right-0 translate-x-1/2 -translate-y-1/2"></div>
+    <div class="blob bg-gray-200 w-96 h-96 rounded-full bottom-0 left-0 -translate-x-1/2 translate-y-1/2"></div>
+
+    <nav class="fixed w-full z-50 bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/5">
+        <!-- <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between"> -->
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <!-- 
+                <a href="/"
+                    class="text-2xl tracking-tighter text-white font-black hover:text-blue-400 transition-colors group">
+                    INFLUX.<span class="text-blue-400 group-hover:text-white transition-colors">AI</span>
+                    <span class="block text-[8px] font-mono tracking-[0.5em] text-zinc-600 uppercase mt-[-4px]">//
+                        Intelligence_Layer</span>
+                </a> -->
+            <a href="/"
+                class="text-xl md:text-2xl tracking-tighter text-white font-black hover:text-blue-400 transition-colors group shrink-0">
+                INFLUX.<span class="text-blue-400 group-hover:text-white transition-colors">AI</span>
+                <span
+                    class="block text-[8px] font-mono tracking-[0.3em] text-zinc-600 uppercase mt-[-4px] md:tracking-[0.5em]">
+                    // Intelligence_Layer
+                </span>
+            </a>
+
+            <div class="hidden md:flex flex-1 justify-center items-center space-x-2 text-white">
+                <a href="#services" class="nav-link">SERVICES</a>
+                <a href="#about" class="nav-link">ABOUT_FIRM</a>
+                <!-- <a href="#" class="nav-link">SPOTLIGHT</a> -->
+
+                <div class="relative group">
+                    <button class="nav-link flex items-center gap-2">
+                        ARCHIVES
+                        <svg class="w-3 h-3 opacity-50 group-hover:rotate-180 transition-transform" fill="none"
+                            stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
+                            <path d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+
+
+                    <div
+                        class="absolute left-0 mt-4 w-56 bg-[#0F0F0F] border border-white/10 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.5)] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 translate-y-2 group-hover:translate-y-0 overflow-hidden">
+                        <div class="p-2 space-y-1">
+                            <a href="{% url 'saamay' %}" class="dropdown-link"><span
+                                    class="text-zinc-700 mr-2">/01</span> SAAMAY_AI</a>
+                            <a href="{% url 'adryze' %}" class="dropdown-link"><span
+                                    class="text-zinc-700 mr-2">/02</span> ADRYZE_V2</a>
+                            <a href="{% url 'documind' %}" class="dropdown-link"><span
+                                    class="text-zinc-700 mr-2">/03</span> DOCUMIND_CORE</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="hidden md:block">
+                <a href="#contact"
+                    class="px-6 py-2 bg-[#FFD84A] text-black font-black uppercase text-[10px] tracking-widest hover:bg-white transition-all transform active:scale-95">
+                    Initialize_Uplink
+                </a>
+            </div>
+
+            <!-- <button id="menuBtn" class="md:hidden text-white p-2">
+                <div class="w-6 h-px bg-white mb-1.5"></div>
+                <div class="w-6 h-px bg-white mb-1.5"></div>
+                <div class="w-4 h-px bg-[#FFD84A] ml-2"></div>
+            </button> -->
+            <button id="menuBtn" class="md:hidden text-white p-2 shrink-0 ml-auto">
+                <div class="w-6 h-px bg-white mb-1.5"></div>
+                <div class="w-6 h-px bg-white mb-1.5"></div>
+                <div class="w-4 h-px bg-[#FFD84A] ml-2"></div>
+            </button>
+        </div>
+
+        <div id="mobileMenu"
+            class="md:hidden bg-[#0A0A0A] border-t border-white/5 max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+            <div class="px-8 py-10 space-y-8 text-white">
+                <a href="#services" class="block text-2xl font-black tracking-tighter hover:text-[#FFD84A]">SERVICES</a>
+                <a href="#about" class="block text-2xl font-black tracking-tighter hover:text-[#FFD84A]">ABOUT_FIRM</a>
+
+                <div>
+                    <button id="mobileLearnBtn"
+                        class="flex justify-between w-full text-2xl font-black tracking-tighter hover:text-[#FFD84A]">
+                        ARCHIVES <span class="text-[#FFD84A]">+</span>
+                    </button>
+                    <div id="mobileLearnMenu" class="hidden pl-4 mt-6 space-y-4 border-l border-white/5">
+                        <a href="{% url 'saamay' %}" class="block font-mono text-sm text-zinc-500">/ SAAMAY_AI</a>
+                        <a href="{% url 'adryze' %}" class="block font-mono text-sm text-zinc-500">/ ADRYZE_V2</a>
+                        <a href="{% url 'documind' %}" class="block font-mono text-sm text-zinc-500">/
+                            DOCUMIND_CORE</a>
+                    </div>
+                </div>
+
+                <a href="#contact"
+                    class="block bg-[#FFD84A] text-black text-center py-4 font-black uppercase tracking-widest text-xs">
+                    Initialize_Uplink
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <style>
+        .nav-link {
+            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            font-size: 10px;
+            letter-spacing: 0.25em;
+            padding: 0.75rem 1.5rem;
+            transition: color 0.3s;
+            text-transform: uppercase;
+        }
+
+        .nav-link:hover {
+            color: #FFD84A;
+        }
+
+        .dropdown-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            /* Monospace for links */
+            font-size: 11px;
+            color: #71717a;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 8px;
+        }
+
+        .dropdown-link:hover {
+            background: rgba(255, 216, 74, 0.05);
+            color: white;
+            padding-left: 1.5rem;
+        }
+    </style>
+    <script>
+        const menuBtn = document.getElementById("menuBtn");
+        const mobileMenu = document.getElementById("mobileMenu");
+        const mobileLearnBtn = document.getElementById("mobileLearnBtn");
+        const mobileLearnMenu = document.getElementById("mobileLearnMenu");
+
+        // 1. Fix: Toggle Main Mobile Overlay
+        menuBtn.addEventListener("click", () => {
+            const isOpening = !mobileMenu.style.maxHeight || mobileMenu.style.maxHeight === "0px";
+
+            if (isOpening) {
+                // Set to scrollHeight to allow transition to work
+                mobileMenu.style.maxHeight = mobileMenu.scrollHeight + "px";
+            } else {
+                mobileMenu.style.maxHeight = "0px";
+                // Optional: Close sub-menu if main menu is closed
+                mobileLearnMenu.classList.add("hidden");
+                const statusIcon = mobileLearnBtn.querySelector('span');
+                statusIcon.style.transform = "rotate(0deg)";
+            }
+        });
+
+        // 2. Fix: Toggle Archive Sub-directory inside Mobile
+        mobileLearnBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            const isHidden = mobileLearnMenu.classList.contains("hidden");
+            const statusIcon = mobileLearnBtn.querySelector('span');
+
+            if (isHidden) {
+                mobileLearnMenu.classList.remove("hidden");
+                statusIcon.style.transform = "rotate(45deg)";
+                statusIcon.style.color = "#FFD84A";
+            } else {
+                mobileLearnMenu.classList.add("hidden");
+                statusIcon.style.transform = "rotate(0deg)";
+                statusIcon.style.color = "white";
+            }
+
+            // IMPORTANT: Re-calculate the parent height after the sub-menu opens/closes
+            mobileMenu.style.maxHeight = "none"; // Reset briefly
+            const newHeight = mobileMenu.scrollHeight;
+            mobileMenu.style.maxHeight = newHeight + "px";
+        });
+
+        // 3. Desktop Dropdown Fix (Prevents interference with mobile)
+        const desktopDropdownBtn = document.querySelector(".hidden.md\\:flex .group button");
+        const desktopDropdownMenu = document.querySelector(".hidden.md\\:flex .group div");
+
+        if (desktopDropdownBtn) {
+            desktopDropdownBtn.addEventListener("click", (e) => {
+                e.stopPropagation();
+                desktopDropdownMenu.classList.toggle("invisible");
+                desktopDropdownMenu.classList.toggle("opacity-0");
+            });
+        }
+
+        // Close desktop menu if clicking outside
+        window.addEventListener('click', () => {
+            if (desktopDropdownMenu && !desktopDropdownMenu.classList.contains("invisible")) {
+                desktopDropdownMenu.classList.add("invisible", "opacity-0");
+            }
+        });
+    </script>
+</body>
+
+</html>
